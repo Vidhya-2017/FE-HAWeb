@@ -58,6 +58,17 @@
             color: white;
             th {
                 font-weight: 500;
+                // text-align: center;
+                &.colHeader {
+                    width: 125px;
+                    text-align: center;
+                    word-break: break-word;
+                }
+                &.customColHeader {
+                    width: 200px;
+                    text-align: center;
+                    word-break: break-word;
+                }
                 &:focus{
                     outline: none;
                 }
@@ -98,4 +109,32 @@
 
 .noteContainer{
     margin: 20px;
+}
+
+.eventModal {
+    .eventData{
+        width: 80%;
+        display: flex;
+        .eventTitle {
+            width: 50%;
+        }
+        .scoreTextLabel{
+            font-weight: 600;
+            padding-bottom: 10px;
+        }
+    }
+}
+
+.spinnerWrapper{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: #0000002b;
+    .spinner{
+        top: 50%;
+        left: 50%;
+        position: absolute;
+    }
 }

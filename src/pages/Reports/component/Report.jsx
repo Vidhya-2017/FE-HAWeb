@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Container, Button, Alert } from 'react-bootstrap';
+import React, { Component, Fragment } from 'react';
+import { Button, Alert, Modal, Spinner, Toast } from 'react-bootstrap';
 import XLSX from 'xlsx';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -18,19 +18,40 @@ class Report extends Component {
       data: [],
       cols: [],
       selectedSheet: null,
-      sheetOptions: []
+      sheetOptions: [],
+      showModal: false,
+      eventList: [],
+      eventData: [],
+      selectedEvent: null,
+      selectedEventData: {},
+      loading: false,
+      showSuccessMessage: false
     }
+  }
+
+  componentDidMount() {
+    this.props.getEventList().then(response => {
+      let eventList = [];
+      eventList = response.arrRes.map(list => {
+        return {
+          value: list.EventId,
+          label: list.Name
+        }
+      })
+      this.setState({ eventData: response.arrRes, eventList });
+    });
   }
 
   getFileDetails = (e) => {
     const files = e.target.files;
     if (files && files[0]) {
+      console.log('--files[0]--', files[0].type);
       this.setState({ file: files[0] });
       this.handleFile(files[0]);
     }
   }
 
-  handleFile(file, sheet = 4) {
+  handleFile(file, sheet = 0) {
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
     reader.onload = (e) => {
@@ -52,14 +73,46 @@ class Report extends Component {
   }
 
   submitSheet = () => {
+    this.setState({ showModal: true });
+  }
+
+  handleClose = () => this.setState({ showModal: false, selectedEvent: null, selectedEventData: {} });
+
+  handleEventChange = (selectedEvent) => {
+    const { eventData } = this.state;
+    const getEventDetails = eventData.find(list => list.EventId === selectedEvent.value);
+    const reqEventObj = {
+      EventDate: getEventDetails.EventDate,
+      EventId: getEventDetails.EventId,
+      Name: getEventDetails.Name,
+      Skills: getEventDetails.Skills
+    }
+    console.log('---reqEventObj----', reqEventObj);
+    this.setState({ selectedEvent, selectedEventData: getEventDetails });
+  }
+
+  handleOnSubmit = () => {
     const { file } = this.state;
+    this.setState({ showModal: false, loading: true });
     var reader = new FileReader();
     reader.onload = (e) => {
       var binaryData = e.target.result;
       var base64String = window.btoa(binaryData);
-      console.log('-base64String--', base64String);
+      const reqObj = {
+        mime: file.type,
+        data: base64String
+      }
+      this.props.importExcel(reqObj).then(response => {
+        console.log('---response--', response);
+        this.setState({
+          showModal: false, selectedEvent: null, selectedEventData: {},
+          data: [], cols: [], file: {}, sheetOptions: [], loading: false,
+          showSuccessMessage: true
+        });
+      })
     };
     reader.readAsBinaryString(file);
+
   }
 
   handleChange = selectedSheet => {
@@ -78,23 +131,29 @@ class Report extends Component {
         defval: '',
         blankrows: false
       });
+      const customHeaderColumns = ['EmailId', 'ContactNo', 'EmpName'];
+      const hiddenColumns = ['candidate_status', 'notice_period', 'current_location', 'preferred_location']
       if (sheetData.length > 0) {
-        columns = sheetData[0].map(col => {
-          return {
-            dataField: col.toString().trim(),
-            text: col,
-            sort: true,
-            filter: false,
-            sortCaret: (order, column) => {
-              if (!order) return (<span><ArrowUp/><ArrowDown/></span>);
-              else if (order === 'asc') return (<span><ArrowUp/></span>);
-              else if (order === 'desc') return (<span><ArrowDown/></span>);
-              return null;
-            }
+        sheetData[0].forEach(col => {
+          if (hiddenColumns.indexOf(col) === -1) {
+            columns.push({
+              dataField: col.toString(),
+              text: col,
+              sort: true,
+              filter: false,
+              headerClasses: customHeaderColumns.indexOf(col) >= 0 ? 'customColHeader' : 'colHeader',
+              sortCaret: (order, column) => {
+                if (!order) return (<span><ArrowUp /><ArrowDown /></span>);
+                else if (order === 'asc') return (<span><ArrowUp /></span>);
+                else if (order === 'desc') return (<span><ArrowDown /></span>);
+                return null;
+              }
+            });
           }
         });
       }
       const data = XLSX.utils.sheet_to_json(ws, { raw: false });
+      console.log(columns, '-data-', data);
       this.setState({ data: data, cols: columns });
     };
     if (rABS) {
@@ -106,17 +165,16 @@ class Report extends Component {
 
   showFilter = (e) => {
     const { cols } = this.state;
-    console.log('----e---', cols);
     let filterOptions = [...cols];
-    if(e.target.checked) {
+    if (e.target.checked) {
       filterOptions = filterOptions.map(item => {
         item.filter = textFilter({
-            delay: 1000,
-            className: 'filterTextField',
-            placeholder: item.dataField,
-            onClick: e => console.log(e)
-          });
-          return item;
+          delay: 1000,
+          className: 'filterTextField',
+          placeholder: item.dataField,
+          onClick: e => console.log(e)
+        });
+        return item;
       });
     } else {
       filterOptions = filterOptions.map(item => {
@@ -126,8 +184,10 @@ class Report extends Component {
     }
     this.setState({ cols: filterOptions });
   }
+
   render() {
-    const { file, data, cols, selectedSheet, sheetOptions } = this.state;
+    const { file, data, cols, selectedSheet, sheetOptions, loading, showSuccessMessage,
+      showModal, eventList, selectedEvent, selectedEventData } = this.state;
     const recordPerPageVal = Math.ceil(data.length / 10) * 10;
     const recordPerPageOptions = [
       { text: "10", page: 10 },
@@ -244,7 +304,7 @@ class Report extends Component {
     }
     return (
       <div>
-        <h3 className='pageTitle'>Event Report</h3>
+        <h3 className='pageTitle'>Candidate Upload</h3>
         <section className='handlerContainer'>
           <div className='uploadBtn'>
             <label htmlFor="fileUpload" className="file-upload fileUploadBtn btn shadow">
@@ -260,15 +320,15 @@ class Report extends Component {
             options={sheetOptions}
             styles={selectStyles}
             placeholder='Select the Sheet'
-          />} 
+          />}
           {data.length > 0 &&
             <div className="custom-control custom-switch filterSwitch">
-            <input type="checkbox" className="custom-control-input" onChange={this.showFilter} id="customSwitch1" />
-            <label className="custom-control-label" for="customSwitch1">Show Filter Options</label>
-          </div>
+              <input type="checkbox" className="custom-control-input" onChange={this.showFilter} id="customSwitch1" />
+              <label className="custom-control-label" htmlFor="customSwitch1">Show Filter Options</label>
+            </div>
           }
           {sheetOptions.length > 0 && <div className='uploadBtn'>
-            <Button disabled={data.length === 0} className='file-upload fileUploadBtn btn shadow' onClick={this.submitSheet}>Submit</Button>
+            <Button disabled={data.length === 0} className='file-upload fileUploadBtn btn shadow' onClick={this.submitSheet}>Upload</Button>
           </div>
           }
 
@@ -286,13 +346,75 @@ class Report extends Component {
               rowClasses='rowlist'
               headerClasses="listHeader"
               pagination={paginationFactory(paginationOptions)}
-              filter={ filterFactory() }
+              filter={filterFactory()}
             />
           </div>
         }
+        <Modal className='eventModal' show={showModal} centered onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Select Event Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Select
+              value={selectedEvent}
+              onChange={this.handleEventChange}
+              options={eventList}
+              styles={selectStyles}
+              placeholder='Select the Event'
+            />
+            {selectedEvent &&
+              <Fragment>
+                <div className='eventData'>
+                  <span className='eventTitle'>Event ID:</span>
+                  <span className='scoreTextLabel'>{selectedEventData.EventId}</span>
+                </div>
+                <div className='eventData'>
+                  <span className='eventTitle'>Event Date:</span>
+                  <span className='scoreTextLabel'>{selectedEventData.EventDate}</span>
+                </div>
+                <div className='eventData'>
+                  <span className='eventTitle'>Event Skills:</span>
+                  <span className='scoreTextLabel'>{selectedEventData.skillname.join(', ')}</span>
+                </div>
+              </Fragment>
+            }
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
+          </Button>
+            <Button variant="primary" onClick={this.handleOnSubmit}>
+              Submit
+          </Button>
+          </Modal.Footer>
+        </Modal>
         {data.length > 0 && <Alert className='noteContainer' variant='secondary'>
           ** Please check the candidate data and then click <b>Submit</b> to save the excel sheet.
         </Alert>}
+        {loading &&
+          <div className='spinnerWrapper'>
+            <Spinner className='spinner' animation="grow" variant="primary" />
+          </div>
+        }
+        {showSuccessMessage &&
+          <Toast
+            style={{
+              position: 'absolute',
+              top: '100px',
+              right: '10px',
+              background: '#deeddd',
+              border: '1px solid #28a745',
+              color: '#6c757d',
+              fontWeight: 500,
+              width: 400
+            }}
+            onClose={() => this.setState({ showSuccessMessage: false })} show={showSuccessMessage} delay={3000} autohide>
+            <Toast.Header style={{background: '#deeddd',borderBottom: '1px solid #28a745'}}>
+              <strong className="mr-auto">Success</strong>
+            </Toast.Header>
+            <Toast.Body>Excel sheet uploaded successfully.</Toast.Body>
+          </Toast>
+        }
       </div>
     );
   }
