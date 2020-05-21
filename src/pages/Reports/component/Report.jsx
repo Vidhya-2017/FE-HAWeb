@@ -45,9 +45,9 @@ class Report extends Component {
   getFileDetails = (e) => {
     const files = e.target.files;
     if (files && files[0]) {
-      console.log('--files[0]--', files[0].type);
       this.setState({ file: files[0] });
       this.handleFile(files[0]);
+      e.target.value = null;
     }
   }
 
@@ -81,33 +81,29 @@ class Report extends Component {
   handleEventChange = (selectedEvent) => {
     const { eventData } = this.state;
     const getEventDetails = eventData.find(list => list.EventId === selectedEvent.value);
-    const reqEventObj = {
-      EventDate: getEventDetails.EventDate,
-      EventId: getEventDetails.EventId,
-      Name: getEventDetails.Name,
-      Skills: getEventDetails.Skills
-    }
-    console.log('---reqEventObj----', reqEventObj);
     this.setState({ selectedEvent, selectedEventData: getEventDetails });
   }
 
   handleOnSubmit = () => {
-    const { file } = this.state;
+    const { file, selectedEventData } = this.state;
     this.setState({ showModal: false, loading: true });
     var reader = new FileReader();
     reader.onload = (e) => {
       var binaryData = e.target.result;
       var base64String = window.btoa(binaryData);
       const reqObj = {
+        EventDate: selectedEventData.EventDate,
+        EventId: selectedEventData.EventId,
+        Name: selectedEventData.Name,
+        isExternal: false,
         mime: file.type,
         data: base64String
       }
       this.props.importExcel(reqObj).then(response => {
-        console.log('---response--', response);
         this.setState({
           showModal: false, selectedEvent: null, selectedEventData: {},
           data: [], cols: [], file: {}, sheetOptions: [], loading: false,
-          showSuccessMessage: true
+          showSuccessMessage: true, selectedSheet: null
         });
       })
     };
@@ -153,7 +149,6 @@ class Report extends Component {
         });
       }
       const data = XLSX.utils.sheet_to_json(ws, { raw: false });
-      console.log(columns, '-data-', data);
       this.setState({ data: data, cols: columns });
     };
     if (rABS) {
@@ -172,7 +167,6 @@ class Report extends Component {
           delay: 1000,
           className: 'filterTextField',
           placeholder: item.dataField,
-          onClick: e => console.log(e)
         });
         return item;
       });

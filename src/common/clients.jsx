@@ -9,7 +9,7 @@ const eventListClient = axios.create({
 });
 
 const importExcelClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/import-excel/candidate_import_api.php',
+    baseURL: 'http://proctor.eastus.cloudapp.azure.com/import-excel/candidateRegisterImportApi.php',
     headers : {
         'Accept' : 'application/json',
         'Content-Type' : 'application/json'
