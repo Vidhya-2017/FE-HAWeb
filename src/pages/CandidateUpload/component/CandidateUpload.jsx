@@ -5,6 +5,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Select from 'react-select';
+import SelectStyles from '../../../common/SelectStyles';
 import ArrowDown from '../../../common/icons/ArrowDown';
 import ArrowUp from '../../../common/icons/ArrowUp';
 import '../scss/CandidateUpload.scss';
@@ -253,49 +254,7 @@ class CandidateUpload extends Component {
       pageButtonRenderer
     };
 
-    const selectStyles = {
-      control: styles => ({
-        ...styles,
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        minWidth: 200,
-        minHeight: 40,
-        borderColor: '#000',
-        borderRadius: '5px',
-        marginBottom: '3px',
-        outline: 'transparent',
-        boxShadow: 'none',
-        ':hover': {
-          borderColor: '#000000',
-          boxShadow: '0 0 0 1px #000000',
-        },
-        ':active': {
-          borderColor: '#000000',
-          boxShadow: '0 0 0 1px #000000',
-        },
-        ':focus': {
-          borderColor: '#000000',
-          boxShadow: '0 0 0 1px #000000'
-        }
-      }),
-      menu: styles => ({ ...styles, backgroundColor: '#fff', border: '1px solid #999' }),
-      indicatorSeparator: styles => ({ ...styles, backgroundColor: 'none' }),
-      option: (styles, { isFocused, isSelected }) => {
-        return {
-          ...styles,
-          backgroundColor: '#fff',
-          ':active': {
-            backgroundColor: '#eee',
-          },
-          ':hover': {
-            backgroundColor: '#dadada',
-          },
-          ':focus': {
-            backgroundColor: '#eee',
-          },
-          color: isSelected ? '#000' : '#333'
-        }
-      }
-    }
+    
     return (
       <div>
         <h3 className='pageTitle'>Candidate Upload</h3>
@@ -312,7 +271,7 @@ class CandidateUpload extends Component {
             value={selectedSheet}
             onChange={this.handleChange}
             options={sheetOptions}
-            styles={selectStyles}
+            styles={SelectStyles}
             placeholder='Select the Sheet'
           />}
           {data.length > 0 &&
@@ -353,7 +312,7 @@ class CandidateUpload extends Component {
               value={selectedEvent}
               onChange={this.handleEventChange}
               options={eventList}
-              styles={selectStyles}
+              styles={SelectStyles}
               placeholder='Select the Event'
             />
             {selectedEvent &&
