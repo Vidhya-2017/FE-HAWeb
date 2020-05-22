@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import combineReducers from "./reducers/index";
 import { PersistGate } from 'redux-persist/integration/react';
-import ReportContainer from './pages/Reports/container/ReportContainer';
+import CandidateUploadContainer from './pages/CandidateUpload/container/CandidateUploadContainer';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import './App.scss';
@@ -43,7 +43,7 @@ class App extends React.Component {
             <Header />
             <div className='routerContent'>
                <Switch>
-              <Route path="/" component={ReportContainer} />
+              <Route path="/" component={CandidateUploadContainer} />
             </Switch>
             </div>
             <Footer />

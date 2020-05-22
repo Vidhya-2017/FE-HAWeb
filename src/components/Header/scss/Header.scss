@@ -1,10 +1,17 @@
-.header{
-    background-color:rgb(27, 145, 229);
-    color: #fff;
-    height: 50px;
-    z-index: 1;
-    .navbar-expand-lg .navbar-collapse{
+.appContainer{
+    .header{
         background-color:rgb(27, 145, 229);
-    } 
-    
+        color: #fff;
+        height: 50px;
+        z-index: 1;
+        a {
+            padding: 0;
+            h3 {
+                margin: 0;
+            }
+        }
+        .navbar-expand-lg .navbar-collapse{
+            background-color:rgb(27, 145, 229);
+        } 
+    }
 }

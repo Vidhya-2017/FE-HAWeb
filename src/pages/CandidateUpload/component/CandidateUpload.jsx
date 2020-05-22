@@ -7,9 +7,9 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Select from 'react-select';
 import ArrowDown from '../../../common/icons/ArrowDown';
 import ArrowUp from '../../../common/icons/ArrowUp';
-import '../scss/Report.scss';
+import '../scss/CandidateUpload.scss';
 
-class Report extends Component {
+class CandidateUpload extends Component {
 
   constructor(props) {
     super(props);
@@ -414,4 +414,4 @@ class Report extends Component {
   }
 }
 
-export default Report;
+export default CandidateUpload;
