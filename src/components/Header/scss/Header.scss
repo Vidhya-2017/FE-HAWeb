@@ -1,11 +1,16 @@
 .appContainer{
     .header{
-        background-color:rgb(27, 145, 229);
+        background-color: #2196f3 !important;
         color: #fff;
-        height: 50px;
-        z-index: 1;
+        height: 56px;
+        .navbar-collapse{
+            .navbar-nav{
+                .nav-link{
+                    color: white;
+                }
+            }
+        }
         a {
-            padding: 0;
             h3 {
                 margin: 0;
             }
@@ -13,5 +18,10 @@
         .navbar-expand-lg .navbar-collapse{
             background-color:rgb(27, 145, 229);
         } 
+        .userDropdown{
+            .nav-link{
+                color: white;
+            }
+        }
     }
 }
