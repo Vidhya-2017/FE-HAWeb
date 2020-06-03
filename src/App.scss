@@ -91,3 +91,23 @@ a, a:hover{
     transform: rotate(360deg);
   }
 }
+
+.spinnerWrapper{
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  background: #0000002b;
+  &.show{
+    display: block;
+  }
+  &.hide{
+    display: none;
+  }
+  .spinner{
+      top: 50%;
+      left: 50%;
+      position: absolute;
+  }
+}

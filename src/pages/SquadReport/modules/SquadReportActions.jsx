@@ -1,6 +1,6 @@
 import clients from '../../../common/clients';
 
-export const ReportActions = {
+export const SquadReportActions = {
     getEventList: async () => {
         try {
             const response = await clients.eventList.get('');
@@ -10,9 +10,18 @@ export const ReportActions = {
             return (error.response);
         }
     },
-    eventReport: async (data) => {
+    squadEventReport: async (data) => {
         try {
-            const response = await clients.eventReport.post('', data);
+            const response = await clients.squadEventReport.post('', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
+    getSquadList: async (data) => {
+        try {
+            const response = await clients.squadList.get('');
             return (response.data);
         }
         catch (error) {

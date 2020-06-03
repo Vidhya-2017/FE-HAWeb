@@ -5,6 +5,8 @@ import {ReportActions} from '../modules/ReportActions';
 const mapDispatchToProps = (dispatch) => {
   return {
     getEventList: ReportActions.getEventList,
+    eventReport: ReportActions.eventReport,
+    eventReportWeb: ReportActions.eventReportWeb
   };
 };
 

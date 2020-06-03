@@ -19,13 +19,17 @@ class SideNavBar extends React.Component{
                         <div className="sb-nav-link-icon"><i className="fas fa-tachometer-alt"></i></div>
                         Dashboard
                       </Button>
-                      <Button className="nav-link" onClick={() => this.pageRedirect('/report')}>
-                        <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                        Report
-                      </Button>
                       <Button className="nav-link" onClick={() => this.pageRedirect('/candidateUpload')}>
                         <div className="sb-nav-link-icon"><i className="fas fa-table"></i></div>
                         Candidate Upload
+                      </Button>
+                      <Button className="nav-link" onClick={() => this.pageRedirect('/eventReport')}>
+                        <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                        Event Report
+                      </Button>
+                      <Button className="nav-link" onClick={() => this.pageRedirect('/squadReport')}>
+                        <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                        Squad Report
                       </Button>
                     </div>
                   </div>

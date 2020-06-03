@@ -1,0 +1,35 @@
+.eventStatusContainer{
+    .statusHandlerContainer{
+        display: flex;
+        padding: 0 20px;
+        .eventLabel {
+            line-height: normal;
+            font-size: 15px;
+            padding: 10px 10px 10px 0;
+            margin: 0;
+        }
+        .fileUploadBtn{
+            background: #1b91e5;
+            border: solid 2px #1b91e5;
+            color: white;
+            font-weight: 500;
+            height: 40px;
+            margin-left: 10px;
+            &:hover {
+                background: white;
+                color: #1b91e5;
+                border: solid 2px #1b91e5;
+            }
+        }
+    }
+    .statusList{
+        padding: 20px;
+        .card{
+            width: 400px;
+            .statusContainer{
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+}

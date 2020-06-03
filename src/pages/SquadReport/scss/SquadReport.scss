@@ -1,12 +1,15 @@
 .eventContainer{
-    .reportHandlerContainer{
+    .squadSelection{
         display: flex;
-        padding: 0 20px;
-        .eventLabel {
-            line-height: normal;
-            font-size: 15px;
-            padding: 10px 10px 10px 0;
-            margin: 0;
+        .reportHandlerContainer{
+            display: flex;
+            padding: 0 20px;
+            .eventLabel {
+                line-height: normal;
+                font-size: 15px;
+                padding: 10px 10px 10px 0;
+                margin: 0;
+            }
         }
         .fileUploadBtn{
             background: #1b91e5;
@@ -14,7 +17,7 @@
             color: white;
             font-weight: 500;
             height: 40px;
-            margin-left: 10px;
+            margin-left: 20px;
             &:hover {
                 background: white;
                 color: #1b91e5;

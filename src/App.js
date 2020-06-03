@@ -8,10 +8,12 @@ import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import combineReducers from "./reducers/index";
 import { PersistGate } from 'redux-persist/integration/react';
+import { Spinner } from 'react-bootstrap';
 import SideNavBar from './components/SideNavBar/SideNavBar';
-import Dashboard from './pages/Dashboard/Dashboard';
+import DashboardContainer from './pages/Dashboard/container/DashboardContainer';
 import CandidateUploadContainer from './pages/CandidateUpload/container/CandidateUploadContainer';
 import ReportContainer from './pages/Report/container/ReportContainer';
+import SquadReportContainer from './pages/SquadReport/container/SquadReportContainer';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import './App.scss';
@@ -43,13 +45,17 @@ class App extends React.Component {
       <div className='appContainer sb-nav-fixed'>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
+          <div className='spinnerWrapper hide'>
+          <Spinner className='spinner' animation="grow" variant="primary" />
+        </div>
             <Header history={this.props.history} />
             <div id="layoutSidenav" className='routerContent'>
               <SideNavBar history={this.props.history} />
               <div id="layoutSidenav_content">
                 <Switch>
-                  <Route path="/" component={Dashboard} exact/>
-                  <Route path="/report" component={ReportContainer} />
+                  <Route path="/" component={DashboardContainer} exact/>
+                  <Route path="/eventReport" component={ReportContainer} />
+                  <Route path="/squadReport" component={SquadReportContainer} />
                   <Route path="/candidateUpload" component={CandidateUploadContainer} />
                 </Switch>
                 <Footer />

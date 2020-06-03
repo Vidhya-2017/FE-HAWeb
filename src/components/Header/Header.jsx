@@ -14,7 +14,7 @@ class Header extends React.Component {
       <button className="btn btn-link" id="sidebarToggle" onClick={this.showSidebar}>
                 <i className="fas fa-bars"></i>
             </button>
-      <Navbar.Brand  onClick={() => this.props.history.push('/')}>Hacker Anchor Portal</Navbar.Brand>
+      <Navbar.Brand  onClick={() => this.props.history.push('/')}>DiEvA</Navbar.Brand>
       {/* <Nav className="mr-auto">
         <Nav.Link href="#">Home</Nav.Link>
       </Nav> */}

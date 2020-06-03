@@ -2,25 +2,34 @@ import React, { Fragment } from 'react';
 import Select from 'react-select';
 import BootstrapTable from 'react-bootstrap-table-next';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import { Button, Table } from 'react-bootstrap';
 import SelectStyles from '../../../common/SelectStyles';
-import '../scss/Report.scss';
+import '../scss/SquadReport.scss';
 
-class Report extends React.Component {
+class SquadReport extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       eventList: [],
       eventData: [],
       selectedEvent: null,
+      selectedSquad: null,
       selectedEventData: {},
-      eventReport: []
+      squadReport: [],
+      squadData: [],
+      squadList: []
     }
   }
 
   componentDidMount() {
     this.getEventList();
+    this.getSquadList();
+  }
+
+  getSquadList = async () => {
+    this.props.getSquadList().then(response => {
+      this.setState({ squadData: response.arrRes })
+    })
   }
 
   getEventList = () => {
@@ -38,41 +47,48 @@ class Report extends React.Component {
 
   downloadReport = () => {
     const doc = new jsPDF('p', 'pt', 'letter');
-    // const specialElementHandlers = {
-    //   '.eventContainer': function (element, renderer) {
-    //     return true;
-    //   }
-    // };
-    // doc.fromHTML(document.getElementsByClassName('eventContainer')[0].innerHTML, 15, 15, {
-    //   'elementHandlers': specialElementHandlers
-    // });
-    doc.autoTable({ html: '#candidate' })
+    const specialElementHandlers = {
+      '.eventContainer': function (element, renderer) {
+        return true;
+      }
+    };
+    doc.fromHTML(document.getElementsByClassName('eventContainer')[0].innerHTML, 15, 15, {
+      'elementHandlers': specialElementHandlers
+    });
     doc.save('sample-file.pdf');
   }
 
   handleEventChange = (selectedEvent) => {
-    const { eventData } = this.state;
-    const getEventDetails = eventData.find(list => list.EventId === selectedEvent.value);
-    const reqObj = {
-      event_id: selectedEvent.value
-    };
-    this.setState({ selectedEvent, selectedEventData: getEventDetails });
-    this.props.eventReportWeb(reqObj).then(response => {
-      this.setState({ eventReport: response });
-    });
+    const { squadData } = this.state;
+    const squadListArr = squadData.filter((list) => list.EventID === selectedEvent.value);
+    let squadList = [];
+    squadList = squadListArr.map(list => {
+      return {
+        value: list.ID,
+        label: list.SquadName
+      }
+    })
+    console.log(squadData, '--squadList--', selectedEvent);
+    console.log('--squadListArr--', squadListArr);
+
+    this.setState({ selectedEvent, squadList, squadReport: [], selectedSquad: null});
   }
-  
-  compare = (a, b) => {
-    const bandA = a.sprintLevel.toUpperCase();
-    const bandB = b.sprintLevel.toUpperCase();
-  
-    let comparison = 0;
-    if (bandA > bandB) {
-      comparison = 1;
-    } else if (bandA < bandB) {
-      comparison = -1;
-    }
-    return comparison;
+
+  handleSquadChange = (selectedSquad) => {
+    this.setState({ selectedSquad, squadReport: [] });
+  }
+
+  squadReport = () => {
+    const { selectedEvent, selectedSquad } = this.state;
+    console.log('--selectedEvent--', selectedEvent);
+    console.log('--selectedSquad--', selectedSquad);
+    const reqObj = {
+      squad_id: selectedSquad.value,
+      event_id: selectedEvent.value
+      };
+    this.props.squadEventReport(reqObj).then(response => {
+      this.setState({ squadReport: response })
+    });
   }
 
   expandRow = () => {
@@ -81,11 +97,10 @@ class Report extends React.Component {
       parentClassName: 'parent-expand',
       className: 'expandDetails',
       renderer: (row, open) => {
-        // row.feedback.sort((a, b) => (a.sprintLevel > b.sprintLevel) ? 1 : -1);
         return (
           <div>
             <div>
-              {row.feedback.map((fb) => {
+              {row.feedback.length > 0 && row.feedback.map((fb) => {
                 const columnsHeader = [
                   {
                     dataField: 'first_name',
@@ -144,7 +159,6 @@ class Report extends React.Component {
                   </Fragment>
                 )
               }
-
               )}
               {row.feedback.length === 0  &&
               <div>
@@ -159,7 +173,7 @@ class Report extends React.Component {
   }
 
   render() {
-    const { eventList, selectedEvent, eventReport } = this.state;
+    const { eventList, selectedEvent, squadReport, squadList, selectedSquad } = this.state;
     const columns = [
       {
         dataField: 'id',
@@ -180,10 +194,13 @@ class Report extends React.Component {
         dataField: 'ContactNo',
         text: 'Contact No'
       }];
+      console.log('-----squadReport---', squadReport);
+
     return (
       <Fragment>
         <div className='eventContainer'>
-          <h3 className='pageTitle'>Event Reports</h3>
+          <h3 className='pageTitle'>Squad Reports</h3>
+          <div className='squadSelection'>
           <section className='reportHandlerContainer'>
             <label className='eventLabel'>Event Name:</label>
             <Select
@@ -193,20 +210,32 @@ class Report extends React.Component {
               styles={SelectStyles}
               placeholder='Select the Event'
             />
-            {selectedEvent && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.downloadReport}>Download</Button>}
           </section>
-          {eventReport && eventReport.Hackathon_Details && <div className='eventDetailsWrapper'>
+          {selectedEvent && <section className='reportHandlerContainer'>
+            <label className='eventLabel'>Squad Name:</label>
+            <Select
+              value={selectedSquad}
+              onChange={this.handleSquadChange}
+              options={squadList}
+              styles={SelectStyles}
+              placeholder='Select the Squad'
+            />
+          </section>}
+          {selectedSquad && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.squadReport}>Submit</Button>}
+          </div>
+
+          {squadReport && squadReport.Hackathon_Details && <div className='eventDetailsWrapper'>
             <h4>Event Details:</h4>
             <div className='eventDetails'>
-              <p><span className='labelTitle'>Name:</span> {eventReport.Hackathon_Details[0].EventName}</p>
-              <p><span className='labelTitle'>Client Name:</span> {eventReport.Hackathon_Details[0].ClientName}</p>
-              <p><span className='labelTitle'>Location:</span> {eventReport.Hackathon_Details[0].Location}</p>
-              <p><span className='labelTitle'>Date:</span> {new Date(eventReport.Hackathon_Details[0].Date).toLocaleDateString()}</p>
-              <p><span className='labelTitle'>Duration:</span> {eventReport.Hackathon_Details[0].Duration}</p>
-              {eventReport.Hackathon_Details[0].skill_name && <p><span className='labelTitle'>Skills:</span> {eventReport.Hackathon_Details[0].skill_name.split(',').join(', ')}</p>}
+              <p><span className='labelTitle'>Name:</span> {squadReport.Hackathon_Details[0].EventName}</p>
+              <p><span className='labelTitle'>Client Name:</span> {squadReport.Hackathon_Details[0].ClientName}</p>
+              <p><span className='labelTitle'>Location:</span> {squadReport.Hackathon_Details[0].Location}</p>
+              <p><span className='labelTitle'>Date:</span> {new Date(squadReport.Hackathon_Details[0].Date).toLocaleDateString()}</p>
+              <p><span className='labelTitle'>Duration:</span> {squadReport.Hackathon_Details[0].Duration}</p>
+              {squadReport.Hackathon_Details[0].skill_name && <p><span className='labelTitle'>Skills:</span> {squadReport.Hackathon_Details[0].skill_name.split(',').join(', ')}</p>}
             </div>
           </div>}
-          {eventReport && eventReport.Organizers_list && <div className='organizerListWrapper'>
+          {squadReport && squadReport.Organizers_list && <div className='organizerListWrapper'>
             <h4>Organizer Details:</h4>
             <div className='organizerDetails'>
               <Table responsive bordered hover size="sm">
@@ -219,7 +248,7 @@ class Report extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {eventReport.Organizers_list.map((list, index) =>
+                  {squadReport.Organizers_list.map((list, index) =>
                     <tr>
                       <td>{index + 1}</td>
                       <td>{list.first_name}</td>
@@ -231,16 +260,15 @@ class Report extends React.Component {
               </Table>
             </div>
           </div>}
-          {eventReport && eventReport.candidate_list && eventReport.candidate_list.length > 0 &&
+          {squadReport && squadReport.candidate_details && squadReport.candidate_details.length > 0 &&
             <div className='organizerListWrapper'>
               <h4>Candidate Details:</h4>
               <div className='organizerDetails'>
                 <BootstrapTable
                   wrapperClasses='listTable'
                   keyField='EmailId'
-                  id='candidate'
                   headerClasses="listHeader"
-                  data={eventReport.candidate_list}
+                  data={squadReport.candidate_details}
                   columns={columns}
                   expandRow={this.expandRow()}
                 />
@@ -254,4 +282,4 @@ class Report extends React.Component {
   }
 }
 
-export default Report;
+export default SquadReport;

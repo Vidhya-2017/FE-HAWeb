@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, Alert, Modal, Spinner, Toast } from 'react-bootstrap';
+import { Button, Alert, Modal, Toast } from 'react-bootstrap';
 import XLSX from 'xlsx';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -25,7 +25,6 @@ class CandidateUpload extends Component {
       eventData: [],
       selectedEvent: null,
       selectedEventData: {},
-      loading: false,
       showSuccessMessage: false
     }
   }
@@ -87,7 +86,7 @@ class CandidateUpload extends Component {
 
   handleOnSubmit = () => {
     const { file, selectedEventData } = this.state;
-    this.setState({ showModal: false, loading: true });
+    this.setState({ showModal: false });
     var reader = new FileReader();
     reader.onload = (e) => {
       var binaryData = e.target.result;
@@ -103,7 +102,7 @@ class CandidateUpload extends Component {
       this.props.importExcel(reqObj).then(response => {
         this.setState({
           showModal: false, selectedEvent: null, selectedEventData: {},
-          data: [], cols: [], file: {}, sheetOptions: [], loading: false,
+          data: [], cols: [], file: {}, sheetOptions: [],
           showSuccessMessage: true, selectedSheet: null
         });
       })
@@ -129,20 +128,53 @@ class CandidateUpload extends Component {
         blankrows: false
       });
       const customHeaderColumns = ['EmailId', 'ContactNo', 'EmpName'];
+      const customColText = [
+        {
+          value: 'EmpName',
+          text: 'Emp. Name'
+        },
+        {
+          value: 'EmailId',
+          text: 'Email Id'
+        },
+        {
+          value: 'ContactNo',
+          text: 'Contact No'
+        },
+        {
+          value: 'RelevantExperience',
+          text: 'Rel Exp.'
+        },
+
+        {
+          value: 'AdditionalSkill',
+          text: 'Additional Skill'
+        }
+      ];
+
+      const getColText = (value) => {
+        const customisedCol = customColText.find(col => col.value === value);
+        if(!customisedCol) {
+          return value;
+        } else {
+          return customisedCol.text;
+        }
+      }
+
       const hiddenColumns = ['candidate_status', 'notice_period', 'current_location', 'preferred_location']
       if (sheetData.length > 0) {
         sheetData[0].forEach(col => {
           if (hiddenColumns.indexOf(col) === -1) {
             columns.push({
               dataField: col.toString(),
-              text: col,
+              text: getColText(col),
               sort: true,
               filter: false,
               headerClasses: customHeaderColumns.indexOf(col) >= 0 ? 'customColHeader' : 'colHeader',
               sortCaret: (order, column) => {
-                if (!order) return (<span><ArrowUp /><ArrowDown /></span>);
-                else if (order === 'asc') return (<span><ArrowUp /></span>);
-                else if (order === 'desc') return (<span><ArrowDown /></span>);
+                if (!order) return (<span className='arrowDesign'><ArrowUp /><ArrowDown /></span>);
+                else if (order === 'asc') return (<span className='arrowDesign'><ArrowUp /></span>);
+                else if (order === 'desc') return (<span className='arrowDesign'><ArrowDown /></span>);
                 return null;
               }
             });
@@ -181,7 +213,7 @@ class CandidateUpload extends Component {
   }
 
   render() {
-    const { file, data, cols, selectedSheet, sheetOptions, loading, showSuccessMessage,
+    const { file, data, cols, selectedSheet, sheetOptions, showSuccessMessage,
       showModal, eventList, selectedEvent, selectedEventData } = this.state;
     const recordPerPageVal = Math.ceil(data.length / 10) * 10;
     const recordPerPageOptions = [
@@ -344,11 +376,6 @@ class CandidateUpload extends Component {
         {data.length > 0 && <Alert className='noteContainer' variant='secondary'>
           ** Please check the candidate data and then click <b>Submit</b> to save the excel sheet.
         </Alert>}
-        {loading &&
-          <div className='spinnerWrapper'>
-            <Spinner className='spinner' animation="grow" variant="primary" />
-          </div>
-        }
         {showSuccessMessage &&
           <Toast
             style={{
