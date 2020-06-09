@@ -17,7 +17,10 @@ class SquadReport extends React.Component {
       selectedEventData: {},
       squadReport: [],
       squadData: [],
-      squadList: []
+      squadList: [],
+      colHeader: [],
+      rowData: [],
+      showDownload: false
     }
   }
 
@@ -45,17 +48,32 @@ class SquadReport extends React.Component {
     });
   }
 
-  downloadReport = () => {
-    const doc = new jsPDF('p', 'pt', 'letter');
-    const specialElementHandlers = {
-      '.eventContainer': function (element, renderer) {
-        return true;
-      }
-    };
-    doc.fromHTML(document.getElementsByClassName('eventContainer')[0].innerHTML, 15, 15, {
-      'elementHandlers': specialElementHandlers
+  downloadSquadReport = () => {
+    const { squadReport, colHeader, rowData, selectedSquad } = this.state;
+    const doc = new jsPDF('l', 'pt');
+    doc.setFontSize(14);
+    doc.setFontStyle('bold')
+    doc.text(`Squad Report`, 40, 40);
+    doc.setFontSize(11);
+    doc.setFontStyle('normal')
+    doc.text(`Event Name: ${squadReport.Hackathon_Details[0].EventName}`, 40, 70);
+    doc.text(`Squad Name: ${selectedSquad.label}`, 275, 70);
+    doc.text(`Client Name: ${squadReport.Hackathon_Details[0].ClientName}`, 550, 70);
+    doc.text(`Location: ${squadReport.Hackathon_Details[0].LocationID}`, 40, 90);
+    doc.text(`Date: ${new Date(squadReport.Hackathon_Details[0].Date).toLocaleDateString()}`, 275, 90);
+    doc.setFontSize(14);
+    doc.setFontStyle('bold')
+    doc.text('Candidate Feedback:', 40, 120);
+    doc.autoTable({
+      startY: 140,
+      head: [colHeader],
+      bodyStyles: { fontSize: 8 },
+      headStyles: { fillColor: [33, 150, 243], fontSize: 8 },
+      styles: { lineColor: [44, 62, 80], lineWidth: 0.5 },
+      body: rowData,
+      theme: 'grid',
     });
-    doc.save('sample-file.pdf');
+    doc.save(`${squadReport.Hackathon_Details[0].EventName}.pdf`);
   }
 
   handleEventChange = (selectedEvent) => {
@@ -68,27 +86,132 @@ class SquadReport extends React.Component {
         label: list.SquadName
       }
     })
-    console.log(squadData, '--squadList--', selectedEvent);
-    console.log('--squadListArr--', squadListArr);
-
-    this.setState({ selectedEvent, squadList, squadReport: [], selectedSquad: null});
+    this.setState({ selectedEvent, squadList, squadReport: [], selectedSquad: null, showDownload: false});
   }
 
   handleSquadChange = (selectedSquad) => {
-    this.setState({ selectedSquad, squadReport: [] });
+    this.setState({ selectedSquad, squadReport: [], showDownload: false });
   }
 
   squadReport = () => {
     const { selectedEvent, selectedSquad } = this.state;
-    console.log('--selectedEvent--', selectedEvent);
-    console.log('--selectedSquad--', selectedSquad);
     const reqObj = {
       squad_id: selectedSquad.value,
       event_id: selectedEvent.value
       };
     this.props.squadEventReport(reqObj).then(response => {
-      this.setState({ squadReport: response })
+      this.setState({ squadReport: response, showDownload: true });
+      this.generateTable(response);
     });
+  }
+
+  generateTable = (response) => {
+    const colHeader = [];
+    const squadReport = response;
+    squadReport.candidate_details.every((elem) => {
+      if (elem.feedback.length > 0) {
+        const candidateAss = elem.feedback[0];
+        colHeader.push(...['Sl.No', 'Candidate Name', 'Email Id', 'Contact No', 'Panel Name', 'Sprint Level'])
+        if (candidateAss[0].ProblemSolvingSkill) {
+          colHeader.push('Problem Solving');
+        }
+        if (candidateAss[0].Analytics) {
+          colHeader.push('Analytics');
+        }
+        if (candidateAss[0].Communication) {
+          colHeader.push('Communication');
+        }
+        if (candidateAss[0].LogicalSkill) {
+          colHeader.push('Logical');
+        }
+        colHeader.push('Compentency Rating');
+        colHeader.push('Status');
+        colHeader.push('Comments');
+        return false;
+      }
+      return true;
+    });
+    const body = [];
+    const feedbackArr = [];
+    squadReport.candidate_details.forEach((list, index) => {
+      list.feedback.forEach(fbArr => {
+        fbArr.forEach(fb => {
+          const candidateObj = {};
+          candidateObj.ID = index + 1;
+          candidateObj.EmpName = list.EmpName;
+          candidateObj.EmailId = list.EmailId;
+          candidateObj.ContactNo = list.ContactNo;
+          candidateObj.first_name = fb.first_name;
+          candidateObj.sprintLevel = fb.sprintLevel;
+          if (fb.ProblemSolvingSkill) {
+            candidateObj.ProblemSolvingSkill = fb.ProblemSolvingSkill;
+          }
+          if (fb.Analytics) {
+            candidateObj.Analytics = fb.Analytics;
+          }
+          if (fb.Communication) {
+            candidateObj.Communication = fb.Communication;
+          }
+          if (fb.LogicalSkill) {
+            candidateObj.LogicalSkill = fb.LogicalSkill;
+          }
+          if (fb.sprintLevel === "Show and Tell assesment") {
+            candidateObj['compentencyRating'] = fb.sq_final_status;
+            candidateObj['status'] = '--';
+          } else if (fb.sprintLevel === "Final Assessment") {
+            candidateObj['compentencyRating'] = '--';
+            candidateObj['status'] = fb.sq_final_status;
+          } else {
+            candidateObj['compentencyRating'] = '--';
+            candidateObj['status'] = '--';
+          }
+          candidateObj.feedbackTxt = fb.feedbackTxt;
+          feedbackArr.push(candidateObj);
+        })
+      })
+    });
+    let groupCounter = 1;
+    let fbListIndex = 0;
+    for (let i = 0; i < feedbackArr.length; i++) {
+      let row = [];
+      const rowSpanHeaders = ['ID', 'EmpName', 'EmailId', 'ContactNo'];
+      for (let key in feedbackArr[i]) {
+        if (!rowSpanHeaders.includes(key)) {
+          row.push(feedbackArr[i][key])
+        }
+      }
+      const groupedCandidate = feedbackArr.filter(list => list.ID === feedbackArr[i].ID);
+      if (groupCounter === 1) {
+        fbListIndex = fbListIndex + 1;
+        row.unshift({
+          rowSpan: groupedCandidate.length,
+          content: feedbackArr[i].ContactNo,
+          styles: { valign: 'middle', halign: 'center' },
+        });
+        row.unshift({
+          rowSpan: groupedCandidate.length,
+          content: feedbackArr[i].EmailId,
+          styles: { valign: 'middle', halign: 'center' },
+        });
+        row.unshift({
+          rowSpan: groupedCandidate.length,
+          content: feedbackArr[i].EmpName,
+          styles: { valign: 'middle', halign: 'center' },
+        });
+        row.unshift({
+          rowSpan: groupedCandidate.length,
+          content: fbListIndex,
+          styles: { valign: 'middle', halign: 'center' },
+        })
+      }
+      if (groupedCandidate.length === groupCounter) {
+        groupCounter = 1;
+      } else {
+        groupCounter = groupCounter + 1;
+      }
+      body.push(row);
+    }
+    this.setState({ colHeader, rowData: body });
   }
 
   expandRow = () => {
@@ -173,8 +296,8 @@ class SquadReport extends React.Component {
   }
 
   render() {
-    const { eventList, selectedEvent, squadReport, squadList, selectedSquad } = this.state;
-    const columns = [
+    const { eventList, selectedEvent, squadReport, squadList, selectedSquad, rowData, colHeader, showDownload } = this.state;
+    this.columns = [
       {
         dataField: 'id',
         text: 'Sl.No',
@@ -194,8 +317,6 @@ class SquadReport extends React.Component {
         dataField: 'ContactNo',
         text: 'Contact No'
       }];
-      console.log('-----squadReport---', squadReport);
-
     return (
       <Fragment>
         <div className='eventContainer'>
@@ -222,6 +343,7 @@ class SquadReport extends React.Component {
             />
           </section>}
           {selectedSquad && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.squadReport}>Submit</Button>}
+          {showDownload && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.downloadSquadReport}>Download</Button>}
           </div>
 
           {squadReport && squadReport.Hackathon_Details && <div className='eventDetailsWrapper'>
@@ -229,7 +351,7 @@ class SquadReport extends React.Component {
             <div className='eventDetails'>
               <p><span className='labelTitle'>Name:</span> {squadReport.Hackathon_Details[0].EventName}</p>
               <p><span className='labelTitle'>Client Name:</span> {squadReport.Hackathon_Details[0].ClientName}</p>
-              <p><span className='labelTitle'>Location:</span> {squadReport.Hackathon_Details[0].Location}</p>
+              <p><span className='labelTitle'>Location:</span> {squadReport.Hackathon_Details[0].LocationID}</p>
               <p><span className='labelTitle'>Date:</span> {new Date(squadReport.Hackathon_Details[0].Date).toLocaleDateString()}</p>
               <p><span className='labelTitle'>Duration:</span> {squadReport.Hackathon_Details[0].Duration}</p>
               {squadReport.Hackathon_Details[0].skill_name && <p><span className='labelTitle'>Skills:</span> {squadReport.Hackathon_Details[0].skill_name.split(',').join(', ')}</p>}
@@ -260,7 +382,31 @@ class SquadReport extends React.Component {
               </Table>
             </div>
           </div>}
-          {squadReport && squadReport.candidate_details && squadReport.candidate_details.length > 0 &&
+          {squadReport && squadReport.candidate_details && squadReport.candidate_details.length > 0 && rowData.length > 0 &&
+             <div className='organizerListWrapper'>
+             <h4>Candidate Details:</h4>
+             <div className='organizerDetails candidateTable listTable'>
+              <Table bordered size="sm" responsive hover>
+              <thead className='listHeader'>
+                <tr>
+                  {colHeader.map(col =>
+                    <th>{col}</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {rowData.map(row =>
+                  <tr>
+                   {row.map(data => <td rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''}>{data.content ? data.content : data}</td>)}
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+            </div>
+            </div>
+          }
+         
+          {/* {squadReport && squadReport.candidate_details && squadReport.candidate_details.length > 0 &&
             <div className='organizerListWrapper'>
               <h4>Candidate Details:</h4>
               <div className='organizerDetails'>
@@ -269,12 +415,12 @@ class SquadReport extends React.Component {
                   keyField='EmailId'
                   headerClasses="listHeader"
                   data={squadReport.candidate_details}
-                  columns={columns}
+                  columns={this.columns}
                   expandRow={this.expandRow()}
                 />
               </div>
             </div>
-          }
+          } */}
         </div>
       </Fragment>
 

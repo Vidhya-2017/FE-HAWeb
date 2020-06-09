@@ -4,8 +4,10 @@ import {Button} from 'react-bootstrap';
 class SideNavBar extends React.Component{
 
     pageRedirect = (path) =>{
-        // document.getElementsByClassName('sb-nav-fixed')[0].classList.toggle("sb-sidenav-toggled");
         this.props.history.push(path);
+        if( window.innerWidth < 992) {
+          document.getElementsByClassName('sb-nav-fixed')[0].classList.toggle("sb-sidenav-toggled");
+        }
     }
 
     render(){
