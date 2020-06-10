@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {Button} from 'react-bootstrap';
-
+import { connect } from 'react-redux';
 class SideNavBar extends React.Component{
 
     pageRedirect = (path) =>{
         this.props.history.push(path);
-        if( window.innerWidth < 992) {
-          document.getElementsByClassName('sb-nav-fixed')[0].classList.toggle("sb-sidenav-toggled");
-        }
+        // if( window.innerWidth < 992) {
+        //   document.getElementsByClassName('sb-nav-fixed')[0].classList.toggle("sb-sidenav-toggled");
+        // }
     }
 
     render(){
         return(
-            <div id="layoutSidenav_nav">
+          <Fragment>
+            {this.props.userDetails && this.props.userDetails.user_id ? <div id="layoutSidenav_nav">
                 <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                   <div className="sb-sidenav-menu">
                     <div className="nav">
                       <div className="sb-sidenav-menu-heading">Core</div>
-                      <Button className="nav-link" onClick={() => this.pageRedirect('/')}>
+                      <Button className="nav-link" onClick={() => this.pageRedirect('/home')}>
                         <div className="sb-nav-link-icon"><i className="fas fa-tachometer-alt"></i></div>
                         Dashboard
                       </Button>
@@ -37,12 +38,25 @@ class SideNavBar extends React.Component{
                   </div>
                   <div className="sb-sidenav-footer">
                     <div className="small">Logged in as:</div>
-                    ADMIN
+                    {this.props.userDetails.first_name.toUpperCase()}
                     </div>
                 </nav>
-              </div>
+              </div> : null}
+              </Fragment>
         )
     }
 }
 
-export default SideNavBar;
+const mapDispatchToProps = (dispatch) => {
+  return {
+  };
+};
+
+const mapStateToProps = state => (
+  {
+    userDetails: state.loginReducer.userDetails
+  }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideNavBar);
+

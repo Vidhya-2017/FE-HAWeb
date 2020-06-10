@@ -52,6 +52,15 @@ const squadListClient = axios.create({
         'Content-Type' : 'text/plain'
     }
 });
+
+const loginAuthClient = axios.create({
+    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/login.php',
+    headers : {
+        'Accept' : 'application/json',
+        'Content-Type' : 'text/plain'
+    }
+});
+
 const clients = {
     eventList: eventListClient,
     importExcel: importExcelClient,
@@ -59,7 +68,8 @@ const clients = {
     eventReportWeb: eventReportWebClient,
     feedbackSummary: feedbackSummaryClient,
     squadEventReport: squadEventReportClient,
-    squadList: squadListClient
+    squadList: squadListClient,
+    loginAuth: loginAuthClient
 }
 const interceptors = new Interceptors();
 interceptors.addRequestInterceptors(eventListClient);
@@ -76,4 +86,6 @@ interceptors.addRequestInterceptors(squadEventReportClient);
 interceptors.addResponseInterceptors(squadEventReportClient);
 interceptors.addRequestInterceptors(squadListClient);
 interceptors.addResponseInterceptors(squadListClient);
+interceptors.addRequestInterceptors(loginAuthClient);
+interceptors.addResponseInterceptors(loginAuthClient);
 export default clients;

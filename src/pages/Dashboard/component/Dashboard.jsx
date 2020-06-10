@@ -16,7 +16,11 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.getEventList();
+    if(this.props.userDetails.user_id) {
+      this.getEventList();
+    } else {
+      this.props.history.push('/');
+    }
   }
 
   getEventList = () => {
