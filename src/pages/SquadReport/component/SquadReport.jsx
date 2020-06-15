@@ -26,17 +26,17 @@ class SquadReport extends React.Component {
 
   componentDidMount() {
     this.getEventList();
-    this.getSquadList();
   }
 
   getSquadList = async () => {
     this.props.getSquadList().then(response => {
-      this.setState({ squadData: response.arrRes })
+      this.setState({ squadData: response.arrRes });
     })
   }
 
   getEventList = () => {
     this.props.getEventList().then(response => {
+      this.getSquadList();
       let eventList = [];
       eventList = response.arrRes.map(list => {
         return {
