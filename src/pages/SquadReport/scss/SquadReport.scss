@@ -42,16 +42,25 @@
     .organizerListWrapper{
         padding: 10px 20px;
         .organizerDetails{
+            color: #000;
+            .table-hover tbody tr:hover {
+                color: #000;
+                background-color: rgba(158, 158, 158, 0.05);
+            }
             .listHeader{
                 // background: #1b91e5;
                 // color: white;
                 background: #FAFAFA;
-                color: #263238;
+                color: #000;
                 th {
                     font-weight: 400;
                 }
             }
             .listTable{
+                .table-hover tbody tr:hover {
+                    color: #000;
+                    background-color: rgba(158, 158, 158, 0.05);
+                }
                 th, td{
                 &:focus{
                     outline: none;

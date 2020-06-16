@@ -45,6 +45,11 @@
                 border: 1px solid #dee2e6;
                 .table {
                     margin: 0;
+                    color: #000;
+                    &.table-hover tbody tr:hover {
+                        color: #000;
+                        background-color: rgba(158, 158, 158, 0.05);
+                    }
                 }
             }
             .listHeader{
@@ -62,6 +67,10 @@
                 }
             }
             &.listTable{
+                .table-hover tbody tr:hover {
+                    color: #000;
+                    background-color: rgba(158, 158, 158, 0.05);
+                }
                 th, td{
                 &:focus{
                     outline: none;

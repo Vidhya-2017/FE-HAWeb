@@ -28,6 +28,12 @@ class Login extends React.Component {
       toastMsg: ''
     }
   }
+  componentDidMount() {
+    if(this.props.userDetails.user_id) {
+      this.props.history.push('/home');
+    }
+  }
+
   login = () => {
     const { loginDetails } = this.state;
     const reqObj = {
