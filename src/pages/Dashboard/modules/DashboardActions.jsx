@@ -18,5 +18,14 @@ export const DashboardActions = {
         catch (error) {
             return (error.response);
         }
+    },
+    eventReportWeb: async (data) => {
+        try {
+            const response = await clients.eventReportWeb.post('', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
     }
 }

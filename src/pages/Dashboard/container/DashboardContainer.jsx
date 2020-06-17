@@ -5,7 +5,8 @@ import { DashboardActions } from '../modules/DashboardActions';
 const mapDispatchToProps = (dispatch) => {
   return {
     getEventList: DashboardActions.getEventList,
-    feedbackSummary: DashboardActions.feedbackSummary
+    feedbackSummary: DashboardActions.feedbackSummary,
+    eventReportWeb: DashboardActions.eventReportWeb
   };
 };
 

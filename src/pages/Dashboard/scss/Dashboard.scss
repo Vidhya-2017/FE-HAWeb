@@ -2,11 +2,16 @@
     .statusHandlerContainer{
         display: flex;
         padding: 0 20px;
+        flex-wrap: wrap;
+        .sprintlabel {
+            display: flex;
+        }
         .eventLabel {
             line-height: normal;
             font-size: 15px;
             padding: 10px 10px 10px 0;
             margin: 0;
+            
         }
         .fileUploadBtn{
             background: #1b91e5;
@@ -24,12 +29,24 @@
     }
     .statusList{
         padding: 20px;
+        display: flex;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
         .card{
             width: 400px;
+            border: none;
+            margin-bottom: 20px;
+            margin-right: 10px;
             .statusContainer{
                 display: flex;
                 justify-content: space-between;
             }
         }
+    }
+    .errorLabel {
+        text-align: center;
+        font-size: 24px;
+        color: indianred;
+        font-weight: 400;
     }
 }

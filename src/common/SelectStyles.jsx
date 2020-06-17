@@ -7,6 +7,7 @@ const SelectStyles = {
       borderColor: '#000',
       borderRadius: '5px',
       marginBottom: '3px',
+      marginRight: '10px',
       outline: 'transparent',
       boxShadow: 'none',
       ':hover': {
