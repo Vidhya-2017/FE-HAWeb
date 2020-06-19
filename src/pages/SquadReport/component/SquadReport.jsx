@@ -397,7 +397,7 @@ class SquadReport extends React.Component {
               <tbody>
                 {rowData.map(row =>
                   <tr>
-                   {row.map(data => <td rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''}>{data.content ? data.content : data}</td>)}
+                   {row.map(data => <td rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''}  style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center'}}>{data.content ? data.content : data}</td>)}
                   </tr>
                 )}
               </tbody>

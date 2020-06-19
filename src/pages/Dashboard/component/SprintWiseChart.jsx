@@ -63,7 +63,7 @@ class SprintWiseChart extends React.Component {
     }
     render() {
         return (
-            <div id="stackedBarChart" ></div>
+            <div id="stackedBarChart" style={{width: 600, margin: 'auto'}}></div>
         )
     }
 }
