@@ -4,8 +4,22 @@ import { connect } from 'react-redux';
 class SideNavBar extends React.Component {
   constructor(props) {
     super(props);
+    const navBars = [{
+      pathname: '/home',
+      value: 'dashboard'
+    },{
+      pathname: '/candidateUpload',
+      value: 'candidateUpload'
+    },{
+      pathname: '/eventReport',
+      value: 'eventReport'
+    },{
+      pathname: '/squadReport',
+      value: 'squadReport'
+    }];
+    const activeNav = navBars.find(nav => nav.pathname === props.history.location.pathname);
     this.state = {
-      activeNav: 'dashboard'
+      activeNav: activeNav.value
     }
   }
   pageRedirect = (path, activeBtn) => {

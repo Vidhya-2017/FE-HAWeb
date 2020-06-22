@@ -27,5 +27,14 @@ export const DashboardActions = {
         catch (error) {
             return (error.response);
         }
-    }
+    },
+    getSquadList: async () => {
+        try {
+            const response = await clients.squadList.get('');
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
 }

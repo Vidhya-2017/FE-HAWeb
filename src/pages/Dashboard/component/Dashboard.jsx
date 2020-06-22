@@ -21,7 +21,11 @@ class Dashboard extends React.Component {
       selectedSprint: null,
       colHeader: [],
       feedbackArr: [],
-      filteredCandiate: []
+      filteredCandiate: [],
+      selectedCategories: null,
+      squadData: [],
+      squadList: [],
+      selectedSquad: null
     }
   }
 
@@ -35,6 +39,7 @@ class Dashboard extends React.Component {
 
   getEventList = () => {
     this.props.getEventList().then(response => {
+      this.getSquadList();
       let eventList = [];
       eventList = response.arrRes.map(list => {
         return {
@@ -46,11 +51,26 @@ class Dashboard extends React.Component {
     });
   }
 
+  getSquadList = async () => {
+    this.props.getSquadList().then(response => {
+      this.setState({ squadData: response.arrRes });
+    })
+  }
+
   handleEventChange = (selectedEvent) => {
+    const { squadData } = this.state;
+    const squadListArr = squadData.filter((list) => list.EventID === selectedEvent.value);
+    let squadList = [];
+    squadList = squadListArr.map(list => {
+      return {
+        value: list.ID,
+        label: list.SquadName
+      }
+    })
     const reqObj = {
       event_id: selectedEvent.value
     };
-    this.setState({ selectedEvent, panelList: [], panelDetails: [], selectedSprint: null, selectedPanel: null });
+    this.setState({ selectedEvent, squadList, panelList: [], panelDetails: [], selectedCategories: null, selectedSprint: null, selectedPanel: null });
     this.props.feedbackSummary(reqObj).then(response => {
       this.setState({ feedbackSummary: response.resultArr });
       this.setChart(response.resultArr, selectedEvent);
@@ -68,10 +88,14 @@ class Dashboard extends React.Component {
           label: scale
         }
       })
-
       this.setState({ assessScale })
       this.generateTable(response);
     });
+  }
+
+
+  handleSquadChange = (selectedSquad) => {
+    this.setState({ selectedSquad, selectedSprint: null });
   }
 
   handlePanelChange = (selectedPanel) => {
@@ -79,32 +103,59 @@ class Dashboard extends React.Component {
   }
 
   handleSprintChange = (selectedSprint) => {
-    const { feedbackArr, selectedPanel, colHeader } = this.state;
+    const { feedbackArr, selectedPanel, colHeader, selectedSquad } = this.state;
     const colors = ['#b8daff', '#ffeeba', '#c3e6cb', '#f5c6cb', '#17a2b8', '#cddc39', '#99d69b', '#e7abf1', '#69c0e7'];
-    let filteredCandiate = feedbackArr.filter(list => list.sprintLevel === selectedSprint.value && list.panelName.trim() === selectedPanel.value);
-    filteredCandiate = filteredCandiate.map((list, index) => {
-      const values = [];
-      colHeader.forEach((col) => {
-        if (col === 'Problem Solving') {
-          values.push(Number(list.ProblemSolvingSkill))
+    if(selectedPanel){
+      let filteredCandiate = feedbackArr.filter(list => list.sprintLevel === selectedSprint.value && list.panelName.trim() === selectedPanel.value);
+      filteredCandiate = filteredCandiate.map((list, index) => {
+        const values = [];
+        colHeader.forEach((col) => {
+          if (col === 'Problem Solving') {
+            values.push(Number(list.ProblemSolvingSkill))
+          }
+          if (col === 'Analytics') {
+            values.push(Number(list.Analytics))
+          }
+          if (col === 'Communication') {
+            values.push(Number(list.Communication))
+          }
+          if (col === 'Logical') {
+            values.push(Number(list.LogicalSkill))
+          }
+        })
+        return {
+          name: list.EmpName,
+          color: colors[index],
+          data: values
         }
-        if (col === 'Analytics') {
-          values.push(Number(list.Analytics))
+      });
+      this.setState({ selectedSprint, filteredCandiate })
+    } else {
+      let filteredCandiate = feedbackArr.filter(list => list.sprintLevel === selectedSprint.value && list.SquadID.trim() === selectedSquad.value);
+      filteredCandiate = filteredCandiate.map((list, index) => {
+        const values = [];
+        colHeader.forEach((col) => {
+          if (col === 'Problem Solving') {
+            values.push(Number(list.ProblemSolvingSkill))
+          }
+          if (col === 'Analytics') {
+            values.push(Number(list.Analytics))
+          }
+          if (col === 'Communication') {
+            values.push(Number(list.Communication))
+          }
+          if (col === 'Logical') {
+            values.push(Number(list.LogicalSkill))
+          }
+        })
+        return {
+          name: list.EmpName,
+          color: colors[index],
+          data: values
         }
-        if (col === 'Communication') {
-          values.push(Number(list.Communication))
-        }
-        if (col === 'Logical') {
-          values.push(Number(list.LogicalSkill))
-        }
-      })
-      return {
-        name: list.EmpName,
-        color: colors[index],
-        data: values
-      }
-    });
-    this.setState({ selectedSprint, filteredCandiate })
+      });
+      this.setState({ selectedSprint, filteredCandiate })
+    }
   }
 
   generateTable = (response) => {
@@ -143,6 +194,8 @@ class Dashboard extends React.Component {
           const candidateObj = {};
           candidateObj.EmpName = list.EmpName;
           candidateObj.EmailId = list.EmailId;
+          candidateObj.SquadID = list.SquadID;
+          candidateObj.SquadName = list.SquadName;
           candidateObj.panelEmail = fb.email;
           candidateObj.panelName = fb.first_name;
           candidateObj.sprintLevel = fb.sprintLevel;
@@ -191,14 +244,14 @@ class Dashboard extends React.Component {
       xAxis: {
         categories: ['In-Progress', 'On-Hold', 'Selected', 'Rejected'],
       },
-      yAxis:{
+      yAxis: {
         title: {
           enabled: true,
           text: 'Counts',
           style: {
-              fontWeight: 'normal'
+            fontWeight: 'normal'
           }
-      }
+        }
       },
       series: [{
         type: 'column',
@@ -210,23 +263,74 @@ class Dashboard extends React.Component {
     });
   }
 
+  handleCategoriesChange = (selectedCategories) => {
+    this.setState({ selectedCategories: selectedCategories, selectedSprint: null, selectedPanel: null })
+  }
 
 
   render() {
-    const { eventList, selectedEvent, feedbackSummary, assessScale, selectedPanel, selectedSprint, panelList, filteredCandiate, colHeader } = this.state;
+    const { eventList, selectedEvent, feedbackSummary, assessScale, selectedPanel, selectedSquad,
+      squadList, selectedCategories, selectedSprint, panelList, filteredCandiate, colHeader } = this.state;
     return (
       <Fragment>
         <div className='eventStatusContainer'>
           <h3 className='pageTitle'>Event Status</h3>
           <section className='statusHandlerContainer'>
-            <label className='eventLabel'>Event Name:</label>
-            <Select
-              value={selectedEvent}
-              onChange={this.handleEventChange}
-              options={eventList}
-              styles={SelectStyles}
-              placeholder='Select the Event'
-            />
+            <Fragment>
+              <label className='eventLabel'>Event Name:</label>
+              <Select
+                value={selectedEvent}
+                onChange={this.handleEventChange}
+                options={eventList}
+                styles={SelectStyles}
+                placeholder='Select the Event'
+              />
+              {selectedEvent &&
+                <Fragment>
+                  <label className='eventLabel'>Categories:</label>
+                  <Select
+                    value={selectedCategories}
+                    onChange={this.handleCategoriesChange}
+                    options={[{ value: 'Panel-wise', label: 'Panel-wise' }, { value: 'Squad-wise', label: 'Squad-wise' }]}
+                    styles={SelectStyles}
+                    placeholder='Select Categories'
+                  />
+                </Fragment>}
+                {selectedCategories && selectedCategories.value === 'Panel-wise' && panelList.length > 0 &&
+                  <div className="sprintlabel"> 
+                  <label className='eventLabel'>Panel Name:</label>
+                    <Select
+                      value={selectedPanel}
+                      onChange={this.handlePanelChange}
+                      options={panelList}
+                      styles={SelectStyles}
+                      placeholder='Select the Panel'
+                    />
+                  </div>
+                }
+                {selectedCategories && selectedCategories.value === 'Squad-wise' && squadList.length > 0 &&
+                  <div className="sprintlabel"> 
+                    <label className='eventLabel'>Squad Name:</label>
+                    <Select
+                      value={selectedSquad}
+                      onChange={this.handleSquadChange}
+                      options={squadList}
+                      styles={SelectStyles}
+                      placeholder='Select the Squad'
+                    />
+                  </div>
+                }
+                {(selectedPanel || selectedSquad) &&
+                  <div className="sprintlabel"> <label className='eventLabel'>Sprint:</label>
+                    <Select
+                      value={selectedSprint}
+                      onChange={this.handleSprintChange}
+                      options={assessScale}
+                      styles={SelectStyles}
+                      placeholder='Select the Sprint'
+                    />
+                  </div>}
+            </Fragment>
           </section>
           {feedbackSummary.SelectedEmp && <section className='statusList'>
             <Card className='card'>
@@ -252,7 +356,7 @@ class Dashboard extends React.Component {
           </section>}
 
 
-          {panelList.length > 0 && <section className='statusHandlerContainer'>
+          {/* {panelList.length > 0 && <section className='statusHandlerContainer'>
             <label className='eventLabel'>Panel Name:</label>
             <Select
               value={selectedPanel}
@@ -271,13 +375,13 @@ class Dashboard extends React.Component {
                   placeholder='Select the Sprint'
                 />
               </div>}
-          </section>}
-          {filteredCandiate.length > 0 && selectedSprint && selectedPanel &&
+          </section>} */}
+          {filteredCandiate.length > 0 && selectedSprint && (selectedPanel || selectedSquad) &&
             <SprintWiseChart candidate={filteredCandiate} colHeader={colHeader} sprintTitle={selectedSprint.value}
-              panelTitle={selectedPanel.value} />
+              panelTitle={selectedPanel ? selectedPanel.value : selectedSquad.label} />
           }
           {
-            filteredCandiate.length === 0 && selectedSprint && selectedPanel &&
+            filteredCandiate.length === 0 && selectedSprint && (selectedPanel || selectedSquad) &&
             <div className="errorLabel">No Data found for this Sprint.</div>
           }
         </div>
