@@ -19,7 +19,7 @@ class SideNavBar extends React.Component {
     }];
     const activeNav = navBars.find(nav => nav.pathname === props.history.location.pathname);
     this.state = {
-      activeNav: activeNav.value
+      activeNav: activeNav ? activeNav.value : ''
     }
   }
   pageRedirect = (path, activeBtn) => {

@@ -7,6 +7,10 @@ class Header extends React.Component {
 
   showSidebar = () => {
     document.getElementsByClassName('sb-nav-fixed')[0].classList.toggle("sb-sidenav-toggled");
+    const sidebarClassList = document.getElementsByClassName('sb-nav-fixed')[0].className.split(' ').indexOf("sb-sidenav-toggled");
+    document.dispatchEvent(new CustomEvent("sideBarToggled", {
+      detail: { sideBarToggled: sidebarClassList }
+    }))
   }
 
   LogOut = () => {

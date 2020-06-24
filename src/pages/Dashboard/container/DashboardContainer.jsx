@@ -7,7 +7,8 @@ const mapDispatchToProps = (dispatch) => {
     getEventList: DashboardActions.getEventList,
     feedbackSummary: DashboardActions.feedbackSummary,
     eventReportWeb: DashboardActions.eventReportWeb,
-    getSquadList: DashboardActions.getSquadList
+    getSquadList: DashboardActions.getSquadList,
+    panelFeedbackReport: DashboardActions.panelFeedbackReport
   };
 };
 

@@ -37,4 +37,13 @@ export const DashboardActions = {
             return (error.response);
         }
     },
+    panelFeedbackReport: async (data) => {
+        try {
+            const response = await clients.panelFeedback.post('', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
 }

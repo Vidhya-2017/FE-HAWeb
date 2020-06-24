@@ -61,6 +61,13 @@ const loginAuthClient = axios.create({
     }
 });
 
+const panelFeedbackClient = axios.create({
+    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/eventFeedbackReport.php',
+    headers : {
+        'Accept' : 'application/json',
+        'Content-Type' : 'text/plain'
+    }
+});
 const clients = {
     eventList: eventListClient,
     importExcel: importExcelClient,
@@ -69,7 +76,8 @@ const clients = {
     feedbackSummary: feedbackSummaryClient,
     squadEventReport: squadEventReportClient,
     squadList: squadListClient,
-    loginAuth: loginAuthClient
+    loginAuth: loginAuthClient,
+    panelFeedback: panelFeedbackClient
 }
 const interceptors = new Interceptors();
 interceptors.addRequestInterceptors(eventListClient);
@@ -86,6 +94,8 @@ interceptors.addRequestInterceptors(squadEventReportClient);
 interceptors.addResponseInterceptors(squadEventReportClient);
 interceptors.addRequestInterceptors(squadListClient);
 interceptors.addResponseInterceptors(squadListClient);
+interceptors.addRequestInterceptors(panelFeedbackClient);
+interceptors.addResponseInterceptors(panelFeedbackClient);
 interceptors.addRequestInterceptors(loginAuthClient);
 interceptors.addResponseInterceptors(loginAuthClient);
 export default clients;

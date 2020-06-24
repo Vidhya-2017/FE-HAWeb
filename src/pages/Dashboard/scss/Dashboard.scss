@@ -1,4 +1,44 @@
 .eventStatusContainer{
+    .eventStatus{
+        .statusRow{
+            padding: 10px;
+            margin: 0;
+            .colStatus{
+                padding: 10px;
+                background-color: #fff;
+                text-align: center;
+                border: 1px solid #d6d6d6;
+                margin: 0 10px;
+                border-radius: 5px;
+                height: 80px;
+                box-shadow: 1px 1px 4px #d6d6d6;
+                p{
+                    margin: 0;
+                    font-size: 16px;
+                    &.success{
+                        font-size: 26px;
+                        color: #249600;
+                    }
+                    &.primary{
+                        font-size: 26px;
+                        color: #007aff;
+                    }
+                    &.danger{
+                        font-size: 26px;
+                        color: #F44336;
+                    }
+                    &.warning{
+                        font-size: 26px;
+                        color: #FB8C00;
+                    }
+                    &.secondary{
+                        font-size: 26px;
+                        color: #263238;
+                    }
+                }
+            }
+        }
+    }
     .statusHandlerContainer{
         display: flex;
         padding: 0 20px;
@@ -29,9 +69,9 @@
     }
     .statusList{
         padding: 20px;
-        display: flex;
-        justify-content: space-evenly;
-        flex-wrap: wrap;
+        // display: flex;
+        // justify-content: space-evenly;
+        // flex-wrap: wrap;
         .card{
             width: 400px;
             border: none;

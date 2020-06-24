@@ -108,22 +108,17 @@ class SquadReport extends React.Component {
   generateTable = (response) => {
     const colHeader = [];
     const squadReport = response;
+    let assessScale = response.Hackathon_Details[0].OtherAssessScale;
+    assessScale = assessScale.map(scale => scale.ScaleName);
     squadReport.candidate_details.every((elem) => {
       if (elem.feedback.length > 0) {
         const candidateAss = elem.feedback[0];
         colHeader.push(...['Sl.No', 'Candidate Name', 'Email Id', 'Contact No', 'Panel Name', 'Sprint Level'])
-        if (candidateAss[0].ProblemSolvingSkill) {
-          colHeader.push('Problem Solving');
-        }
-        if (candidateAss[0].Analytics) {
-          colHeader.push('Analytics');
-        }
-        if (candidateAss[0].Communication) {
-          colHeader.push('Communication');
-        }
-        if (candidateAss[0].LogicalSkill) {
-          colHeader.push('Logical');
-        }
+        assessScale.forEach(scale => {
+          if(candidateAss[0].hasOwnProperty(scale)){
+            colHeader.push(scale);
+          }
+        });
         colHeader.push('Compentency Rating');
         colHeader.push('Status');
         colHeader.push('Comments');
@@ -143,18 +138,11 @@ class SquadReport extends React.Component {
           candidateObj.ContactNo = list.ContactNo;
           candidateObj.first_name = fb.first_name;
           candidateObj.sprintLevel = fb.sprintLevel;
-          if (fb.ProblemSolvingSkill) {
-            candidateObj.ProblemSolvingSkill = fb.ProblemSolvingSkill;
-          }
-          if (fb.Analytics) {
-            candidateObj.Analytics = fb.Analytics;
-          }
-          if (fb.Communication) {
-            candidateObj.Communication = fb.Communication;
-          }
-          if (fb.LogicalSkill) {
-            candidateObj.LogicalSkill = fb.LogicalSkill;
-          }
+          assessScale.forEach(scale => {
+            if(fb.hasOwnProperty(scale)){
+            candidateObj[scale] = fb[scale];
+            }
+          });
           if (fb.sprintLevel === "Show and Tell assesment") {
             candidateObj['compentencyRating'] = fb.sq_final_status;
             candidateObj['status'] = '--';
@@ -212,87 +200,6 @@ class SquadReport extends React.Component {
       body.push(row);
     }
     this.setState({ colHeader, rowData: body });
-  }
-
-  expandRow = () => {
-    return ({
-      onlyOneExpanding: true,
-      parentClassName: 'parent-expand',
-      className: 'expandDetails',
-      renderer: (row, open) => {
-        return (
-          <div>
-            <div>
-              {row.feedback.length > 0 && row.feedback.map((fb) => {
-                const columnsHeader = [
-                  {
-                    dataField: 'first_name',
-                    text: 'Panel Name'
-                  },
-                ];
-                if(fb[0].ProblemSolvingSkill) {
-                  columnsHeader.push({
-                    dataField: 'ProblemSolvingSkill',
-                    text: 'Problem Solving'
-                  });
-                }
-                if(fb[0].Analytics) {
-                  columnsHeader.push({
-                    dataField: 'Analytics',
-                    text: 'Analytics'
-                  });
-                }
-                if(fb[0].Communication) {
-                  columnsHeader.push({
-                    dataField: 'Communication',
-                    text: 'Communication'
-                  });
-                }
-                if(fb[0].LogicalSkill) {
-                  columnsHeader.push({
-                    dataField: 'LogicalSkill',
-                    text: 'Logical'
-                  });
-                }
-                if (fb[0].sq_final_status.length > 0) {
-                  const compRat = fb[0].sprintLevel === "Show and Tell assesment" ? 'Compentency Rating' : 'Status';
-                  columnsHeader.push({
-                    dataField: 'sq_final_status',
-                    text: compRat
-                  });
-                }
-                columnsHeader.push({
-                  dataField: 'feedbackTxt',
-                  text: 'Comments'
-                })
-                return (
-                  <Fragment>
-                    <h5>{fb[0].sprintLevel}</h5>
-                    <div style={{overflow: 'auto'}}>
-                    <div style={{ width: (150 * columnsHeader.length) }}>
-                      <BootstrapTable
-                        wrapperClasses='listTable'
-                        keyField='id'
-                        headerClasses="listHeader"
-                        data={fb}
-                        columns={columnsHeader}
-                      />
-                    </div>
-                    </div>
-                  </Fragment>
-                )
-              }
-              )}
-              {row.feedback.length === 0  &&
-              <div>
-                <h6>Feedback has not provided for this candidate.</h6>
-              </div>
-            }
-            </div>
-          </div>
-        )
-      }
-    })
   }
 
   render() {
@@ -405,22 +312,6 @@ class SquadReport extends React.Component {
             </div>
             </div>
           }
-         
-          {/* {squadReport && squadReport.candidate_details && squadReport.candidate_details.length > 0 &&
-            <div className='organizerListWrapper'>
-              <h4>Candidate Details:</h4>
-              <div className='organizerDetails'>
-                <BootstrapTable
-                  wrapperClasses='listTable'
-                  keyField='EmailId'
-                  headerClasses="listHeader"
-                  data={squadReport.candidate_details}
-                  columns={this.columns}
-                  expandRow={this.expandRow()}
-                />
-              </div>
-            </div>
-          } */}
         </div>
       </Fragment>
 
