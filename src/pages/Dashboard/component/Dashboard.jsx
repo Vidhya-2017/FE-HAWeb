@@ -47,7 +47,7 @@ class Dashboard extends React.Component {
     });
 
     window.addEventListener('resize', () => {
-      if (this.clientFbChart && this.totalChart) {
+      if (this.clientFbChart && this.totalChart && document.getElementsByClassName('feedBackChart') && document.getElementsByClassName('containerChart')) {
         setTimeout(() => {
           this.clientFbChart.setSize(document.getElementsByClassName('feedBackChart')[0].clientWidth - 30);
           this.totalChart.setSize(document.getElementsByClassName('containerChart')[0].clientWidth - 30);
