@@ -13,6 +13,13 @@ class SprintWiseChart extends React.Component {
         }, 200)
       }
     });
+    window.addEventListener('resize', () => {
+      if (this.chartNew && document.getElementById('stackedBarChart')) {
+        setTimeout(() => {
+          this.chartNew.setSize(document.getElementById('stackedBarChart').clientWidth - 30);
+        }, 200)
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -37,6 +44,24 @@ class SprintWiseChart extends React.Component {
       },
       title: {
         text: `${this.props.panelTitle} - ${this.props.sprintTitle}`
+      },
+      tooltip:{
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          states: {
+            hover: {
+              enabled: false
+            },
+              inactive: {
+                opacity: 1
+            }
+          }
+        }
       },
       legend: {
         align: 'right',

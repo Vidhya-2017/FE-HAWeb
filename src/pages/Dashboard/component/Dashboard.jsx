@@ -45,6 +45,15 @@ class Dashboard extends React.Component {
         }, 200)
       }
     });
+
+    window.addEventListener('resize', () => {
+      if (this.clientFbChart && this.totalChart) {
+        setTimeout(() => {
+          this.clientFbChart.setSize(document.getElementsByClassName('feedBackChart')[0].clientWidth - 30);
+          this.totalChart.setSize(document.getElementsByClassName('containerChart')[0].clientWidth - 30);
+        }, 200)
+      }
+    });
   }
 
   getEventList = () => {
@@ -135,13 +144,13 @@ class Dashboard extends React.Component {
       filteredCandiate.forEach((list, index) => {
         candidateName.push(list.EmpName);
         assessLevelData.forEach((col) => {
-          if(list.hasOwnProperty(col.name)){
+          if (list.hasOwnProperty(col.name)) {
             col.data.push(Number(list[col.name]));
           }
         });
       });
       this.setState({ selectedSprint, filteredCandiate: assessLevelData, candidateName: candidateName })
-    } else if(selectedCategories.value === 'Squad-wise'){
+    } else if (selectedCategories.value === 'Squad-wise') {
       const candidateName = [];
       let filteredCandiate = feedbackArr.filter(list => list.sprintLevel === selectedSprint.value && list.SquadID.trim() === selectedSquad.value && list.panelName.trim() === selectedPanel.value);
       const assessLevelData = colHeader.map((item, index) => {
@@ -154,7 +163,7 @@ class Dashboard extends React.Component {
       filteredCandiate.forEach((list, index) => {
         candidateName.push(list.EmpName);
         assessLevelData.forEach((col) => {
-          if(list.hasOwnProperty(col.name)){
+          if (list.hasOwnProperty(col.name)) {
             col.data.push(Number(list[col.name]));
           }
         });
@@ -172,7 +181,7 @@ class Dashboard extends React.Component {
       if (elem.feedback.length > 0) {
         const candidateAss = elem.feedback[0];
         assessScale.forEach(scale => {
-          if(candidateAss[0].hasOwnProperty(scale)){
+          if (candidateAss[0].hasOwnProperty(scale)) {
             colHeader.push(scale);
           }
         });
@@ -202,8 +211,8 @@ class Dashboard extends React.Component {
             panelList.push({ label: fb.first_name.trim(), value: fb.first_name.trim() });
           }
           assessScale.forEach(scale => {
-            if(fb.hasOwnProperty(scale)){
-            candidateObj[scale] = fb[scale];
+            if (fb.hasOwnProperty(scale)) {
+              candidateObj[scale] = fb[scale];
             }
           });
           if (fb.sprintLevel === "Show and Tell assesment") {
@@ -225,7 +234,10 @@ class Dashboard extends React.Component {
     const xAxisData = feedback.map(fb => fb.first_name);
     this.clientFbChart = Highcharts.chart('feedBackChart', {
       title: {
-        text: `Client Feedbacks`
+        text: `Client: ${event.ClientName}`
+      },
+      subtitle:{
+        text: 'Feedback'
       },
       credits: {
         enabled: false
@@ -271,6 +283,18 @@ class Dashboard extends React.Component {
         text: `Event Name: ${event.label}`
       },
       credits: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          states: {
+            hover: {
+              enabled: false
+            }
+          }
+        }
+      },
+      tooltip: {
         enabled: false
       },
       subtitle: {
@@ -320,14 +344,14 @@ class Dashboard extends React.Component {
           <section className='statusHandlerContainer'>
             <Fragment>
               <div className="sprintlabel">
-              <label className='eventLabel'>Event Name:</label>
-              <Select
-                value={selectedEvent}
-                onChange={this.handleEventChange}
-                options={eventList}
-                styles={SelectStyles}
-                placeholder='Select the Event'
-              />
+                <label className='eventLabel'>Event Name:</label>
+                <Select
+                  value={selectedEvent}
+                  onChange={this.handleEventChange}
+                  options={eventList}
+                  styles={SelectStyles}
+                  placeholder='Select the Event'
+                />
               </div>
               {selectedEvent &&
                 <div className="sprintlabel">
@@ -376,8 +400,8 @@ class Dashboard extends React.Component {
                   />
                 </div>
               }
-              {((selectedPanel && selectedCategories && selectedCategories.value === 'Panel-wise') 
-              || (selectedSquad && selectedPanel && selectedCategories && selectedCategories.value === 'Squad-wise')) &&
+              {((selectedPanel && selectedCategories && selectedCategories.value === 'Panel-wise')
+                || (selectedSquad && selectedPanel && selectedCategories && selectedCategories.value === 'Squad-wise')) &&
                 <div className="sprintlabel"> <label className='eventLabel'>Sprint:</label>
                   <Select
                     value={selectedSprint}
@@ -419,9 +443,9 @@ class Dashboard extends React.Component {
               <Col sm className='containerChart'>
                 {feedbackSummary.SelectedEmp && <div id="containerChart" style={{ height: 250, border: 'solid 1px lightgray' }}></div>}
               </Col>
-              
+
               <Col sm className='feedBackChart'>
-              {panelReport.length > 0 && <div id="feedBackChart" style={{ height: 250, border: 'solid 1px lightgray' }}></div>}
+                {panelReport.length > 0 && <div id="feedBackChart" style={{ height: 250, border: 'solid 1px lightgray' }}></div>}
               </Col>
             </Row>
           </section>

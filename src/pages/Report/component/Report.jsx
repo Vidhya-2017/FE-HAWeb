@@ -48,7 +48,7 @@ class Report extends React.Component {
     doc.setFontStyle('normal')
     doc.text(`Event Name: ${eventReport.Hackathon_Details[0].EventName}`, 40, 70);
     doc.text(`Client Name: ${eventReport.Hackathon_Details[0].ClientName}`, 400, 70);
-    doc.text(`Location: ${eventReport.Hackathon_Details[0].LocationID}`, 40, 90);
+    doc.text(`Location: ${eventReport.Hackathon_Details[0].Location}`, 40, 90);
     doc.text(`Date: ${new Date(eventReport.Hackathon_Details[0].Date).toLocaleDateString()}`, 400, 90);
     doc.setFontSize(14);
     doc.setFontStyle('bold')
@@ -217,7 +217,7 @@ class Report extends React.Component {
             <div className='eventDetails'>
               <p><span className='labelTitle'>Name:</span> {eventReport.Hackathon_Details[0].EventName}</p>
               <p><span className='labelTitle'>Client Name:</span> {eventReport.Hackathon_Details[0].ClientName}</p>
-              <p><span className='labelTitle'>Location:</span> {eventReport.Hackathon_Details[0].LocationID}</p>
+              <p><span className='labelTitle'>Location:</span> {eventReport.Hackathon_Details[0].Location}</p>
               <p><span className='labelTitle'>Date:</span> {new Date(eventReport.Hackathon_Details[0].Date).toLocaleDateString()}</p>
               <p><span className='labelTitle'>Duration:</span> {eventReport.Hackathon_Details[0].Duration}</p>
               {eventReport.Hackathon_Details[0].skill_name && <p><span className='labelTitle'>Skills:</span> {eventReport.Hackathon_Details[0].skill_name.split(',').join(', ')}</p>}

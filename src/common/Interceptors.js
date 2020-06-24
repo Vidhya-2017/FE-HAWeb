@@ -2,7 +2,6 @@
 class Interceptors {
 
   responseFailureHandler = (error, handleForbiddenError) => {
-    console.log('-error--', error);
     if (error) {
       document.getElementsByClassName('spinnerWrapper')[0].classList.add('hide');
       document.getElementsByClassName('spinnerWrapper')[0].classList.remove('show');
@@ -34,7 +33,6 @@ class Interceptors {
     ) {
       axiosInstance.interceptors.response.use(
         response => {
-          // console.log('-res--', document.getElementsByClassName('spinnerWrapper1')[0].classList.toggle('show'));
           document.getElementsByClassName('spinnerWrapper')[0].classList.add('hide');
           document.getElementsByClassName('spinnerWrapper')[0].classList.remove('show');
           return response;
