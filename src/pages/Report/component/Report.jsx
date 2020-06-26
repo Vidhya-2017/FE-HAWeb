@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import Select from 'react-select';
-import BootstrapTable from 'react-bootstrap-table-next';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { Button, Table } from 'react-bootstrap';
+import ReactPaginate from 'react-paginate';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/Report.scss';
 
@@ -17,7 +17,13 @@ class Report extends React.Component {
       selectedEventData: {},
       eventReport: [],
       colHeader: [],
-      rowData: []
+      rowData: [],
+      offset: 0,
+      perPage: 5,
+      currentPage: 0,
+      pageCount: 0,
+      data: [],
+      candidateArrIndex: []
     }
   }
 
@@ -71,7 +77,15 @@ class Report extends React.Component {
     const reqObj = {
       event_id: selectedEvent.value
     };
-    this.setState({ selectedEvent, selectedEventData: getEventDetails });
+    this.setState({
+      selectedEvent,
+      selectedEventData: getEventDetails,
+      rowData: [],
+      offset: 0,
+      currentPage: 0,
+      data: [],
+      candidateArrIndex: []
+    });
     this.props.eventReportWeb(reqObj).then(response => {
       this.setState({ eventReport: response });
       this.generateTable(response);
@@ -88,7 +102,7 @@ class Report extends React.Component {
         const candidateAss = elem.feedback[0];
         colHeader.push(...['Sl.No', 'Candidate Name', 'Email Id', 'Contact No', 'Panel Name', 'Sprint Level'])
         assessScale.forEach(scale => {
-          if(candidateAss[0].hasOwnProperty(scale)){
+          if (candidateAss[0].hasOwnProperty(scale)) {
             colHeader.push(scale);
           }
         });
@@ -101,6 +115,7 @@ class Report extends React.Component {
     });
     const body = [];
     const feedbackArr = [];
+    const candidateArrIndex = [];
     eventReport.candidate_list.forEach((list, index) => {
       list.feedback.forEach((fbArr, fbArrIndex) => {
         fbArr.forEach((fb, fbIndex) => {
@@ -112,8 +127,8 @@ class Report extends React.Component {
           candidateObj.first_name = fb.first_name;
           candidateObj.sprintLevel = fb.sprintLevel;
           assessScale.forEach(scale => {
-            if(fb.hasOwnProperty(scale)){
-            candidateObj[scale] = fb[scale];
+            if (fb.hasOwnProperty(scale)) {
+              candidateObj[scale] = fb[scale];
             }
           });
           if (fb.sprintLevel === "Show and Tell assesment") {
@@ -143,6 +158,7 @@ class Report extends React.Component {
       }
       const groupedCandidate = feedbackArr.filter(list => list.ID === feedbackArr[i].ID);
       if (groupCounter === 1) {
+        candidateArrIndex.push(i);
         fbListIndex = fbListIndex + 1;
         row.unshift({
           rowSpan: groupedCandidate.length,
@@ -172,8 +188,30 @@ class Report extends React.Component {
       }
       body.push(row);
     }
-    this.setState({ colHeader, rowData: body });
+    candidateArrIndex.push(body.length);
+    const pageCount = Math.ceil(fbListIndex / this.state.perPage);
+    const itemPerPage = this.state.offset + this.state.perPage;
+    if (candidateArrIndex.length >= itemPerPage) {
+      const newDataIndex = candidateArrIndex[itemPerPage];
+      const slice = body.slice(this.state.offset, newDataIndex);
+      this.setState({ colHeader, rowData: slice, pageCount, data: body, candidateArrIndex });
+    } else {
+      this.setState({ colHeader, rowData: body, pageCount, data: body, candidateArrIndex });
+    }
   }
+
+  handlePageClick = (e) => {
+    const { data, candidateArrIndex, perPage } = this.state;
+    const selectedPage = e.selected;
+    const offsetUpdated = selectedPage * perPage;
+    const itemPerPage = offsetUpdated + perPage;
+    const slice = data.slice(candidateArrIndex[offsetUpdated], candidateArrIndex[itemPerPage]);
+    this.setState({
+      currentPage: selectedPage,
+      offset: offsetUpdated,
+      rowData: slice
+    });
+  };
 
   render() {
     const { eventList, selectedEvent, eventReport, colHeader, rowData } = this.state;
@@ -237,7 +275,7 @@ class Report extends React.Component {
                 </thead>
                 <tbody>
                   {eventReport.Organizers_list.map((list, index) =>
-                    <tr>
+                    <tr key={list.first_name}>
                       <td>{index + 1}</td>
                       <td>{list.first_name}</td>
                       <td>{list.last_name}</td>
@@ -249,27 +287,42 @@ class Report extends React.Component {
             </div>
           </div>}
           {eventReport && eventReport.candidate_list && eventReport.candidate_list.length > 0 && rowData.length > 0 &&
-             <div className='organizerListWrapper'>
-             <h4>Candidate Details:</h4>
-             <div className='organizerDetails candidateTable listTable'>
-              <Table bordered size="sm" responsive hover>
-              <thead className='listHeader'>
-                <tr>
-                  {colHeader.map(col =>
-                    <th>{col}</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {rowData.map(row =>
-                  <tr>
-                   {row.map(data => <td rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''} style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center'}} >{data.content ? data.content : data}</td>)}
-                  </tr>
-                )}
-              </tbody>
-            </Table>
+            <Fragment>
+              <div className='organizerListWrapper'>
+              <h4>Candidate Details:</h4>
+              <div className='organizerDetails candidateTable listTable'>
+                <Table bordered size="sm" responsive hover>
+                  <thead className='listHeader'>
+                    <tr>
+                      {colHeader.map(col =>
+                        <th key={col}>{col}</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rowData.map((row, index) =>
+                      <tr key={`row${index}`}>
+                        {row.map((data, index) => <td rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''} style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center' }} key={index} >{data.content ? data.content : data}</td>)}
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
             </div>
-            </div>
+            <ReactPaginate
+              previousLabel={"<"}
+              nextLabel={">"}
+              breakLabel={"..."}
+              breakClassName={"break-me"}
+              pageCount={this.state.pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={this.handlePageClick}
+              containerClassName={"eventPagination"}
+              subContainerClassName={"pages pagination"}
+              activeClassName={"active"}
+            />
+            </Fragment>
           }
         </div>
       </Fragment >

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import Select from 'react-select';
 import Highcharts from 'highcharts';
-import { Card, ListGroup, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import SprintWiseChart from './SprintWiseChart';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/Dashboard.scss';
@@ -189,7 +189,6 @@ class Dashboard extends React.Component {
       }
       return true;
     });
-    const body = [];
     const feedbackArr = [];
     const panelName = [];
     const panelDetails = [];

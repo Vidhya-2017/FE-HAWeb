@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import Select from 'react-select';
-import BootstrapTable from 'react-bootstrap-table-next';
 import jsPDF from 'jspdf';
 import { Button, Table } from 'react-bootstrap';
 import SelectStyles from '../../../common/SelectStyles';
@@ -278,7 +277,7 @@ class SquadReport extends React.Component {
                 </thead>
                 <tbody>
                   {squadReport.Organizers_list.map((list, index) =>
-                    <tr>
+                    <tr key={list.first_name}>
                       <td>{index + 1}</td>
                       <td>{list.first_name}</td>
                       <td>{list.last_name}</td>
@@ -297,14 +296,14 @@ class SquadReport extends React.Component {
               <thead className='listHeader'>
                 <tr>
                   {colHeader.map(col =>
-                    <th>{col}</th>
+                    <th key={col}>{col}</th>
                   )}
                 </tr>
               </thead>
               <tbody>
-                {rowData.map(row =>
-                  <tr>
-                   {row.map(data => <td rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''}  style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center'}}>{data.content ? data.content : data}</td>)}
+                {rowData.map((row, index) =>
+                  <tr key={`row-${index}`}>
+                   {row.map((data, index) => <td key={index} rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''}  style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center'}}>{data.content ? data.content : data}</td>)}
                   </tr>
                 )}
               </tbody>

@@ -380,7 +380,7 @@ class CandidateUpload extends Component {
           <Toast
             style={{
               position: 'absolute',
-              top: '100px',
+              top: '10px',
               right: '10px',
               background: '#deeddd',
               border: '1px solid #28a745',
@@ -388,7 +388,11 @@ class CandidateUpload extends Component {
               fontWeight: 500,
               width: 400
             }}
-            onClose={() => this.setState({ showSuccessMessage: false })} show={showSuccessMessage} delay={3000} autohide>
+            onClose={() => this.setState({ showSuccessMessage: false })}
+            show={showSuccessMessage} 
+            delay={3000} 
+            autohide
+          >
             <Toast.Header style={{background: '#deeddd',borderBottom: '1px solid #28a745'}}>
               <strong className="mr-auto">Success</strong>
             </Toast.Header>

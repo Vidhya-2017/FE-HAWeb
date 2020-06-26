@@ -22,7 +22,7 @@ class SprintWiseChart extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.chartNew.update({
       series: nextProps.candidate,
       xAxis: {
