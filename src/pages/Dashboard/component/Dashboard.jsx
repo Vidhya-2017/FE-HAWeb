@@ -38,7 +38,7 @@ class Dashboard extends React.Component {
       this.props.history.push('/');
     }
     document.addEventListener("sideBarToggled", (event) => {
-      if (event.detail.sideBarToggled && this.clientFbChart && this.totalChart) {
+      if (event.detail.sideBarToggled && this.clientFbChart && this.totalChart && document.getElementsByClassName('feedBackChart').length > 0) {
         setTimeout(() => {
           this.clientFbChart.setSize(document.getElementsByClassName('feedBackChart')[0].clientWidth - 30);
           this.totalChart.setSize(document.getElementsByClassName('containerChart')[0].clientWidth - 30);

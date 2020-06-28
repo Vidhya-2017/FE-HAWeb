@@ -45,7 +45,7 @@ class Report extends React.Component {
   }
 
   downloadReport = () => {
-    const { eventReport, colHeader, rowData } = this.state;
+    const { eventReport, colHeader, data } = this.state;
     const doc = new jsPDF('l', 'pt');
     doc.setFontSize(14);
     doc.setFontStyle('bold')
@@ -65,7 +65,7 @@ class Report extends React.Component {
       bodyStyles: { fontSize: 8 },
       headStyles: { fillColor: [33, 150, 243], fontSize: 8 },
       styles: { lineColor: [44, 62, 80], lineWidth: 0.5 },
-      body: rowData,
+      body: data,
       theme: 'grid',
     });
     doc.save(`${eventReport.Hackathon_Details[0].EventName}.pdf`);
