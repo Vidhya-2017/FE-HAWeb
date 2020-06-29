@@ -1,71 +1,79 @@
 import axios from 'axios';
 import Interceptors from './Interceptors';
 
+const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
+const HACKERANCHOR = '/hackeranchor';
+const IMPORTEXCEL = '/import-excel';
+
 const eventListClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/RegEventList.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'application/json'
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/RegEventList.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     }
 });
 
 const importExcelClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/import-excel/candidateRegisterImportApi.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'application/json'
+    baseURL: `${HOSTNAME}${IMPORTEXCEL}/candidateRegisterImportApi.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     }
 });
 
 const eventReportClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/reportListApi.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'}
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/reportListApi.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
+    }
 });
 
 const eventReportWebClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/reportListWeb.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'}
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/reportListWeb.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
+    }
 });
 
 const feedbackSummaryClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/fbSummary.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'}
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/fbSummary.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
+    }
 });
 
 const squadEventReportClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/squadReportApi.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'}
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/squadReportApi.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
+    }
 });
 
 const squadListClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/squadList.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/squadList.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
     }
 });
 
 const loginAuthClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/login.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/login.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
     }
 });
 
 const panelFeedbackClient = axios.create({
-    baseURL: 'http://proctor.eastus.cloudapp.azure.com/hackeranchor/eventFeedbackReport.php',
-    headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'text/plain'
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/eventFeedbackReport.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
     }
 });
 const clients = {

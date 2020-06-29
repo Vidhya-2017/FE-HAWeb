@@ -102,22 +102,24 @@ class Dashboard extends React.Component {
       eventID: selectedEvent.value
     };
     this.props.eventReportWeb(eventReportReqObj).then(response => {
-      let assessScale = response.Hackathon_Details[0].AssessScale.split(',');
-      assessScale.splice(assessScale.length - 1, 0, "Show and Tell assesment");
-      assessScale = assessScale.map(scale => {
-        return {
-          value: scale,
-          label: scale
-        }
-      })
-      this.props.panelFeedbackReport(panelReportReqObj).then(panelresponse => {
-        this.setState({ panelReport: panelresponse.feedBack });
-        if (panelresponse.feedBack.length > 0) {
-          this.feedbackChart(panelresponse.feedBack, panelresponse.eventDetail[0]);
-        }
-      });
-      this.setState({ assessScale });
-      this.generateTable(response);
+      if (response) {
+        let assessScale = response.Hackathon_Details[0].AssessScale.split(',');
+        assessScale.splice(assessScale.length - 1, 0, "Show and Tell assesment");
+        assessScale = assessScale.map(scale => {
+          return {
+            value: scale,
+            label: scale
+          }
+        })
+        this.props.panelFeedbackReport(panelReportReqObj).then(panelresponse => {
+          this.setState({ panelReport: panelresponse.feedBack });
+          if (panelresponse.feedBack.length > 0) {
+            this.feedbackChart(panelresponse.feedBack, panelresponse.eventDetail[0]);
+          }
+        });
+        this.setState({ assessScale });
+        this.generateTable(response);
+      }
     });
   }
 
