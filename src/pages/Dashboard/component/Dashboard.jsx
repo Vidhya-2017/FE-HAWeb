@@ -236,7 +236,7 @@ class Dashboard extends React.Component {
       title: {
         text: `Client: ${event.ClientName}`
       },
-      subtitle:{
+      subtitle: {
         text: 'Feedback'
       },
       credits: {
@@ -417,24 +417,35 @@ class Dashboard extends React.Component {
             {feedbackSummary.SelectedEmp &&
               <Row className='statusRow'>
                 <Col sm className='colStatus successBorder'>
-                  <p className="success">{feedbackSummary.SelectedEmp}</p>
-                  <p>Selected</p>
+                  <div>
+                    <p>Selected</p>
+                    <p className="success">{feedbackSummary.SelectedEmp}</p>
+                  </div>
                 </Col>
                 <Col sm className='colStatus primaryBorder'>
-                  <p className="primary">{feedbackSummary.InprocessEmp}</p>
-                  <p>In-Progress</p>
+                  <div>
+                    <p>In-Progress</p>
+                    <p className="primary">{feedbackSummary.InprocessEmp}</p>
+                  </div>
                 </Col>
                 <Col sm className='colStatus dangerBorder'>
-                  <p className="danger">{feedbackSummary.RejectedEmp}</p>
-                  <p>Rejected</p>
+                  <div>
+                    <p>Rejected</p>
+                    <p className="danger">{feedbackSummary.RejectedEmp}</p>
+                  </div>
                 </Col>
                 <Col sm className='colStatus warningBorder'>
-                  <p className="warning">{feedbackSummary.HoldEmp}</p>
-                  <p>On-Hold</p>
+                  <div>
+                    <p>On-Hold</p>
+                    <p className="warning">{feedbackSummary.HoldEmp}</p>
+                  </div>
                 </Col>
                 <Col sm className='colStatus secondaryBorder'>
-                  <p className="secondary">{feedbackSummary.TotalEmp}</p>
-                  <p>Total</p>
+                  <div>
+                    <p>Total</p>
+                    <p className="secondary">{feedbackSummary.TotalEmp}</p>
+                  </div>
+
                 </Col>
               </Row>}
           </section>

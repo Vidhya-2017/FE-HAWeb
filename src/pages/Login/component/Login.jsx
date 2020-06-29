@@ -1,7 +1,7 @@
 import React from 'react';
 import { Toast } from 'react-bootstrap';
-import Android from '../../../common/images/android.png'
-import Ios from '../../../common/images/ios.png'
+import Android from '../../../common/images/android.png';
+import Ios from '../../../common/images/ios.png';
 import '../scss/Login.scss';
 
 class Login extends React.Component {
