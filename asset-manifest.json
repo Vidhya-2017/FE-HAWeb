@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/FE-HAWeb/static/css/main.3d3eab03.chunk.css",
+    "main.js": "/FE-HAWeb/static/js/main.0794f5ec.chunk.js",
+    "main.js.map": "/FE-HAWeb/static/js/main.0794f5ec.chunk.js.map",
+    "runtime-main.js": "/FE-HAWeb/static/js/runtime-main.c5f09b49.js",
+    "runtime-main.js.map": "/FE-HAWeb/static/js/runtime-main.c5f09b49.js.map",
+    "static/css/2.7ef9b196.chunk.css": "/FE-HAWeb/static/css/2.7ef9b196.chunk.css",
+    "static/js/2.296bc734.chunk.js": "/FE-HAWeb/static/js/2.296bc734.chunk.js",
+    "static/js/2.296bc734.chunk.js.map": "/FE-HAWeb/static/js/2.296bc734.chunk.js.map",
+    "index.html": "/FE-HAWeb/index.html",
+    "precache-manifest.8fadf6f8b8fb34da2f5b0d874b3e8ff5.js": "/FE-HAWeb/precache-manifest.8fadf6f8b8fb34da2f5b0d874b3e8ff5.js",
+    "service-worker.js": "/FE-HAWeb/service-worker.js",
+    "static/css/2.7ef9b196.chunk.css.map": "/FE-HAWeb/static/css/2.7ef9b196.chunk.css.map",
+    "static/css/main.3d3eab03.chunk.css.map": "/FE-HAWeb/static/css/main.3d3eab03.chunk.css.map",
+    "static/js/2.296bc734.chunk.js.LICENSE.txt": "/FE-HAWeb/static/js/2.296bc734.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c5f09b49.js",
+    "static/css/2.7ef9b196.chunk.css",
+    "static/js/2.296bc734.chunk.js",
+    "static/css/main.3d3eab03.chunk.css",
+    "static/js/main.0794f5ec.chunk.js"
+  ]
+}
