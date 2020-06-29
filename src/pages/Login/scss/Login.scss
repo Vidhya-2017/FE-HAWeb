@@ -1,6 +1,34 @@
 .layoutAuthentication_content{
+    .apkContainer{
+        display: flex;
+        justify-content: flex-end;
+        margin: 10px 20px 0;
+        .apkImage{
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .ipaImage{
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+        }
+    }
     .loginBtn {
         color: white;
         background: #2196f3 !important;
     }
+    @media (min-width: 768px){
+        .container, .container-md, .container-sm {
+            max-width: 540px;
+        }
+    }
+    @media (min-width: 992px){
+        .container, .container-lg, .container-md, .container-sm{
+            max-width: 960px;
+        }
+    }
 }
+
+

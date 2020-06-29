@@ -45,12 +45,13 @@ class Dashboard extends React.Component {
         }, 200)
       }
     });
-
+    const containerChartDom = document.getElementsByClassName('containerChart');
+    const feedBackChartDom = document.getElementsByClassName('feedBackChart');
     window.addEventListener('resize', () => {
-      if (this.clientFbChart && this.totalChart && document.getElementsByClassName('feedBackChart') && document.getElementsByClassName('containerChart')) {
+      if (this.clientFbChart && this.totalChart && containerChartDom && containerChartDom.length > 0 && feedBackChartDom && feedBackChartDom.length > 0) {
         setTimeout(() => {
-          this.clientFbChart.setSize(document.getElementsByClassName('feedBackChart')[0].clientWidth - 30);
-          this.totalChart.setSize(document.getElementsByClassName('containerChart')[0].clientWidth - 30);
+          this.clientFbChart.setSize(feedBackChartDom[0].clientWidth - 30);
+          this.totalChart.setSize(containerChartDom[0].clientWidth - 30);
         }, 200)
       }
     });
@@ -415,23 +416,23 @@ class Dashboard extends React.Component {
           <section className='eventStatus'>
             {feedbackSummary.SelectedEmp &&
               <Row className='statusRow'>
-                <Col sm className='colStatus'>
+                <Col sm className='colStatus successBorder'>
                   <p className="success">{feedbackSummary.SelectedEmp}</p>
                   <p>Selected</p>
                 </Col>
-                <Col sm className='colStatus'>
+                <Col sm className='colStatus primaryBorder'>
                   <p className="primary">{feedbackSummary.InprocessEmp}</p>
                   <p>In-Progress</p>
                 </Col>
-                <Col sm className='colStatus'>
+                <Col sm className='colStatus dangerBorder'>
                   <p className="danger">{feedbackSummary.RejectedEmp}</p>
                   <p>Rejected</p>
                 </Col>
-                <Col sm className='colStatus'>
+                <Col sm className='colStatus warningBorder'>
                   <p className="warning">{feedbackSummary.HoldEmp}</p>
                   <p>On-Hold</p>
                 </Col>
-                <Col sm className='colStatus'>
+                <Col sm className='colStatus secondaryBorder'>
                   <p className="secondary">{feedbackSummary.TotalEmp}</p>
                   <p>Total</p>
                 </Col>

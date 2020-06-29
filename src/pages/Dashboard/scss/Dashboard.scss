@@ -12,6 +12,17 @@
                 border-radius: 5px;
                 height: 80px;
                 box-shadow: 1px 1px 4px #d6d6d6;
+                &.secondaryBorder{
+                    border-left: .25rem solid #263238!important;
+                }&.warningBorder{
+                    border-left: .25rem solid #FB8C00!important;
+                }&.dangerBorder{
+                    border-left: .25rem solid #F44336!important;
+                }&.primaryBorder{
+                    border-left: .25rem solid #007aff!important;
+                }&.successBorder{
+                    border-left: .25rem solid #249600!important;
+                }
                 p{
                     margin: 0;
                     font-size: 16px;
