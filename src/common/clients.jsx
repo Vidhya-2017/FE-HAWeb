@@ -1,7 +1,10 @@
 import axios from 'axios';
 import Interceptors from './Interceptors';
 
-const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
+axios.defaults.timeout = 2500 * 10;
+
+// const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
+const HOSTNAME = 'https://apk.cnc.hclets.com';
 const HACKERANCHOR = '/hackeranchor';
 const IMPORTEXCEL = '/import-excel';
 

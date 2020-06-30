@@ -2,6 +2,7 @@
   "name": "web-hanchor",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://apk.cnc.hclets.com/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -11,6 +12,7 @@
     "highcharts": "^8.1.2",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.5.3",
+    "moment": "^2.27.0",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

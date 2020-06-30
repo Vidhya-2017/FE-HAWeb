@@ -147,7 +147,7 @@ class Login extends React.Component {
               fontWeight: 500,
               width: 400
             }}
-            onClose={() => this.setState({ showToastMessage: false })} show={showToastMessage} delay={300000} autohide>
+            onClose={() => this.setState({ showToastMessage: false })} show={showToastMessage} delay={3000} autohide>
             <Toast.Header style={{ background: '#f8d7da', color: '#721c24', borderBottom: '1px solid #721c24' }}>
               <strong className="mr-auto">Warning</strong>
             </Toast.Header>

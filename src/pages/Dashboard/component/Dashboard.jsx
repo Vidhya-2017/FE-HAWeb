@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import Select from 'react-select';
 import Highcharts from 'highcharts';
+import moment from 'moment';
 import { Row, Col } from 'react-bootstrap';
 import SprintWiseChart from './SprintWiseChart';
 import SelectStyles from '../../../common/SelectStyles';
@@ -37,16 +38,17 @@ class Dashboard extends React.Component {
     } else {
       this.props.history.push('/');
     }
+    const containerChartDom = document.getElementsByClassName('containerChart');
+    const feedBackChartDom = document.getElementsByClassName('feedBackChart');
     document.addEventListener("sideBarToggled", (event) => {
-      if (event.detail.sideBarToggled && this.clientFbChart && this.totalChart && document.getElementsByClassName('feedBackChart').length > 0) {
+      if (event.detail.sideBarToggled && this.clientFbChart && this.totalChart &&
+        containerChartDom && containerChartDom.length > 0 && feedBackChartDom && feedBackChartDom.length > 0) {
         setTimeout(() => {
-          this.clientFbChart.setSize(document.getElementsByClassName('feedBackChart')[0].clientWidth - 30);
-          this.totalChart.setSize(document.getElementsByClassName('containerChart')[0].clientWidth - 30);
+          this.clientFbChart.setSize(feedBackChartDom[0].clientWidth - 30);
+          this.totalChart.setSize(containerChartDom[0].clientWidth - 30);
         }, 200)
       }
     });
-    const containerChartDom = document.getElementsByClassName('containerChart');
-    const feedBackChartDom = document.getElementsByClassName('feedBackChart');
     window.addEventListener('resize', () => {
       if (this.clientFbChart && this.totalChart && containerChartDom && containerChartDom.length > 0 && feedBackChartDom && feedBackChartDom.length > 0) {
         setTimeout(() => {
@@ -59,21 +61,34 @@ class Dashboard extends React.Component {
 
   getEventList = () => {
     this.props.getEventList().then(response => {
-      this.getSquadList();
-      let eventList = [];
-      eventList = response.arrRes.map(list => {
-        return {
-          value: list.EventId,
-          label: list.Name
+      if (response && response.arrRes) {
+        this.getSquadList();
+        let eventList = [];
+        const dates = [];
+        eventList = response.arrRes.map(list => {
+          dates.push(moment(list.EventDate));
+          return {
+            value: list.EventId,
+            label: list.Name
+          }
+        });
+        const maxDate = moment.max(dates)
+        const latestEvent = response.arrRes.filter(list => list.EventDate === maxDate._i);
+        const selectedEvent = {
+          value: latestEvent[0].EventId,
+          label: latestEvent[0].Name
         }
-      })
-      this.setState({ eventData: response.arrRes, eventList });
+        this.handleEventChange(selectedEvent);
+        this.setState({ eventData: response.arrRes, eventList });
+      }
     });
   }
 
   getSquadList = async () => {
     this.props.getSquadList().then(response => {
-      this.setState({ squadData: response.arrRes });
+      if (response && response.arrRes) {
+        this.setState({ squadData: response.arrRes });
+      }
     })
   }
 
@@ -92,8 +107,10 @@ class Dashboard extends React.Component {
     };
     this.setState({ selectedEvent, squadList, panelList: [], panelDetails: [], selectedCategories: null, selectedSprint: null, selectedPanel: null });
     this.props.feedbackSummary(reqObj).then(response => {
-      this.setState({ feedbackSummary: response.resultArr });
-      this.setChart(response.resultArr, selectedEvent);
+      if (response && response.resultArr) {
+        this.setState({ feedbackSummary: response.resultArr });
+        this.setChart(response.resultArr, selectedEvent);
+      }
     });
     const eventReportReqObj = {
       event_id: selectedEvent.value
@@ -101,6 +118,15 @@ class Dashboard extends React.Component {
     const panelReportReqObj = {
       eventID: selectedEvent.value
     };
+
+    this.props.panelFeedbackReport(panelReportReqObj).then(panelresponse => {
+      if (panelresponse && panelresponse.feedBack) {
+        this.setState({ panelReport: panelresponse.feedBack });
+        if (panelresponse.feedBack.length > 0) {
+          this.feedbackChart(panelresponse.feedBack, panelresponse.eventDetail[0]);
+        }
+      }
+    });
     this.props.eventReportWeb(eventReportReqObj).then(response => {
       if (response) {
         let assessScale = response.Hackathon_Details[0].AssessScale.split(',');
@@ -111,12 +137,6 @@ class Dashboard extends React.Component {
             label: scale
           }
         })
-        this.props.panelFeedbackReport(panelReportReqObj).then(panelresponse => {
-          this.setState({ panelReport: panelresponse.feedBack });
-          if (panelresponse.feedBack.length > 0) {
-            this.feedbackChart(panelresponse.feedBack, panelresponse.eventDetail[0]);
-          }
-        });
         this.setState({ assessScale });
         this.generateTable(response);
       }
@@ -351,6 +371,7 @@ class Dashboard extends React.Component {
                   value={selectedEvent}
                   onChange={this.handleEventChange}
                   options={eventList}
+                  defaultValue={selectedEvent}
                   styles={SelectStyles}
                   placeholder='Select the Event'
                 />

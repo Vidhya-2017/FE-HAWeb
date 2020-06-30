@@ -100,11 +100,13 @@ class CandidateUpload extends Component {
         data: base64String
       }
       this.props.importExcel(reqObj).then(response => {
-        this.setState({
-          showModal: false, selectedEvent: null, selectedEventData: {},
-          data: [], cols: [], file: {}, sheetOptions: [],
-          showSuccessMessage: true, selectedSheet: null
-        });
+        if (response) {
+          this.setState({
+            showModal: false, selectedEvent: null, selectedEventData: {},
+            data: [], cols: [], file: {}, sheetOptions: [],
+            showSuccessMessage: true, selectedSheet: null
+          });
+        } 
       })
     };
     reader.readAsBinaryString(file);
@@ -145,7 +147,6 @@ class CandidateUpload extends Component {
           value: 'RelevantExperience',
           text: 'Rel Exp.'
         },
-
         {
           value: 'AdditionalSkill',
           text: 'Additional Skill'
