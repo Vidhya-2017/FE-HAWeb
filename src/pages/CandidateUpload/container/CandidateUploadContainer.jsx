@@ -5,7 +5,8 @@ import {CandidateUploadActions} from '../modules/CandidateUploadActions';
 const mapDispatchToProps = (dispatch) => {
   return {
     getEventList: CandidateUploadActions.getEventList,
-    importExcel: CandidateUploadActions.importExcel
+    importExcel: CandidateUploadActions.importExcel,
+    getEventByUser: CandidateUploadActions.getEventByUser
   };
 };
 

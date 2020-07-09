@@ -19,4 +19,13 @@ export const CandidateUploadActions = {
             return (error.response);
         }
     },
+    getEventByUser: async (data) => {
+        try {
+            const response = await clients.eventByUser.post('', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
 }

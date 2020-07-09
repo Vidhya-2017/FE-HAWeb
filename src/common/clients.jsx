@@ -17,7 +17,7 @@ const eventListClient = axios.create({
 });
 
 const importExcelClient = axios.create({
-    baseURL: `${HOSTNAME}${IMPORTEXCEL}/candidateRegisterImportApi.php`,
+    baseURL: `${HOSTNAME}${HACKERANCHOR}${IMPORTEXCEL}/candidateRegisterImportApi.php`,
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -79,6 +79,15 @@ const panelFeedbackClient = axios.create({
         'Content-Type': 'text/plain'
     }
 });
+
+
+const EventByUser = axios.create({
+    baseURL: `${HOSTNAME}${HACKERANCHOR}/EventByUserNew.php`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
+    }
+});
 const clients = {
     eventList: eventListClient,
     importExcel: importExcelClient,
@@ -88,7 +97,8 @@ const clients = {
     squadEventReport: squadEventReportClient,
     squadList: squadListClient,
     loginAuth: loginAuthClient,
-    panelFeedback: panelFeedbackClient
+    panelFeedback: panelFeedbackClient,
+    eventByUser: EventByUser
 }
 const interceptors = new Interceptors();
 interceptors.addRequestInterceptors(eventListClient);
@@ -109,4 +119,6 @@ interceptors.addRequestInterceptors(panelFeedbackClient);
 interceptors.addResponseInterceptors(panelFeedbackClient);
 interceptors.addRequestInterceptors(loginAuthClient);
 interceptors.addResponseInterceptors(loginAuthClient);
+interceptors.addRequestInterceptors(EventByUser);
+interceptors.addResponseInterceptors(EventByUser);
 export default clients;

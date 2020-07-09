@@ -79,9 +79,12 @@ class CandidateUpload extends Component {
   handleClose = () => this.setState({ showModal: false, selectedEvent: null, selectedEventData: {} });
 
   handleEventChange = (selectedEvent) => {
-    const { eventData } = this.state;
-    const getEventDetails = eventData.find(list => list.EventId === selectedEvent.value);
-    this.setState({ selectedEvent, selectedEventData: getEventDetails });
+    const req = { EventID: selectedEvent.value };
+    this.props.getEventByUser(req).then((response) => {
+      if(response && response.arrRes) {
+        this.setState({ selectedEvent, selectedEventData: response.arrRes[0] });
+      }
+    })
   }
 
   handleOnSubmit = () => {

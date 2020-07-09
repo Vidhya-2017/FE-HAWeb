@@ -27,15 +27,27 @@ class SquadReport extends React.Component {
     this.getEventList();
   }
 
-  getSquadList = async () => {
-    this.props.getSquadList().then(response => {
-      this.setState({ squadData: response.arrRes });
+  getSquadList = async (eventID) => {
+    const reqObj = { eventID: eventID };
+    this.props.getSquadList(reqObj).then(response => {
+      if (response && response.arrRes) {
+        let squadList = [];
+        squadList = response.arrRes.map(list => {
+          return { value: list.ID, label: list.SquadName }
+        })
+        this.setState({ squadList });
+      }
     })
   }
+  // getSquadList = async () => {
+  //   this.props.getSquadList().then(response => {
+  //     this.setState({ squadData: response.arrRes });
+  //   })
+  // }
 
   getEventList = () => {
     this.props.getEventList().then(response => {
-      this.getSquadList();
+      // this.getSquadList();
       let eventList = [];
       eventList = response.arrRes.map(list => {
         return {
@@ -76,16 +88,8 @@ class SquadReport extends React.Component {
   }
 
   handleEventChange = (selectedEvent) => {
-    const { squadData } = this.state;
-    const squadListArr = squadData.filter((list) => list.EventID === selectedEvent.value);
-    let squadList = [];
-    squadList = squadListArr.map(list => {
-      return {
-        value: list.ID,
-        label: list.SquadName
-      }
-    })
-    this.setState({ selectedEvent, squadList, squadReport: [], selectedSquad: null, showDownload: false});
+    this.getSquadList(selectedEvent.value);
+    this.setState({ selectedEvent, squadReport: [], selectedSquad: null, showDownload: false});
   }
 
   handleSquadChange = (selectedSquad) => {

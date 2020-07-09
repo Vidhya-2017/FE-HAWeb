@@ -62,7 +62,6 @@ class Dashboard extends React.Component {
   getEventList = () => {
     this.props.getEventList().then(response => {
       if (response && response.arrRes) {
-        this.getSquadList();
         let eventList = [];
         const dates = [];
         eventList = response.arrRes.map(list => {
@@ -84,28 +83,25 @@ class Dashboard extends React.Component {
     });
   }
 
-  getSquadList = async () => {
-    this.props.getSquadList().then(response => {
+  getSquadList = async (eventID) => {
+    const reqObj = { eventID: eventID };
+    this.props.getSquadList(reqObj).then(response => {
       if (response && response.arrRes) {
-        this.setState({ squadData: response.arrRes });
+        let squadList = [];
+        squadList = response.arrRes.map(list => {
+          return { value: list.ID, label: list.SquadName }
+        })
+        this.setState({ squadList });
       }
     })
   }
 
   handleEventChange = (selectedEvent) => {
-    const { squadData } = this.state;
-    const squadListArr = squadData.filter((list) => list.EventID === selectedEvent.value);
-    let squadList = [];
-    squadList = squadListArr.map(list => {
-      return {
-        value: list.ID,
-        label: list.SquadName
-      }
-    })
     const reqObj = {
       event_id: selectedEvent.value
     };
-    this.setState({ selectedEvent, squadList, panelList: [], panelDetails: [], selectedCategories: null, selectedSprint: null, selectedPanel: null });
+    this.getSquadList(selectedEvent.value);
+    this.setState({ selectedEvent, panelList: [], panelDetails: [], selectedCategories: null, selectedSprint: null, selectedPanel: null });
     this.props.feedbackSummary(reqObj).then(response => {
       if (response && response.resultArr) {
         this.setState({ feedbackSummary: response.resultArr });

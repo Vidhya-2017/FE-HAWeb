@@ -21,7 +21,7 @@ export const SquadReportActions = {
     },
     getSquadList: async (data) => {
         try {
-            const response = await clients.squadList.get('');
+            const response = await clients.squadList.post('', data);
             return (response.data);
         }
         catch (error) {
