@@ -85,12 +85,12 @@ class SideNavBar extends React.Component {
                           <div className={`sb-nav-link-icon ${activeNav === "eventRegister"}`}><i className="fa fa-registered"></i></div>
                           Event Registration
                         </Button>
-                        <Button className={`${activeNav === "eventMembers"} nav-link`} onClick={() => this.pageRedirect('/eventMembers', 'eventMembers')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventMembers"}`}><i className="fa fa-code-fork"></i></div>
+                        <Button className={`${activeNav === "eventCoordinator"} nav-link`} onClick={() => this.pageRedirect('/eventCoordinator', 'eventCoordinator')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "eventCoordinator"}`}><i className="fa fa-code-fork"></i></div>
                           Event Coordinators
                         </Button>
-                        <Button className={`${activeNav === "eventMembers"} nav-link`} onClick={() => this.pageRedirect('/eventMembers', 'eventMembers')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventMembers"}`}><i className="fa fa-code-fork"></i></div>
+                        <Button className={`${activeNav === "candidateSelection"} nav-link`} onClick={() => this.pageRedirect('/candidateSelection', 'candidateSelection')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "candidateSelection"}`}><i className="fa fa-code-fork"></i></div>
                           Candidate Selection
                         </Button>
                         <Button className={`${activeNav === "squadFormation"} nav-link`} onClick={() => this.pageRedirect('/squadFormation', 'squadFormation')}>
@@ -101,8 +101,8 @@ class SideNavBar extends React.Component {
                           <div className={`sb-nav-link-icon ${activeNav === "candidateFeedback"}`}><i className="fa fa-comments-o"></i></div>
                           Candidate Feedback
                         </Button>
-                        <Button className={`${activeNav === "eventMembers"} nav-link`} onClick={() => this.pageRedirect('/eventMembers', 'eventMembers')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventMembers"}`}><i className="fa fa-code-fork"></i></div>
+                        <Button className={`${activeNav === "eventFeedback"} nav-link`} onClick={() => this.pageRedirect('/eventFeedback', 'eventFeedback')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "eventFeedback"}`}><i className="fa fa-code-fork"></i></div>
                           Event Feedback
                         </Button>
                         <Button className={`${activeNav === "eventStatus"} nav-link`} onClick={() => this.pageRedirect('/eventStatus', 'eventStatus')}>

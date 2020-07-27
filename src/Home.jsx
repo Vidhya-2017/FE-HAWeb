@@ -8,7 +8,15 @@ import DashboardContainer from './pages/Dashboard/container/DashboardContainer';
 import CandidateUploadContainer from './pages/CandidateUpload/container/CandidateUploadContainer';
 import ReportContainer from './pages/Report/container/ReportContainer';
 import SquadReportContainer from './pages/SquadReport/container/SquadReportContainer';
+import EventFeedbackContainer from './pages/EventFeedback/container/EventFeedbackContainer';
+import EventStatusContainer from './pages/EventStatus/container/EventStatusContainer';
 import EventRegistrationContainer from './pages/EventRegistration/container/EventRegistrationContainer';
+
+import MoreContainer from './pages/More/container/MoreContainer';
+import CandidateFeedbackContainer from './pages/CandidateFeedback/container/CandidateFeedbackContainer';
+import SquadFormationContainer from './pages/SquadFormation/container/SquadFormationContainer';
+import CandidateSelectionContainer from './pages/CandidateSelection/container/CandidateSelectionContainer';
+import EventCoordinatorContainer from './pages/EventCoordinator/container/EventCoordinatorContainer';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import './App.scss';
@@ -81,6 +89,14 @@ class Home extends React.Component {
               <Route path="/squadReport" component={SquadReportContainer} />
               <Route path="/candidateUpload" component={CandidateUploadContainer} />
               <Route path="/eventRegister" component={EventRegistrationContainer} />
+              <Route path="/eventFeedback" component={EventFeedbackContainer} />
+              <Route path="/eventStatus" component={EventStatusContainer} />
+
+              <Route path="/more" component={MoreContainer} />
+              <Route path="/candidateFeedback" component={CandidateFeedbackContainer} />
+              <Route path="/squadFormation" component={SquadFormationContainer} />
+              <Route path="/candidateSelection" component={CandidateSelectionContainer} />
+              <Route path="/eventCoordinator" component={EventCoordinatorContainer} />
             </Switch>
             <Footer />
           </div>
