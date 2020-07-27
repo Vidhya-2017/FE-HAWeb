@@ -25,7 +25,9 @@ class Gender extends React.Component {
   }
 
   onChangeGender = (e) => {
-    this.props.onGenderChange(e);
+    // this.props.onGenderChange(e);
+    this.props.onGenderChange({target: {...e, name: 'gender'}});
+
   }
 
   render() {

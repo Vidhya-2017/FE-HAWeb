@@ -43,7 +43,7 @@ class Duration extends React.Component {
   }
 
   durationOnChange = (e) => {
-    this.props.onEventChange(e);
+    this.props.onEventChange({target: {...e, name: 'duration'}});
   }
 
   render() {

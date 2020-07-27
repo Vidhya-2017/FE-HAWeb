@@ -10,8 +10,7 @@ class SkillListMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedSkillSet: props.selectedValue,
-      showSkillChips: !!props.showSkillChips,
+      selectedSkillSet: null,
       skillSetList: [],
       eventSkillList: []
     };
@@ -51,7 +50,8 @@ class SkillListMenu extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.selectedSkillSet) {
       if (this.state.skillSetList.length !== 0) {
-        this.setState({ selectedSkillSet: nextProps.selectedValue });
+        
+        this.setState({ selectedSkillSet: this.state.skillSetList.find(list => list.value === nextProps.selectedValue) });
       }
     }
     if (nextProps.eventSkillList !== this.state.eventSkillList && nextProps.isCandidateSkill) {
@@ -61,31 +61,29 @@ class SkillListMenu extends React.Component {
   }
 
   skillOnChange = (e) => {
+    console.log('---e---', e);
     this.setState({
-      selectedSkillSet: e.detail.value
+      selectedSkillSet: e
     });
-    this.props.onEventChange(e);
+    // this.props.onEventChange({target: {...e, name: 'skillset'}});
   }
 
-  onIconClick = (value) => {
-    const { selectedSkillSet } = this.state;
-    const filteredItems = selectedSkillSet.filter((item) => item !== value);
-    this.setState({ selectedSkillSet: filteredItems });
-  }
 
   render() {
-    const { selectedSkillSet, showSkillChips, skillSetList } = this.state;
+    const { selectedSkillSet, skillSetList } = this.state;
     return (
       <Fragment>
         <Row>
           <Col className='fieldName'><span>Skill List:</span></Col>
           <Col>
             <Select
-              value={this.state.selectedSkillSet}
+              value={selectedSkillSet}
               onChange={this.skillOnChange}
-              options={this.state.skillSetList}
-              defaultValue={this.state.selectedSkillSet}
+              options={skillSetList}
+              defaultValue={selectedSkillSet}
               styles={SelectStyles(220)}
+              isMulti
+              closeMenuOnSelect={false}
               className="mb-3"
               placeholder='Skill List'
             />
@@ -101,22 +99,6 @@ class SkillListMenu extends React.Component {
             }
           </IonSelect>
         </IonItem> */}
-        {/* {showSkillChips && selectedSkillSet.length > 0 && <div className='skillSetContainer'>
-
-          {selectedSkillSet.map((value, index) =>
-            (
-              value !== 'others' &&
-              <IonChip outline color="dark" key={index}>
-                <IonLabel>{skillSetList && skillSetList.find((item) => item.SkillId === value) && skillSetList.find((item) => item.SkillId === value).Skills}</IonLabel>
-                {!this.props.eventDisabled && <IonIcon onClick={() => this.onIconClick(value)} name="close-circle"></IonIcon>}
-              </IonChip>
-            )
-          )}
-          {
-            selectedSkillSet.indexOf('others') >= 0 &&
-            <IonTextarea placeholder="Enter other skill set details..."></IonTextarea>
-          }
-        </div>} */}
       </Fragment>
     );
   }

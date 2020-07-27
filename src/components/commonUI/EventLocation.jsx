@@ -23,7 +23,7 @@ class EventLocation extends React.Component {
             label: list.loc_name
           }
         });
-        this.setState({ eventLocation, eventLocationValue: this.props.selectedValue });
+        this.setState({ eventLocation });
       }
     })
   }
@@ -32,7 +32,7 @@ class EventLocation extends React.Component {
     if (nextProps.selectedValue !== '' && (nextProps.eventLocationValue !== this.state.eventLocationValue)) {
       const location = this.state.eventLocation.find((loc) => loc.loc_id === nextProps.selectedValue);
       if (location && location.loc_id) {
-        this.setState({ eventLocationValue: location.loc_id });
+        this.setState({ eventLocationValue: location });
       }
     }
   }
@@ -57,7 +57,7 @@ class EventLocation extends React.Component {
   }
 
   durationOnChange = (e) => {
-    this.props.onEventChange(e);
+    this.props.onEventChange({target: {...e, name: 'eventLocation'}});
   }
 
   render() {
@@ -78,7 +78,7 @@ class EventLocation extends React.Component {
           <Col>
             <Select
               value={this.state.eventLocationValue}
-              onChange={this.durationOnChange}
+              onChange={(e, value) => this.durationOnChange(e)}
               options={this.state.eventLocation}
               defaultValue={this.state.eventLocationValue}
               styles={SelectStyles(220)}

@@ -52,17 +52,17 @@ class LevelOfAssessment extends React.Component {
 
   onLevelChange = (e) => {
     const selectedLevelCheck = [];
-    if (Number(e.target.value) > 0) {
-      for (let i = 0; i < Number(e.target.value) + 2; i++) {
+    if (Number(e.value) > 0) {
+      for (let i = 0; i < Number(e.value) + 2; i++) {
         selectedLevelCheck.push({
           id: i,
-          value: i === (Number(e.target.value) + 1) ? 'Final Assessment' : `Sprint ${i}`,
+          value: i === (Number(e.value) + 1) ? 'Final Assessment' : `Sprint ${i}`,
           checked: true
         });
       }
     }
-    this.setState({ selectedLevel: selectedLevelCheck, assessmentLevel: e.target.value });
-    this.props.onEventChange(e);
+    this.setState({ selectedLevel: selectedLevelCheck, assessmentLevel: e.value });
+    this.props.onEventChange({target: {...e, name: 'assessmentLevel'}});
   }
 
   onSprintLevelChange = (e) => {

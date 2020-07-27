@@ -4,6 +4,12 @@ import { EventCoordinatorActions } from '../modules/EventCoordinatorActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getEventList: EventCoordinatorActions.getEventList,
+    checkIsOrganiser: EventCoordinatorActions.checkIsOrganiser,
+    geClientDetailsById: EventCoordinatorActions.geClientDetailsById,
+    getPanelList: EventCoordinatorActions.getPanelList,
+    getUserBySearch: EventCoordinatorActions.getUserBySearch,
+    registerPanel: EventCoordinatorActions.registerPanel
   };
 };
 

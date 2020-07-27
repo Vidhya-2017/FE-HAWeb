@@ -51,7 +51,7 @@ class AssessingParameter extends React.Component {
     this.setState({
       assessingParameter: e.detail.value
     });
-    this.props.onEventChange(e);
+    this.props.onEventChange({target: {...e, name: 'assessingParameter'}});
   }
 
   render() {

@@ -63,7 +63,7 @@ class competancyList extends React.Component {
     this.setState({
       selectedCompentency: e.detail.value
     });
-    this.props.onEventChange(e);
+    this.props.onEventChange({target: {...e, name: 'competancy'}});
   }
 
   onIconClick = (value) => {
