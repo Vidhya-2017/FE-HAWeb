@@ -368,7 +368,7 @@ class Dashboard extends React.Component {
                   onChange={this.handleEventChange}
                   options={eventList}
                   defaultValue={selectedEvent}
-                  styles={SelectStyles}
+                  styles={SelectStyles()}
                   placeholder='Select the Event'
                 />
               </div>
@@ -379,7 +379,7 @@ class Dashboard extends React.Component {
                     value={selectedCategories}
                     onChange={this.handleCategoriesChange}
                     options={[{ value: 'Panel-wise', label: 'Panel-wise' }, { value: 'Squad-wise', label: 'Squad-wise' }]}
-                    styles={SelectStyles}
+                    styles={SelectStyles()}
                     placeholder='Select Categories'
                   />
                 </div>}
@@ -390,7 +390,7 @@ class Dashboard extends React.Component {
                     value={selectedPanel}
                     onChange={this.handlePanelChange}
                     options={panelList}
-                    styles={SelectStyles}
+                    styles={SelectStyles()}
                     placeholder='Select the Panel'
                   />
                 </div>
@@ -402,7 +402,7 @@ class Dashboard extends React.Component {
                     value={selectedSquad}
                     onChange={this.handleSquadChange}
                     options={squadList}
-                    styles={SelectStyles}
+                    styles={SelectStyles()}
                     placeholder='Select the Squad'
                   />
                 </div>
@@ -414,7 +414,7 @@ class Dashboard extends React.Component {
                     value={selectedPanel}
                     onChange={this.handlePanelChange}
                     options={panelList}
-                    styles={SelectStyles}
+                    styles={SelectStyles()}
                     placeholder='Select the Panel'
                   />
                 </div>
@@ -426,7 +426,7 @@ class Dashboard extends React.Component {
                     value={selectedSprint}
                     onChange={this.handleSprintChange}
                     options={assessScale}
-                    styles={SelectStyles}
+                    styles={SelectStyles()}
                     placeholder='Select the Sprint'
                   />
                 </div>}

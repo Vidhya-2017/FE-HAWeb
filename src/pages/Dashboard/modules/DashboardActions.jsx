@@ -3,7 +3,7 @@ import clients from '../../../common/clients';
 export const DashboardActions = {
     getEventList: async () => {
         try {
-            const response = await clients.eventList.get('');
+            const response = await clients.axiosAPI.get('/RegEventList.php');
             return (response.data);
         }
         catch (error) {
@@ -12,7 +12,7 @@ export const DashboardActions = {
     },
     feedbackSummary: async (data) => {
         try {
-            const response = await clients.feedbackSummary.post('', data);
+            const response = await clients.axiosAPI.post('/fbSummary.php', data);
             return (response.data);
         }
         catch (error) {
@@ -21,7 +21,7 @@ export const DashboardActions = {
     },
     eventReportWeb: async (data) => {
         try {
-            const response = await clients.eventReportWeb.post('', data);
+            const response = await clients.axiosAPI.post('/reportListWeb.php', data);
             return (response.data);
         }
         catch (error) {
@@ -30,7 +30,7 @@ export const DashboardActions = {
     },
     getSquadList: async (data) => {
         try {
-            const response = await clients.squadList.post('', data);
+            const response = await clients.axiosAPI.post('/squadList.php', data);
             return (response.data);
         }
         catch (error) {
@@ -39,7 +39,7 @@ export const DashboardActions = {
     },
     panelFeedbackReport: async (data) => {
         try {
-            const response = await clients.panelFeedback.post('', data);
+            const response = await clients.axiosAPI.post('/eventFeedbackReport.php', data);
             return (response.data);
         }
         catch (error) {

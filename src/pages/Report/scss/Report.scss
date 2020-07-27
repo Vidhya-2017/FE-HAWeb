@@ -23,13 +23,15 @@
         }
     }
     .eventDetailsWrapper{
-        padding: 10px 20px;
+        padding: 10px 20px 0;
         .eventDetails {
             display: flex;
             // justify-content: space-between;
             flex-flow: wrap;
             p{
-                min-width: 300px;
+                min-width: 150px;
+                margin: 0 0 5px;
+                padding: 0 20px 0 0;
             }
             .labelTitle{
                 font-weight: 500;
@@ -37,7 +39,7 @@
         }
     }
     .organizerListWrapper{
-        padding: 10px 20px;
+        padding: 10px 20px 0;
         .organizerDetails{
             &.candidateTable{
                 width: 100%;

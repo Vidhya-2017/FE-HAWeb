@@ -1,0 +1,25 @@
+.eventRegisterWrapper{
+    min-width: 470px;
+    margin: 0 auto;
+    .pageTitle{
+        padding: 10px 20px;
+        text-align: center;
+    }
+    .row {
+        margin: 0;
+    }
+    .col{
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+    .registerForm{
+        .fieldName{
+            padding: 10px;
+        }
+        .inputField{
+            height: 38px;
+            border: solid 1px #000000;
+            border-radius: 5px;
+        }
+    }
+}

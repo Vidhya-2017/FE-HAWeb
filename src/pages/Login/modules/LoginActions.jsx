@@ -5,7 +5,7 @@ export const LoginActions = {
     loginAuth: (data) => {
         return async (dispatch) => {
             try {
-                const response = await clients.loginAuth.post('', data);
+                const response = await clients.axiosAPI.post('/login.php', data);
                 if (response.data && response.data.UserSet && response.data.UserSet.length > 0 &&
                     response.data.UserSet[0].isAdmin === "1") {
                     dispatch({

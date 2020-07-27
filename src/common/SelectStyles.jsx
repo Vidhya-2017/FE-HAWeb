@@ -1,8 +1,11 @@
-const SelectStyles = {
+// import React from 'react';
+
+const SelectStyles = (width = 200) => {
+  const defaultStyle = {
     control: styles => ({
       ...styles,
       backgroundColor: 'rgba(255, 255, 255, 0.12)',
-      minWidth: 200,
+      minWidth: width,
       minHeight: 40,
       borderColor: '#000',
       borderRadius: '5px',
@@ -23,24 +26,26 @@ const SelectStyles = {
         boxShadow: '0 0 0 1px #000000'
       }
     }),
-    menu: styles => ({ ...styles, backgroundColor: '#fff', border: '1px solid #999' }),
-    indicatorSeparator: styles => ({ ...styles, backgroundColor: 'none' }),
-    option: (styles, { isFocused, isSelected }) => {
-      return {
-        ...styles,
-        backgroundColor: '#fff',
-        ':active': {
-          backgroundColor: '#eee',
-        },
-        ':hover': {
-          backgroundColor: '#dadada',
-        },
-        ':focus': {
-          backgroundColor: '#eee',
-        },
-        color: isSelected ? '#000' : '#333'
-      }
-    }
-  };
+      menu: styles => ({ ...styles, backgroundColor: '#fff', border: '1px solid #999' }),
+        indicatorSeparator: styles => ({ ...styles, backgroundColor: 'none' }),
+          option: (styles, { isFocused, isSelected }) => {
+            return {
+              ...styles,
+              backgroundColor: '#fff',
+              ':active': {
+                backgroundColor: '#eee',
+              },
+              ':hover': {
+                backgroundColor: '#dadada',
+              },
+              ':focus': {
+                backgroundColor: '#eee',
+              },
+              color: isSelected ? '#000' : '#333'
+            }
+          }
+  }
+  return defaultStyle;
+};
 
-  export default SelectStyles;
+export default SelectStyles;

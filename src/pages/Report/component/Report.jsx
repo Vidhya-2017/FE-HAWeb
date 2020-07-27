@@ -245,7 +245,7 @@ class Report extends React.Component {
               value={selectedEvent}
               onChange={this.handleEventChange}
               options={eventList}
-              styles={SelectStyles}
+              styles={SelectStyles()}
               placeholder='Select the Event'
             />
             {selectedEvent && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.downloadReport}>Download</Button>}
@@ -261,7 +261,7 @@ class Report extends React.Component {
               {eventReport.Hackathon_Details[0].skill_name && <p><span className='labelTitle'>Skills:</span> {eventReport.Hackathon_Details[0].skill_name.split(',').join(', ')}</p>}
             </div>
           </div>}
-          {eventReport && eventReport.Organizers_list && <div className='organizerListWrapper'>
+          {eventReport && eventReport.Organizers_list && eventReport.Organizers_list.length > 0 && <div className='organizerListWrapper'>
             <h4>Organizer Details:</h4>
             <div className='organizerDetails'>
               <Table id='Organizer' responsive bordered hover size="sm">
@@ -275,6 +275,31 @@ class Report extends React.Component {
                 </thead>
                 <tbody>
                   {eventReport.Organizers_list.map((list, index) =>
+                    <tr key={list.first_name}>
+                      <td>{index + 1}</td>
+                      <td>{list.first_name}</td>
+                      <td>{list.last_name}</td>
+                      <td>{list.email}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          </div>}
+          {eventReport && eventReport.Panels_list && eventReport.Panels_list.length > 0 && <div className='organizerListWrapper'>
+            <h4>Panelist Details:</h4>
+            <div className='organizerDetails'>
+              <Table id='Organizer' responsive bordered hover size="sm">
+                <thead>
+                  <tr className='listHeader'>
+                    <th>Sl.No</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email Id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventReport.Panels_list.map((list, index) =>
                     <tr key={list.first_name}>
                       <td>{index + 1}</td>
                       <td>{list.first_name}</td>

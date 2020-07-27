@@ -26,14 +26,14 @@ class Header extends React.Component {
     return (
       <Navbar className="sb-topnav header bg-dark" variant="dark">
         {this.props.userDetails && this.props.userDetails.user_id && <button className="btn btn-link" id="sidebarToggle" onClick={this.showSidebar}>
-          <i className="fas fa-bars"></i>
+          <i className="fa fa-bars"></i>
         </button>}
         <Navbar.Brand onClick={this.goHome}>DiEvA</Navbar.Brand>
         {/* <Nav className="mr-auto">
         <Nav.Link href="#">Home</Nav.Link>
       </Nav> */}
         {this.props.userDetails && this.props.userDetails.user_id && <Nav className="ml-auto">
-          <NavDropdown className='userDropdown' title={<i className="fas fa-user fa-fw"></i>} id="userDropdown">
+          <NavDropdown className='userDropdown' title={<i className="fa fa-user-circle fa-fw"></i>} id="userDropdown">
             <NavDropdown.Item aria-labelledby="userDropdown" onClick={this.LogOut}>Logout</NavDropdown.Item>
           </NavDropdown>
         </Nav>}

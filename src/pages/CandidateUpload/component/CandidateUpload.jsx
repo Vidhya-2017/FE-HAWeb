@@ -25,7 +25,8 @@ class CandidateUpload extends Component {
       eventData: [],
       selectedEvent: null,
       selectedEventData: {},
-      showSuccessMessage: false
+      showSuccessMessage: false,
+      toastMessage: ''
     }
   }
 
@@ -103,11 +104,17 @@ class CandidateUpload extends Component {
         data: base64String
       }
       this.props.importExcel(reqObj).then(response => {
-        if (response) {
+        if (response && response.errCode === 200) {
           this.setState({
             showModal: false, selectedEvent: null, selectedEventData: {},
             data: [], cols: [], file: {}, sheetOptions: [],
-            showSuccessMessage: true, selectedSheet: null
+            showSuccessMessage: true, selectedSheet: null, toastMessage:'Excel sheet uploaded successfully.'
+          });
+        } else {
+          this.setState({
+            showModal: false, selectedEvent: null, selectedEventData: {},
+            data: [], cols: [], file: {}, sheetOptions: [],
+            showSuccessMessage: true, selectedSheet: null, toastMessage: response && response.status
           });
         } 
       })
@@ -218,7 +225,7 @@ class CandidateUpload extends Component {
 
   render() {
     const { file, data, cols, selectedSheet, sheetOptions, showSuccessMessage,
-      showModal, eventList, selectedEvent, selectedEventData } = this.state;
+      showModal, eventList, selectedEvent, selectedEventData, toastMessage } = this.state;
     const recordPerPageVal = Math.ceil(data.length / 10) * 10;
     const recordPerPageOptions = [
       { text: "10", page: 10 },
@@ -307,7 +314,7 @@ class CandidateUpload extends Component {
             value={selectedSheet}
             onChange={this.handleChange}
             options={sheetOptions}
-            styles={SelectStyles}
+            styles={SelectStyles()}
             placeholder='Select the Sheet'
           />}
           {data.length > 0 &&
@@ -348,7 +355,7 @@ class CandidateUpload extends Component {
               value={selectedEvent}
               onChange={this.handleEventChange}
               options={eventList}
-              styles={SelectStyles}
+              styles={SelectStyles()}
               placeholder='Select the Event'
             />
             {selectedEvent &&
@@ -400,7 +407,7 @@ class CandidateUpload extends Component {
             <Toast.Header style={{background: '#deeddd',borderBottom: '1px solid #28a745'}}>
               <strong className="mr-auto">Success</strong>
             </Toast.Header>
-            <Toast.Body>Excel sheet uploaded successfully.</Toast.Body>
+          <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
         }
       </div>

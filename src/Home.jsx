@@ -8,6 +8,7 @@ import DashboardContainer from './pages/Dashboard/container/DashboardContainer';
 import CandidateUploadContainer from './pages/CandidateUpload/container/CandidateUploadContainer';
 import ReportContainer from './pages/Report/container/ReportContainer';
 import SquadReportContainer from './pages/SquadReport/container/SquadReportContainer';
+import EventRegistrationContainer from './pages/EventRegistration/container/EventRegistrationContainer';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import './App.scss';
@@ -79,6 +80,7 @@ class Home extends React.Component {
               <Route path="/eventReport" component={ReportContainer} />
               <Route path="/squadReport" component={SquadReportContainer} />
               <Route path="/candidateUpload" component={CandidateUploadContainer} />
+              <Route path="/eventRegister" component={EventRegistrationContainer} />
             </Switch>
             <Footer />
           </div>

@@ -3,7 +3,7 @@ import clients from '../../../common/clients';
 export const ReportActions = {
     getEventList: async () => {
         try {
-            const response = await clients.eventList.get('');
+            const response = await clients.axiosAPI.get('/RegEventList.php');
             return (response.data);
         }
         catch (error) {
@@ -12,7 +12,7 @@ export const ReportActions = {
     },
     eventReport: async (data) => {
         try {
-            const response = await clients.eventReport.post('', data);
+            const response = await clients.axiosAPI.post('/reportListApi.php', data);
             return (response.data);
         }
         catch (error) {
@@ -31,7 +31,7 @@ export const ReportActions = {
     },
     eventReportWeb: async (data) => {
         try {
-            const response = await clients.eventReportWeb.post('', data);
+            const response = await clients.axiosAPI.post('/reportListWeb.php', data);
             return (response.data);
         }
         catch (error) {

@@ -232,6 +232,7 @@ code {
   padding-bottom: 0.75rem;
   position: relative;
   background: none;
+  width: 100%;
   border: none;
   box-shadow: none;
   &.true{
@@ -298,6 +299,9 @@ code {
 .sb-sidenav-dark .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
   color: #fff;
 }
+.sb-sidenav-dark .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
+  color: #fff;
+}
 .sb-sidenav-dark .sb-sidenav-footer {
   // background-color: #343a40;
   // background: #2196f3 !important;
@@ -305,36 +309,6 @@ code {
   background: #E0E0E0 !important;
   color: black;
 }
-
-.sb-sidenav-light {
-  background-color: #f8f9fa;
-  color: #212529;
-}
-.sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {
-  color: #adb5bd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link {
-  color: #212529;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-nav-link-icon {
-  color: #adb5bd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
-  color: #adb5bd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link:hover {
-  color: #007bff;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link.active {
-  color: #007bff;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
-  color: #007bff;
-}
-.sb-sidenav-light .sb-sidenav-footer {
-  background-color: #e9ecef;
-}
-
 
 body {
   .sb-sidenav-menu{

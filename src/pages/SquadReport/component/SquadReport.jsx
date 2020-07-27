@@ -238,7 +238,7 @@ class SquadReport extends React.Component {
               value={selectedEvent}
               onChange={this.handleEventChange}
               options={eventList}
-              styles={SelectStyles}
+              styles={SelectStyles()}
               placeholder='Select the Event'
             />
           </section>
@@ -248,7 +248,7 @@ class SquadReport extends React.Component {
               value={selectedSquad}
               onChange={this.handleSquadChange}
               options={squadList}
-              styles={SelectStyles}
+              styles={SelectStyles()}
               placeholder='Select the Squad'
             />
           </section>}
@@ -281,6 +281,31 @@ class SquadReport extends React.Component {
                 </thead>
                 <tbody>
                   {squadReport.Organizers_list.map((list, index) =>
+                    <tr key={list.first_name}>
+                      <td>{index + 1}</td>
+                      <td>{list.first_name}</td>
+                      <td>{list.last_name}</td>
+                      <td>{list.email}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          </div>}
+          {squadReport && squadReport.Panels_list && squadReport.Panels_list.length > 0 && <div className='organizerListWrapper'>
+            <h4>Panelist Details:</h4>
+            <div className='organizerDetails'>
+              <Table id='Organizer' responsive bordered hover size="sm">
+                <thead>
+                  <tr className='listHeader'>
+                    <th>Sl.No</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email Id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {squadReport.Panels_list.map((list, index) =>
                     <tr key={list.first_name}>
                       <td>{index + 1}</td>
                       <td>{list.first_name}</td>
