@@ -4,6 +4,9 @@ import { CandidateSelectionActions } from '../modules/CandidateSelectionActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getEventList: CandidateSelectionActions.getEventList,
+    checkIsOrganiser: CandidateSelectionActions.checkIsOrganiser,
+    bulkCandidateList: CandidateSelectionActions.bulkCandidateList,
   };
 };
 

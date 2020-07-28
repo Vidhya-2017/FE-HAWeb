@@ -1,8 +1,14 @@
 import React from 'react';
 import { Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 import Select from 'react-select';
-import EventList from '../../../components/commonUI/EventList';
 import moment from 'moment';
+import SkillListMenu from '../../../components/commonUI/SkillListMenu';
+import LevelOfAssessment from '../../../components/commonUI/LevelOfAssessment';
+import AssessingParameter from '../../../components/commonUI/AssessingParameter';
+import DateTime from '../../../components/commonUI/DateTime';
+import Duration from '../../../components/commonUI/Duration';
+import CompetancyMenu from '../../../components/commonUI/Compentency';
+import EventLocation from '../../../components/commonUI/EventLocation';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/EventRegistration.scss';
 
@@ -50,7 +56,7 @@ class EventRegistration extends React.Component {
       showEditBtn: false
     }
   }
-  
+
   componentDidMount() {
     this.getEventList();
   }
@@ -67,7 +73,7 @@ class EventRegistration extends React.Component {
             label: list.Name
           }
         });
-        this.setState({ eventList, eventAssigned: true});
+        this.setState({ eventList, eventAssigned: true });
       } else {
         this.geClientDetailsList('');
       }
@@ -138,8 +144,52 @@ class EventRegistration extends React.Component {
     })
   }
 
-  inputFieldOnChange = (e)=> {
-    console.log('-----e---', e.target);
+
+  onEventChange = (e) => {
+    console.log('onEventChange---', e);
+    this.inputFieldChange(e);
+  }
+
+  eventFieldChange = (e) => {
+    this.geUserEventList(e.target.value);
+    this.inputFieldChange(e);
+  }
+
+  inputFieldChange = (e) => {
+    const targetName = e.target.name;
+    const targetValue = e.target.value;
+    const updatedRegForm = {
+      ...this.state.registerEvent
+    };
+    const updatedFormElement = {
+      ...updatedRegForm[targetName]
+    };
+    updatedFormElement.value = targetValue;
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedRegForm[targetName] = updatedFormElement;
+    let formIsValid = true;
+    for (let inputIdentifier in updatedRegForm) {
+      formIsValid = updatedRegForm[inputIdentifier].valid && formIsValid;
+    }
+    console.log('--registerEvent--', updatedRegForm);
+    this.setState({ registerEvent: updatedRegForm, formIsValid });
+  }
+
+  checkValidity(inputValue, rules) {
+    const value = inputValue.toString();
+    let isValid = true;
+    if (!rules) {
+      return true;
+    }
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+
+    if (rules.isNumeric) {
+      const pattern = /^\d+$/;
+      isValid = pattern.test(value) && isValid
+    }
+    return isValid;
   }
 
   handleEventChange = (selectedEvent) => {
@@ -148,16 +198,13 @@ class EventRegistration extends React.Component {
     this.geUserEventList(selectedEvent.EventID)
   }
   render() {
-    const { selectedEvent, registerEvent, formIsValid, loading, showToast, toastMsg, showOrgnizerModal,
+    const { selectedEvent, registerEvent, clientDetailsList, formIsValid, loading, showToast, toastMsg, showOrgnizerModal,
       showEditBtn, eventAssigned, selectedLevel, edit, eventList } = this.state;
-
-    console.log('--state-', this.state);
+      const eventSelected = eventList.find(list => list.label === registerEvent.eventName.value);
     return (
       <div className='eventRegisterWrapper'>
         <h3 className='pageTitle'>Event Register</h3>
         <div className='registerForm'>
-        <EventList selectedValue={registerEvent.eventName.value} onEventListChange={this.onEventListChange} />
-
           <Row>
             <Col className='fieldName'><span>Event Name:</span></Col>
             <Col>
@@ -167,22 +214,32 @@ class EventRegistration extends React.Component {
                   type="text"
                   className='inputField'
                   name="eventName"
-                  onChange={this.inputFieldOnChange}
+                  value={registerEvent.eventName.value}
+                  onChange={this.inputFieldChange}
                 />
-              </InputGroup> : 
-              <Select
-              value={selectedEvent}
-              onChange={this.handleEventChange}
-              options={eventList}
-              defaultValue={selectedEvent}
-              styles={SelectStyles(220)}
-              className="mb-3"
-              placeholder='Event Location'
-            />
+              </InputGroup> :
+                <Select
+                  value={eventSelected}
+                  onChange={this.handleEventChange}
+                  options={eventList}
+                  defaultValue={eventSelected}
+                  styles={SelectStyles(220)}
+                  className="mb-3"
+                  placeholder='Event Name'
+                />
               }
             </Col>
           </Row>
-          <Row>
+          <EventLocation selectedValue={registerEvent.eventLocation.value} onEventChange={this.onEventChange} />
+          <SkillListMenu eventDisabled={eventAssigned} isCandidateSkill={false} eventSkillList={[]} selectedValue={registerEvent.skillset && registerEvent.skillset.value} showSkillChips={true} onEventChange={this.onEventChange} />
+          <CompetancyMenu eventDisabled={eventAssigned} isCompentency={false} eventcompentencyList={[]} selectedValue={registerEvent.competancy.value} showCompentencyChips={true} onEventChange={this.onEventChange} />
+          <LevelOfAssessment disabled={eventAssigned} selectedValue={registerEvent.assessmentLevel.value} onEventChange={this.onEventChange} selected={selectedLevel} />
+          {/* <DateTime disabledField={false} selectedValue={registerEvent.date.value} onEventChange={this.onEventChange} /> */}
+          <Duration selectedValue={registerEvent.duration.value} onEventChange={this.onEventChange} />
+          <AssessingParameter selectedValue={registerEvent.assessingParameter.value} onEventChange={this.onEventChange} />
+
+
+          {/* <Row>
             <Col className='fieldName'><span>Event Location:</span></Col>
             <Col>
               <Select
@@ -195,16 +252,16 @@ class EventRegistration extends React.Component {
                 placeholder='Event Location'
               />
             </Col>
-          </Row>
+          </Row> */}
 
-          <Row>
+          {/* <Row>
             <Col className='fieldName'><span>Client Name:</span></Col>
             <Col>
               <Select
-                value={selectedEvent}
-                onChange={this.handleEventChange}
-                // options={eventList}
-                defaultValue={selectedEvent}
+                value={registerEvent.clientName.value}
+                onChange={this.inputFieldChange}
+                options={clientDetailsList}
+                defaultValue={registerEvent.clientName.value}
                 styles={SelectStyles(220)}
                 className="mb-3"
                 placeholder='Cleint Name'
@@ -299,7 +356,7 @@ class EventRegistration extends React.Component {
                 placeholder='Assessing Parameters'
               />
             </Col>
-          </Row>
+          </Row> */}
         </div>
       </div>
     )

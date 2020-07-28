@@ -4,6 +4,9 @@ import { EventFeedbackActions } from '../modules/EventFeedbackActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getEventList:EventFeedbackActions.getEventList,
+    geClientDetailsById:EventFeedbackActions.geClientDetailsById,
+    clientFeedbackOnEvent:EventFeedbackActions.clientFeedbackOnEvent,
   };
 };
 

@@ -48,14 +48,16 @@ class SquadReport extends React.Component {
   getEventList = () => {
     this.props.getEventList().then(response => {
       // this.getSquadList();
-      let eventList = [];
-      eventList = response.arrRes.map(list => {
-        return {
-          value: list.EventId,
-          label: list.Name
-        }
-      })
-      this.setState({ eventData: response.arrRes, eventList });
+      if (response && response.arrRes) {
+        let eventList = [];
+        eventList = response.arrRes.map(list => {
+          return {
+            value: list.EventId,
+            label: list.Name
+          }
+        })
+        this.setState({ eventData: response.arrRes, eventList });
+      }
     });
   }
 
@@ -89,7 +91,7 @@ class SquadReport extends React.Component {
 
   handleEventChange = (selectedEvent) => {
     this.getSquadList(selectedEvent.value);
-    this.setState({ selectedEvent, squadReport: [], selectedSquad: null, showDownload: false});
+    this.setState({ selectedEvent, squadReport: [], selectedSquad: null, showDownload: false });
   }
 
   handleSquadChange = (selectedSquad) => {
@@ -101,7 +103,7 @@ class SquadReport extends React.Component {
     const reqObj = {
       squad_id: selectedSquad.value,
       event_id: selectedEvent.value
-      };
+    };
     this.props.squadEventReport(reqObj).then(response => {
       this.setState({ squadReport: response, showDownload: true });
       this.generateTable(response);
@@ -118,7 +120,7 @@ class SquadReport extends React.Component {
         const candidateAss = elem.feedback[0];
         colHeader.push(...['Sl.No', 'Candidate Name', 'Email Id', 'Contact No', 'Panel Name', 'Sprint Level'])
         assessScale.forEach(scale => {
-          if(candidateAss[0].hasOwnProperty(scale)){
+          if (candidateAss[0].hasOwnProperty(scale)) {
             colHeader.push(scale);
           }
         });
@@ -142,8 +144,8 @@ class SquadReport extends React.Component {
           candidateObj.first_name = fb.first_name;
           candidateObj.sprintLevel = fb.sprintLevel;
           assessScale.forEach(scale => {
-            if(fb.hasOwnProperty(scale)){
-            candidateObj[scale] = fb[scale];
+            if (fb.hasOwnProperty(scale)) {
+              candidateObj[scale] = fb[scale];
             }
           });
           if (fb.sprintLevel === "Show and Tell assesment") {
@@ -232,28 +234,28 @@ class SquadReport extends React.Component {
         <div className='eventContainer'>
           <h3 className='pageTitle'>Squad Reports</h3>
           <div className='squadSelection'>
-          <section className='reportHandlerContainer'>
-            <label className='eventLabel'>Event Name:</label>
-            <Select
-              value={selectedEvent}
-              onChange={this.handleEventChange}
-              options={eventList}
-              styles={SelectStyles()}
-              placeholder='Select the Event'
-            />
-          </section>
-          {selectedEvent && <section className='reportHandlerContainer'>
-            <label className='eventLabel'>Squad Name:</label>
-            <Select
-              value={selectedSquad}
-              onChange={this.handleSquadChange}
-              options={squadList}
-              styles={SelectStyles()}
-              placeholder='Select the Squad'
-            />
-          </section>}
-          {selectedSquad && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.squadReport}>Submit</Button>}
-          {showDownload && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.downloadSquadReport}>Download</Button>}
+            <section className='reportHandlerContainer'>
+              <label className='eventLabel'>Event Name:</label>
+              <Select
+                value={selectedEvent}
+                onChange={this.handleEventChange}
+                options={eventList}
+                styles={SelectStyles()}
+                placeholder='Select the Event'
+              />
+            </section>
+            {selectedEvent && <section className='reportHandlerContainer'>
+              <label className='eventLabel'>Squad Name:</label>
+              <Select
+                value={selectedSquad}
+                onChange={this.handleSquadChange}
+                options={squadList}
+                styles={SelectStyles()}
+                placeholder='Select the Squad'
+              />
+            </section>}
+            {selectedSquad && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.squadReport}>Submit</Button>}
+            {showDownload && <Button className='file-upload fileUploadBtn btn shadow' onClick={this.downloadSquadReport}>Download</Button>}
           </div>
 
           {squadReport && squadReport.Hackathon_Details && <div className='eventDetailsWrapper'>
@@ -318,26 +320,26 @@ class SquadReport extends React.Component {
             </div>
           </div>}
           {squadReport && squadReport.candidate_details && squadReport.candidate_details.length > 0 && rowData.length > 0 &&
-             <div className='organizerListWrapper'>
-             <h4>Candidate Details:</h4>
-             <div className='organizerDetails candidateTable listTable'>
-              <Table bordered size="sm" responsive hover>
-              <thead className='listHeader'>
-                <tr>
-                  {colHeader.map(col =>
-                    <th key={col}>{col}</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {rowData.map((row, index) =>
-                  <tr key={`row-${index}`}>
-                   {row.map((data, index) => <td key={index} rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''}  style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center'}}>{data.content ? data.content : data}</td>)}
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-            </div>
+            <div className='organizerListWrapper'>
+              <h4>Candidate Details:</h4>
+              <div className='organizerDetails candidateTable listTable'>
+                <Table bordered size="sm" responsive hover>
+                  <thead className='listHeader'>
+                    <tr>
+                      {colHeader.map(col =>
+                        <th key={col}>{col}</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rowData.map((row, index) =>
+                      <tr key={`row-${index}`}>
+                        {row.map((data, index) => <td key={index} rowSpan={data.rowSpan ? data.rowSpan : '1'} className={data.rowSpan ? 'rowSpan' : ''} style={{ textAlign: isNaN(Number(data)) ? 'initial' : 'center' }}>{data.content ? data.content : data}</td>)}
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
             </div>
           }
         </div>

@@ -1,0 +1,118 @@
+.candidateSelectionWrapper{
+    min-width: 470px;
+    margin: 0 auto;
+    .pageHeader{
+        display: flex;
+        justify-content: space-between;
+        .pageTitle{
+            padding: 10px 20px;
+            text-align: center;
+            width: 100%;
+        }
+    }
+    .row {
+        margin: 0;
+        height: 40px;
+    }
+    .col{
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+    .memberLabel{
+        margin: 10px 0;
+        padding: 0 10px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .candidateSelectionForm{
+        .fieldName{
+            padding: 10px;
+        }
+        .inputField{
+            height: 38px;
+            border: solid 1px #000000;
+            border-radius: 5px;
+        }
+    }
+    .candidateList{
+        max-height: 500px;
+        overflow: auto;
+        border: solid 1px #e3e3e3;
+    }
+    .panelRegCntrlPanel{
+        text-align: center;
+        margin: 10px;
+        .fileUploadBtn{
+            background: #1b91e5;
+            border: solid 2px #1b91e5;
+            color: white;
+            font-weight: 500;
+            height: 40px;
+            margin-left: 10px;
+            &:hover {
+                background: white;
+                color: #1b91e5;
+                border: solid 2px #1b91e5;
+            }
+        }
+    }
+}
+
+.w60 {
+    width: 60%;
+}
+
+.w40 {
+    width: 40%;
+}
+
+.w70 {
+    width: 70%;
+}
+
+ .skeletonWrapper {
+     display: flex;
+   width: 100%;
+   animation: fullView 0.5s forwards cubic-bezier(0.250, 0.460, 0.450, 0.940);
+   border: solid 1px #eee;
+   padding: 0 20px;
+ }
+ .skeletonProfilePic {
+   height: 50px;
+   width: 50px;
+   border-radius: 50%;
+   margin-top: 5px;
+ }
+ .candidateSkeleton{
+     border: solid 1px #eee;
+ }
+ .skeletonCmtContainer {
+     width: 100%;
+     padding-left: 20px;
+ }
+ .skeletonComment {
+   height: 10px;
+   background: #777;
+   margin: 8px 0;
+ }
+ 
+ @keyframes fullView {
+   100% {
+     width: 100%;
+   }
+ }
+ 
+ .animate {
+    animation : shimmer 2s infinite linear;
+    background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+     background-size: 1000px 100%;
+ }
+ 
+ @keyframes shimmer {
+   0% {
+     background-position: -1000px 0;
+   }
+   100% {
+     background-position: 1000px 0;
+   }
+ }

@@ -32,14 +32,16 @@ class CandidateUpload extends Component {
 
   componentDidMount() {
     this.props.getEventList().then(response => {
-      let eventList = [];
-      eventList = response.arrRes.map(list => {
-        return {
-          value: list.EventId,
-          label: list.Name
-        }
-      })
-      this.setState({ eventData: response.arrRes, eventList });
+      if (response && response.arrRes) {
+        let eventList = [];
+        eventList = response.arrRes.map(list => {
+          return {
+            value: list.EventId,
+            label: list.Name
+          }
+        })
+        this.setState({ eventData: response.arrRes, eventList });
+      }
     });
   }
 
@@ -82,7 +84,7 @@ class CandidateUpload extends Component {
   handleEventChange = (selectedEvent) => {
     const req = { EventID: selectedEvent.value };
     this.props.getEventByUser(req).then((response) => {
-      if(response && response.arrRes) {
+      if (response && response.arrRes) {
         this.setState({ selectedEvent, selectedEventData: response.arrRes[0] });
       }
     })
@@ -108,7 +110,7 @@ class CandidateUpload extends Component {
           this.setState({
             showModal: false, selectedEvent: null, selectedEventData: {},
             data: [], cols: [], file: {}, sheetOptions: [],
-            showSuccessMessage: true, selectedSheet: null, toastMessage:'Excel sheet uploaded successfully.'
+            showSuccessMessage: true, selectedSheet: null, toastMessage: 'Excel sheet uploaded successfully.'
           });
         } else {
           this.setState({
@@ -116,7 +118,7 @@ class CandidateUpload extends Component {
             data: [], cols: [], file: {}, sheetOptions: [],
             showSuccessMessage: true, selectedSheet: null, toastMessage: response && response.status
           });
-        } 
+        }
       })
     };
     reader.readAsBinaryString(file);
@@ -165,7 +167,7 @@ class CandidateUpload extends Component {
 
       const getColText = (value) => {
         const customisedCol = customColText.find(col => col.value === value);
-        if(!customisedCol) {
+        if (!customisedCol) {
           return value;
         } else {
           return customisedCol.text;
@@ -297,7 +299,7 @@ class CandidateUpload extends Component {
       pageButtonRenderer
     };
 
-    
+
     return (
       <div>
         <h3 className='pageTitle'>Candidate Upload</h3>
@@ -400,14 +402,14 @@ class CandidateUpload extends Component {
               width: 400
             }}
             onClose={() => this.setState({ showSuccessMessage: false })}
-            show={showSuccessMessage} 
-            delay={3000} 
+            show={showSuccessMessage}
+            delay={3000}
             autohide
           >
-            <Toast.Header style={{background: '#deeddd',borderBottom: '1px solid #28a745'}}>
+            <Toast.Header style={{ background: '#deeddd', borderBottom: '1px solid #28a745' }}>
               <strong className="mr-auto">Success</strong>
             </Toast.Header>
-          <Toast.Body>{toastMessage}</Toast.Body>
+            <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
         }
       </div>

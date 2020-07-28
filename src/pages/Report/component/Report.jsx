@@ -33,6 +33,7 @@ class Report extends React.Component {
 
   getEventList = () => {
     this.props.getEventList().then(response => {
+      if (response && response.arrRes) {
       let eventList = [];
       eventList = response.arrRes.map(list => {
         return {
@@ -41,6 +42,7 @@ class Report extends React.Component {
         }
       })
       this.setState({ eventData: response.arrRes, eventList });
+    }
     });
   }
 

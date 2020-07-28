@@ -3,7 +3,6 @@ import { Row, Col, Modal, FormControl, InputGroup, ListGroup, Form, Toast, Butto
 import Select from 'react-select';
 import moment from 'moment';
 import SelectStyles from '../../../common/SelectStyles';
-
 import '../scss/EventCoordinator.scss';
 
 class EventCoordinator extends React.Component {
@@ -18,6 +17,7 @@ class EventCoordinator extends React.Component {
       userList: null,
       clientName: '',
       searchedText: '',
+      eventSelected: null,
       clientId: '',
       users: [],
       showUserModal: false,
