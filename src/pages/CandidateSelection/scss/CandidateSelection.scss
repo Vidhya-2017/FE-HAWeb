@@ -38,6 +38,31 @@
         max-height: 500px;
         overflow: auto;
         border: solid 1px #e3e3e3;
+        .userList{
+            display: flex;
+            justify-content: space-between;
+            .candidateDetails{
+                .email{
+                    color: #979696;
+                    font-size: 13px;
+                }
+                p {
+                    margin: 0;
+                    font-size: 14px;
+                }
+            }
+            .toggleUser{
+                height: 60px;
+                width: 40px;
+                padding: 20px 10px;
+                .form-check-input{
+                    height: 20px;
+                    width: 20px;
+                    margin: 0;
+                    padding: 0;
+                }
+            }
+        }
     }
     .panelRegCntrlPanel{
         text-align: center;

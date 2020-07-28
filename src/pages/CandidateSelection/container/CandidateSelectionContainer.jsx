@@ -7,6 +7,7 @@ const mapDispatchToProps = (dispatch) => {
     getEventList: CandidateSelectionActions.getEventList,
     checkIsOrganiser: CandidateSelectionActions.checkIsOrganiser,
     bulkCandidateList: CandidateSelectionActions.bulkCandidateList,
+    eventCandidateAssign: CandidateSelectionActions.eventCandidateAssign
   };
 };
 

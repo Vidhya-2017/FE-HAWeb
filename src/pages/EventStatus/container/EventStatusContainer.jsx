@@ -4,6 +4,8 @@ import { EventStatusActions } from '../modules/EventStatusActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getEventList:EventStatusActions.getEventList,
+    getSummary:EventStatusActions.getSummary,
   };
 };
 

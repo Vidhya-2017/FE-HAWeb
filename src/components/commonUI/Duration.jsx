@@ -63,7 +63,7 @@ class Duration extends React.Component {
               onChange={this.durationOnChange}
               options={this.state.durationList}
               defaultValue={this.state.durationValue}
-              styles={SelectStyles(220)}
+              styles={SelectStyles(215)}
               className="mb-3"
               placeholder='Duration'
             />

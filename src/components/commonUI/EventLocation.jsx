@@ -81,7 +81,7 @@ class EventLocation extends React.Component {
               onChange={(e, value) => this.durationOnChange(e)}
               options={this.state.eventLocation}
               defaultValue={this.state.eventLocationValue}
-              styles={SelectStyles(220)}
+              styles={SelectStyles(215)}
               className="mb-3"
               placeholder='Event Location'
             />

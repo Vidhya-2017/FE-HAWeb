@@ -10,7 +10,6 @@ export const CandidateSelectionActions = {
             return (error.response);
         }
     },
-
     checkIsOrganiser: async (data) => {
         try {
             const response = await clients.axiosAPI.post('/panelCheckAPI.php', data);
@@ -29,4 +28,13 @@ export const CandidateSelectionActions = {
             return (error.response);
         }
     },
+    eventCandidateAssign: async (data) => {
+        try {
+            const response = await clients.axiosAPI.post('/eventCandidateAssign.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    }
 }

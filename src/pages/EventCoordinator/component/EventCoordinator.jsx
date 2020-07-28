@@ -263,10 +263,9 @@ class EventCoordinator extends React.Component {
               </InputGroup.Append>
             </InputGroup>
             <ListGroup className="userListGroup">
-              {users.map(list =>
+              {users.length > 0 && users.map(list =>
                 <ListGroup.Item className="userList">
                   <h6>{list.first_name} {list.last_name}</h6>
-
                   {userList.some((data) => data.user_id === list.user_id) ?
                     <Form.Check
                       type="checkbox"

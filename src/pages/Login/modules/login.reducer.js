@@ -4,7 +4,6 @@ export const initialState = {
       userDetails: {}
 };
 
-
 export const loginReducer = (state = initialState, action) => {
     switch(action.type){
         case actionTypes.LOGIN_RES:

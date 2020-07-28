@@ -85,9 +85,44 @@ class CandidateSelection extends React.Component {
     this.setState({ candidateList: searchedData, searchQuery: query });
   }
 
+  handleCandidateSelection = (e, list) => {
+    const { candidateList, eventSelected } = this.state;
+    const candidateIndex = candidateList && candidateList.findIndex((lst) => list.ID === lst.ID);
+    const updatedcandidateList = [...candidateList];
+    updatedcandidateList[candidateIndex].EventID = e.target.checked ? eventSelected.value : '';
+    this.setState({
+      candidateList: updatedcandidateList
+    });
+  }
+
+
+  insertCandidate = () => {
+    const { candidateList, eventSelected } = this.state;
+    const candidateIDs = [];
+    candidateList.forEach((candidate) => {
+      if (candidate.EventID !== '' && candidate.EventID !== null) {
+        candidateIDs.push(candidate.ID)
+      }
+    });
+    const user_id = this.props.userDetails.user_id;
+    const reqObj = {
+      eventID: eventSelected.value,
+      UpdatedBy: user_id,
+      candidateIDs
+    }
+    console.log('-reqObj--', reqObj);
+    this.props.eventCandidateAssign(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        this.setState({ showToast: true, candidateList: [], eventSelected: null, toastMsg: 'Candidates added successfully.' });
+      } else {
+        this.setState({ candidateList: [], eventSelected: null, showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
+      }
+    })
+  }
+
   render() {
     const { showToast, toastMsg, candidateList, EventDetailsList, searchQuery, eventSelected } = this.state;
-    console.log('--EmpName---', candidateList);
+    console.log('--candidateList--', candidateList);
     return (
       <div className='candidateSelectionWrapper'>
         <div className="pageHeader">
@@ -128,12 +163,21 @@ class CandidateSelection extends React.Component {
           {candidateList && candidateList.length > 0 && <div className="candidateList">
           <ListGroup className="userListGroup">
             {candidateList.map(list =>
-            <ListGroup.Item className="userList">
-              <div>
+            <ListGroup.Item key={list.EmpName} className="userList">
+              <div className="candidateDetails">
               <p>{list.EmpName}</p>
               <p>{list.SkillName}</p>
-              <p>{list.EmailId}</p>
+              <p className="email">{list.EmailId}</p>
               </div>
+              <Form.Check
+                type="checkbox"
+                size="lg"
+                id={list.user_id}
+                checked={list.EventID !== null && list.EventID !== ''}
+                label=""
+                className='toggleUser'
+                onChange={(e) => this.handleCandidateSelection(e, list)}
+              />
               </ListGroup.Item>
             )}
             </ListGroup>
@@ -141,7 +185,7 @@ class CandidateSelection extends React.Component {
           {candidateList && candidateList.length === 0 && eventSelected &&
             <CandidateSkeleton />}
           {candidateList && candidateList.length > 0 && <div className='panelRegCntrlPanel'>
-            <Button className='file-upload fileUploadBtn btn shadow' >Submit</Button>
+            <Button className='file-upload fileUploadBtn btn shadow' onClick={this.insertCandidate}>Submit</Button>
           </div>}
         </div>
         {showToast &&
