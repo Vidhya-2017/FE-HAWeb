@@ -5,6 +5,8 @@ class Interceptors {
     if (error) {
       document.getElementsByClassName('spinnerWrapper')[0].classList.add('hide');
       document.getElementsByClassName('spinnerWrapper')[0].classList.remove('show');
+      document.getElementsByTagName('body')[0].style.overflow = "auto";
+
       const handlingErr = error;
       switch (true) {
         case (error.response && error.response.status === 401):
@@ -35,6 +37,7 @@ class Interceptors {
         response => {
           document.getElementsByClassName('spinnerWrapper')[0].classList.add('hide');
           document.getElementsByClassName('spinnerWrapper')[0].classList.remove('show');
+          document.getElementsByTagName('body')[0].style.overflow = "auto";
           return response;
         },
         error => this.responseFailureHandler(error, handleForbiddenError)
@@ -50,8 +53,10 @@ class Interceptors {
       && typeof axiosInstance.interceptors.request.use === 'function'
     ) {
       axiosInstance.interceptors.request.use((config) => {
+        window.scrollTo(0, 0);
         document.getElementsByClassName('spinnerWrapper')[0].classList.add('show');
         document.getElementsByClassName('spinnerWrapper')[0].classList.remove('hide');
+        document.getElementsByTagName('body')[0].style.overflow = "hidden";
         const newConfig = config;
         return newConfig;
       });

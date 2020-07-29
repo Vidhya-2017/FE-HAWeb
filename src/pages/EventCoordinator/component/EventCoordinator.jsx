@@ -10,7 +10,6 @@ class EventCoordinator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formIsValid: false,
       showToast: false,
       toastMsg: '',
       EventDetailsList: [],
@@ -62,7 +61,6 @@ class EventCoordinator extends React.Component {
                   userList = res.arrRes;
                 }
                 this.setState({
-                  formIsValid: true,
                   clientName, clientId, userList
                 });
               })
@@ -185,7 +183,7 @@ class EventCoordinator extends React.Component {
   }
 
   render() {
-    const { eventSelected, users, EventDetailsList, showUserModal, formIsValid, userList, clientName, showToast, toastMsg } = this.state;
+    const { eventSelected, users, EventDetailsList, showUserModal, userList, clientName, showToast, toastMsg } = this.state;
     return (
       <div className='eventCoordWrapper'>
         <div className="pageHeader">

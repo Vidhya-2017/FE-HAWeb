@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, ListGroup, Form } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import clients from '../../common/clients';
@@ -43,7 +43,9 @@ class LevelOfAssessment extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.assessmentLevel) {
-      this.setState({ assessmentLevel: nextProps.selectedValue });
+      const levelAssmtVal = this.state.assessmentLevelList.find(list => list.value === nextProps.selectedValue);
+      this.setState({ assessmentLevel: levelAssmtVal ? levelAssmtVal : null });
+
     }
     if (nextProps.selected !== this.props.selected) {
       this.setState({ selectedLevel: nextProps.selected });
@@ -62,55 +64,55 @@ class LevelOfAssessment extends React.Component {
       }
     }
     this.setState({ selectedLevel: selectedLevelCheck, assessmentLevel: e.value });
-    this.props.onEventChange({target: {...e, name: 'assessmentLevel'}});
+    this.props.onEventChange({ target: { ...e, name: 'assessmentLevel' } });
   }
 
   onSprintLevelChange = (e) => {
     const updateSelectedLevel = [...this.state.selectedLevel];
-    updateSelectedLevel.find((list) => list.id === Number(e.detail.value)).checked = e.detail.checked;
+    updateSelectedLevel.find((list) => list.id === Number(e.target.value)).checked = e.target.checked;
     this.setState({ selectedLevel: updateSelectedLevel });
   }
 
   render() {
     const { selectedLevel, assessmentLevel, assessmentLevelList } = this.state;
     return (
-      <Fragment >
-
+      <Fragment>
         <Row>
           <Col className='fieldName'><span>No of Sprint:</span></Col>
           <Col>
             <Select
-              value={this.state.assessmentLevel}
+              value={assessmentLevel}
               onChange={this.onLevelChange}
-              options={this.state.assessmentLevelList}
-              defaultValue={this.state.assessmentLevel}
-              styles={SelectStyles(220)}
+              options={assessmentLevelList}
+              defaultValue={assessmentLevel}
+              styles={SelectStyles(215)}
               className="mb-3"
               placeholder='No of Sprint'
+              isDisabled={this.props.isDisabled}
             />
           </Col>
         </Row>
-        {/* <IonItem disabled={this.props.disabled}>
-          <IonLabel>No of Sprint</IonLabel>
-          <IonSelect name='assessmentLevel' value={assessmentLevel} placeholder="Select level" onIonChange={this.onLevelChange}>
-            {
-              assessmentLevelList.map((list) =>
-                <IonSelectOption key={list.AssessmentId} value={list.AssessmentId}>{list.AssementScaleName}</IonSelectOption>
-              )
-            }
-          </IonSelect>
-        </IonItem>
-        {selectedLevel.length > 0 &&
+        {selectedLevel.length > 0 && assessmentLevel &&
           <div>
-            <IonList >
+            <ListGroup style={{ margin: '0px 10px 10px' }}>
               {selectedLevel.map((list) => (
-                <IonItem key={list.id} disabled={this.props.disabled}>
-                  <IonLabel>{list.value}</IonLabel>
-                  <IonCheckbox slot="end" checked={list.checked} value={list.id} onIonChange={this.onSprintLevelChange} />
-                </IonItem>
+                <ListGroup.Item key={list.id} style={{ height: 40, padding: '7px 20px', display: 'flex', justifyContent: 'space-between' }} disabled={this.props.disabled}>
+                  <p>{list.value}</p>
+                  <Form.Check
+                    type="checkbox"
+                    id={list.id}
+                    checked={list.checked}
+                    disabled={this.props.isDisabled}
+                    label=""
+                    value={list.id}
+                    className='toggleUser'
+                    onChange={this.onSprintLevelChange}
+                  />
+                  {/* <IonCheckbox slot="end" checked={list.checked} value={list.id} onIonChange={this.onSprintLevelChange} /> */}
+                </ListGroup.Item>
               ))}
-            </IonList>
-          </div>} */}
+            </ListGroup>
+          </div>}
       </Fragment>
     );
   }

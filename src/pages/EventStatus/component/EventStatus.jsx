@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Row, Col, InputGroup, FormControl, Button, ListGroup, Badge } from 'react-bootstrap';
+import { Row, Col, ListGroup } from 'react-bootstrap';
 import Select from 'react-select';
 import moment from 'moment';
 import '../scss/EventStatus.scss';
@@ -11,7 +11,6 @@ class EventStatus extends React.Component {
         this.state = {
           selectedEvent: null,
           eventList: [],
-          eventData: [],
           feedbackSummary: {},
           loading: false
         }
@@ -29,24 +28,21 @@ class EventStatus extends React.Component {
               label: list.Name
             }
           })
-          this.setState({ eventData: response.arrRes, eventList });
+          this.setState({ eventList });
         });
       }
 
       onEventListChange = (selectedEvent) => {
-      //  console.log('-----e.target.value----',selectedEvent.value);
-       // console.log('-----e.target.label----',selectedEvent.label);
         this.setState({selectedEvent});
         const reqObj={event_id:selectedEvent.value};
         this.setState({ loading: true });
         this.props.getSummary(reqObj).then(response => {
-          //  console.log(response.resultArr);
             this.setState({ loading: false, feedbackSummary: response.resultArr });
            });
         
       }
     render() {
-        const { selectedEvent, eventList, eventData, feedbackSummary, loading } = this.state;
+        const { selectedEvent, eventList, feedbackSummary } = this.state;
         return (
             <div className='eventStatusWrapper'>
             <h3 className='pageTitle'>Event Status</h3>

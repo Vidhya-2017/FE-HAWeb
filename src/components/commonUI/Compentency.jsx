@@ -50,7 +50,8 @@ class competancyList extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.selectedCompentency) {
       if (this.state.compentencySetList.length !== 0) {
-        this.setState({ selectedCompentency: nextProps.selectedValue });
+        const compentencyVal  = this.state.compentencySetList.filter(f => nextProps.selectedValue.includes(f.value));
+        this.setState({ selectedCompentency: compentencyVal ? compentencyVal : null });
       }
     }
     if (nextProps.eventcompentencyList !== this.state.eventcompentencyList && nextProps.isCompentency) {
@@ -59,11 +60,17 @@ class competancyList extends React.Component {
     }
   }
 
-  compentencyOnChange = (e) => {
+  compentencyOnChange = (selectedCompentency) => {
     this.setState({
-      selectedCompentency: e.detail.value
+      selectedCompentency: selectedCompentency
     });
-    this.props.onEventChange({target: {...e, name: 'competancy'}});
+    const value = [];
+    if(selectedCompentency) {
+      selectedCompentency.forEach(item => {
+        value.push(item.value)
+      })
+    }
+    this.props.onEventChange({target: {value, name: 'competancy'}});
   }
 
   onIconClick = (value) => {
@@ -73,20 +80,23 @@ class competancyList extends React.Component {
   }
 
   render() {
-    const { selectedCompentency, showCompentencyChips, compentencySetList } = this.state;
+    const { compentencySetList, selectedCompentency } = this.state;
     return (
       <Fragment>
         <Row>
           <Col className='fieldName'><span>Compentency Rating:</span></Col>
           <Col>
             <Select
-              value={selectedCompentency}
-              onChange={this.handleEventChange}
+              onChange={this.compentencyOnChange}
               options={compentencySetList}
+              value={selectedCompentency}
               defaultValue={selectedCompentency}
-              styles={SelectStyles(220)}
+              styles={SelectStyles(215)}
               className="mb-3"
+              isMulti
+              closeMenuOnSelect={false}
               placeholder='Compentency Rating'
+              isDisabled={this.props.isDisabled}
             />
           </Col>
         </Row>

@@ -16,15 +16,42 @@ class SideNavBar extends React.Component {
     }, {
       pathname: '/squadReport',
       value: 'squadReport'
-    },
-    {
+    }, {
       pathname: '/eventDetails',
       value: 'eventDetails'
+    }, {
+      pathname: '/eventRegister',
+      value: 'eventRegister'
+    }, {
+      pathname: '/eventCoordinator',
+      value: 'eventCoordinator'
+    }, {
+      pathname: '/candidateSelection',
+      value: 'candidateSelection'
+    }, {
+      pathname: '/squadFormation',
+      value: 'squadFormation'
+    }, {
+      pathname: '/candidateFeedback',
+      value: 'candidateFeedback'
+    }, {
+      pathname: '/eventFeedback',
+      value: 'eventFeedback'
+    }, {
+      pathname: '/eventStatus',
+      value: 'eventStatus'
+    }, {
+      pathname: '/more',
+      value: 'more'
     }];
+    const eventDetailLinks = [
+      "eventRegister", "eventCoordinator", "candidateSelection", "squadFormation", "candidateFeedback", "eventFeedback", "eventStatus", "more"
+    ];
     const activeNav = navBars.find(nav => nav.pathname === props.history.location.pathname);
+    const isEventDetailLink = eventDetailLinks.find(item => item === activeNav.value);
     this.state = {
       activeNav: activeNav ? activeNav.value : '',
-      selectedAccordion: null
+      selectedAccordion: isEventDetailLink ? "0" : ""
     }
   }
 
@@ -46,11 +73,11 @@ class SideNavBar extends React.Component {
   }
 
   accordionSelect = (e) => {
-    this.setState({ selectedAccordion: e})
+    this.setState({ selectedAccordion: e })
 
   }
   render() {
-    const {selectedAccordion, activeNav } = this.state;
+    const { selectedAccordion, activeNav } = this.state;
     return (
       <Fragment>
         {this.props.userDetails && this.props.userDetails.user_id ? <div id="layoutSidenav_nav">
@@ -74,47 +101,47 @@ class SideNavBar extends React.Component {
                   <div className={`sb-nav-link-icon ${activeNav === "squadReport"}`}><i className="fa fa-area-chart"></i></div>
                   Squad Report
                 </Button>
-                <Accordion onSelect={this.accordionSelect}>
-                    <Accordion.Toggle as={Card.Header} style={{justifyContent: 'space-between', cursor: 'pointer', paddingRight: 10}} onClick={this.eventDetailsOpen} className={`${activeNav === "eventDetails"} nav-link`} eventKey="0">
-                      Event Details
+                <Accordion defaultActiveKey={selectedAccordion ? "0" : ""} onSelect={this.accordionSelect}>
+                  <Accordion.Toggle as={Card.Header} style={{ justifyContent: 'space-between', cursor: 'pointer', paddingRight: 10 }} onClick={this.eventDetailsOpen} className={`${activeNav === "eventDetails"} nav-link`} eventKey="0">
+                    Event Details
                       <div className={`sb-nav-link-icon ${activeNav === "eventDetails"}`}><i className={`fa ${selectedAccordion ? 'fa-angle-down' : 'fa-angle-right'} fa-lg`}></i></div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey="0">
-                      <Fragment>
-                        <Button className={`${activeNav === "eventRegister"} nav-link`} onClick={() => this.pageRedirect('/eventRegister', 'eventRegister')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventRegister"}`}><i className="fa fa-registered"></i></div>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="0">
+                    <Fragment>
+                      <Button className={`${activeNav === "eventRegister"} nav-link`} onClick={() => this.pageRedirect('/eventRegister', 'eventRegister')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "eventRegister"}`}><i className="fa fa-registered"></i></div>
                           Event Registration
                         </Button>
-                        <Button className={`${activeNav === "eventCoordinator"} nav-link`} onClick={() => this.pageRedirect('/eventCoordinator', 'eventCoordinator')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventCoordinator"}`}><i className="fa fa-code-fork"></i></div>
+                      <Button className={`${activeNav === "eventCoordinator"} nav-link`} onClick={() => this.pageRedirect('/eventCoordinator', 'eventCoordinator')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "eventCoordinator"}`}><i className="fa fa-code-fork"></i></div>
                           Event Coordinators
                         </Button>
-                        <Button className={`${activeNav === "candidateSelection"} nav-link`} onClick={() => this.pageRedirect('/candidateSelection', 'candidateSelection')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "candidateSelection"}`}><i className="fa fa-code-fork"></i></div>
+                      <Button className={`${activeNav === "candidateSelection"} nav-link`} onClick={() => this.pageRedirect('/candidateSelection', 'candidateSelection')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "candidateSelection"}`}><i className="fa fa-code-fork"></i></div>
                           Candidate Selection
                         </Button>
-                        <Button className={`${activeNav === "squadFormation"} nav-link`} onClick={() => this.pageRedirect('/squadFormation', 'squadFormation')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "squadFormation"}`}><i className="fa fa-users"></i></div>
+                      <Button className={`${activeNav === "squadFormation"} nav-link`} onClick={() => this.pageRedirect('/squadFormation', 'squadFormation')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "squadFormation"}`}><i className="fa fa-users"></i></div>
                           Squad Formation
                         </Button>
-                        <Button className={`${activeNav === "candidateFeedback"} nav-link`} onClick={() => this.pageRedirect('/candidateFeedback', 'candidateFeedback')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "candidateFeedback"}`}><i className="fa fa-comments-o"></i></div>
+                      <Button className={`${activeNav === "candidateFeedback"} nav-link`} onClick={() => this.pageRedirect('/candidateFeedback', 'candidateFeedback')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "candidateFeedback"}`}><i className="fa fa-comments-o"></i></div>
                           Candidate Feedback
                         </Button>
-                        <Button className={`${activeNav === "eventFeedback"} nav-link`} onClick={() => this.pageRedirect('/eventFeedback', 'eventFeedback')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventFeedback"}`}><i className="fa fa-code-fork"></i></div>
+                      <Button className={`${activeNav === "eventFeedback"} nav-link`} onClick={() => this.pageRedirect('/eventFeedback', 'eventFeedback')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "eventFeedback"}`}><i className="fa fa-code-fork"></i></div>
                           Event Feedback
                         </Button>
-                        <Button className={`${activeNav === "eventStatus"} nav-link`} onClick={() => this.pageRedirect('/eventStatus', 'eventStatus')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "eventStatus"}`}><i className="fa fa-bar-chart"></i></div>
+                      <Button className={`${activeNav === "eventStatus"} nav-link`} onClick={() => this.pageRedirect('/eventStatus', 'eventStatus')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "eventStatus"}`}><i className="fa fa-bar-chart"></i></div>
                           Event Status
                         </Button>
-                        <Button className={`${activeNav === "more"} nav-link`} onClick={() => this.pageRedirect('/more', 'more')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "more"}`}><i className="fa fa-ellipsis-v"></i></div>
+                      <Button className={`${activeNav === "more"} nav-link`} onClick={() => this.pageRedirect('/more', 'more')}>
+                        <div className={`sb-nav-link-icon ${activeNav === "more"}`}><i className="fa fa-ellipsis-v"></i></div>
                           More
                         </Button>
-                      </Fragment>
-                    </Accordion.Collapse>
+                    </Fragment>
+                  </Accordion.Collapse>
                 </Accordion>
               </div>
             </div>

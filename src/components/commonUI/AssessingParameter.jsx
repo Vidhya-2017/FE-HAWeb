@@ -43,15 +43,22 @@ class AssessingParameter extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state.assessingParameterList.length > 0 && nextProps.selectedValue !== this.state.assessingParameter) {
-      this.setState({ assessingParameter: nextProps.selectedValue });
+      const paramsVal  = this.state.assessingParameterList.filter(f => nextProps.selectedValue.includes(f.value));
+      this.setState({ assessingParameter: paramsVal ? paramsVal : null });
     }
   }
 
-  assessingPrmtrOnChange = (e) => {
+  assessingPrmtrOnChange = (assessingParameter) => {
     this.setState({
-      assessingParameter: e.detail.value
+      assessingParameter: assessingParameter
     });
-    this.props.onEventChange({target: {...e, name: 'assessingParameter'}});
+    const value = [];
+    if(assessingParameter) {
+      assessingParameter.forEach(item => {
+        value.push(item.value)
+      })
+    }
+    this.props.onEventChange({target: {value, name: 'assessingParameter'}});
   }
 
   render() {
@@ -68,12 +75,15 @@ class AssessingParameter extends React.Component {
           <Col className='fieldName'><span>Assessing Parameter:</span></Col>
           <Col>
             <Select
-              value={assessingParameter}
-              onChange={this.handleEventChange}
+              onChange={this.assessingPrmtrOnChange}
               options={assessingParameterList}
               defaultValue={assessingParameter}
-              styles={SelectStyles(220)}
+              value={assessingParameter}
+              styles={SelectStyles(215)}
+              isMulti
+              closeMenuOnSelect={false}
               className="mb-3"
+              isDisabled={this.props.isDisabled}
               placeholder='Assessing Parameter'
             />
           </Col>

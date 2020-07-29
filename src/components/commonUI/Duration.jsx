@@ -38,7 +38,8 @@ class Duration extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.durationValue) {
-      this.setState({ durationValue: nextProps.selectedValue });
+      const durationVal = this.state.durationList.find(list => list.value === nextProps.selectedValue);
+      this.setState({ durationValue: durationVal ? durationVal : null });
     }
   }
 
@@ -66,6 +67,7 @@ class Duration extends React.Component {
               styles={SelectStyles(215)}
               className="mb-3"
               placeholder='Duration'
+              isDisabled={this.props.isDisabled}
             />
           </Col>
         </Row>

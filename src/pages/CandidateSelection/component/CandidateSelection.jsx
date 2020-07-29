@@ -1,7 +1,6 @@
 import React from 'react';
-import { Row, Col, Modal, FormControl, InputGroup, ListGroup, Form, Toast, Button } from 'react-bootstrap';
+import { Row, Col, FormControl, InputGroup, ListGroup, Form, Toast, Button } from 'react-bootstrap';
 import Select from 'react-select';
-import moment from 'moment';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/CandidateSelection.scss';
 import CandidateSkeleton from './CandidateSkeleton';
@@ -110,7 +109,6 @@ class CandidateSelection extends React.Component {
       UpdatedBy: user_id,
       candidateIDs
     }
-    console.log('-reqObj--', reqObj);
     this.props.eventCandidateAssign(reqObj).then((response) => {
       if (response && response.errCode === 200) {
         this.setState({ showToast: true, candidateList: [], eventSelected: null, toastMsg: 'Candidates added successfully.' });
@@ -122,7 +120,6 @@ class CandidateSelection extends React.Component {
 
   render() {
     const { showToast, toastMsg, candidateList, EventDetailsList, searchQuery, eventSelected } = this.state;
-    console.log('--candidateList--', candidateList);
     return (
       <div className='candidateSelectionWrapper'>
         <div className="pageHeader">

@@ -50,8 +50,8 @@ class SkillListMenu extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.selectedSkillSet) {
       if (this.state.skillSetList.length !== 0) {
-        
-        this.setState({ selectedSkillSet: this.state.skillSetList.find(list => list.value === nextProps.selectedValue) });
+        const skillVal  = this.state.skillSetList.filter(f => nextProps.selectedValue.includes(f.value));
+        this.setState({ selectedSkillSet: skillVal ? skillVal : [] });
       }
     }
     if (nextProps.eventSkillList !== this.state.eventSkillList && nextProps.isCandidateSkill) {
@@ -60,11 +60,17 @@ class SkillListMenu extends React.Component {
     }
   }
 
-  skillOnChange = (e) => {
-    console.log('---e---', e);
+  skillOnChange = (selectedSkillSet) => {
     this.setState({
-      selectedSkillSet: e
+      selectedSkillSet
     });
+    const value = [];
+    if(selectedSkillSet) {
+      selectedSkillSet.forEach(item => {
+        value.push(item.value)
+      })
+    }
+    this.props.onEventChange({target: {value, name: 'skillset'}});
     // this.props.onEventChange({target: {...e, name: 'skillset'}});
   }
 
@@ -77,15 +83,16 @@ class SkillListMenu extends React.Component {
           <Col className='fieldName'><span>Skill List:</span></Col>
           <Col>
             <Select
-              value={selectedSkillSet}
               onChange={this.skillOnChange}
               options={skillSetList}
               defaultValue={selectedSkillSet}
-              styles={SelectStyles(220)}
+              value={selectedSkillSet}
+              styles={SelectStyles(215)}
               isMulti
               closeMenuOnSelect={false}
               className="mb-3"
               placeholder='Skill List'
+              isDisabled={this.props.isDisabled}
             />
           </Col>
         </Row>

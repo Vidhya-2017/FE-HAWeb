@@ -84,6 +84,7 @@ class EventLocation extends React.Component {
               styles={SelectStyles(215)}
               className="mb-3"
               placeholder='Event Location'
+              isDisabled={this.props.isDisabled}
             />
           </Col>
         </Row>

@@ -63,7 +63,6 @@ class EventFeedback extends React.Component {
   }
 
   inputFieldChange = (e) => {
-    const targetName = e.target.name;
     const targetValue = e.target.value;
     const targetType = e.target.type;
     let formIsValid = true;
@@ -105,9 +104,6 @@ class EventFeedback extends React.Component {
       txtComment: this.state.comment,
       createdBy: this.props.userDetails.user_id,
     }
-
-    console.log(reqObj);
-
     this.props.clientFeedbackOnEvent(reqObj).then((response) => {
       if (response.errCode === 200) {
         this.setState({
@@ -144,7 +140,6 @@ class EventFeedback extends React.Component {
             <Col>
               <Select
                 className="mb-3"
-                placeholder='Event Name'
                 value={selectedEvent}
                 onChange={this.handleEventChange}
                 options={eventList}

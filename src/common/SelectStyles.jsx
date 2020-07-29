@@ -1,11 +1,12 @@
 // import React from 'react';
 
-const SelectStyles = (width = 200) => {
+const SelectStyles = (width = 200, maxWidth = 215) => {
   const defaultStyle = {
     control: styles => ({
       ...styles,
       backgroundColor: 'rgba(255, 255, 255, 0.12)',
       minWidth: width,
+      maxWidth: maxWidth,
       minHeight: 40,
       borderColor: '#000',
       borderRadius: '5px',
