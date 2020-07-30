@@ -39,7 +39,7 @@ export const EventRegistrationAction = {
   },
   editEvent: async (data) => {
     try {
-      const response = await clients.editEventNew.post('/editEventNew.php', data);
+      const response = await clients.axiosAPI.post('/editEventNew.php', data);
       return (response.data);
     }
     catch (error) {

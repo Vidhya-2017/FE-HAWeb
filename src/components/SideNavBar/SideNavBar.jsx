@@ -48,7 +48,7 @@ class SideNavBar extends React.Component {
       "eventRegister", "eventCoordinator", "candidateSelection", "squadFormation", "candidateFeedback", "eventFeedback", "eventStatus", "more"
     ];
     const activeNav = navBars.find(nav => nav.pathname === props.history.location.pathname);
-    const isEventDetailLink = eventDetailLinks.find(item => item === activeNav.value);
+    const isEventDetailLink = activeNav && eventDetailLinks.find(item => item === activeNav.value);
     this.state = {
       activeNav: activeNav ? activeNav.value : '',
       selectedAccordion: isEventDetailLink ? "0" : ""

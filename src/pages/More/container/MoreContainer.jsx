@@ -4,6 +4,11 @@ import { MoreActions } from '../modules/MoreActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    addClientDetails: MoreActions.addClientDetails,
+    addSkillDetails: MoreActions.addSkillDetails,
+    addLocationDetails: MoreActions.addLocationDetails,
+    addCompetancyDetails: MoreActions.addCompetancyDetails,
+    addAssessmentDetails: MoreActions.addAssessmentDetails
   };
 };
 

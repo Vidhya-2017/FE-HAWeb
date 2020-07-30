@@ -1,25 +1,94 @@
-.eventRegisterWrapper{
-    min-width: 470px;
-    margin: 0 auto;
+.eventRegisterWrapper {
+  min-width: 470px;
+  margin: 0 auto;
+
+  .eveRegCntrlPanel {
+    text-align: center;
+    margin: 10px 10px 100px;
+
+    .fileUploadBtn {
+      background: #1b91e5;
+      border: solid 2px #1b91e5;
+      color: white;
+      font-weight: 500;
+      height: 40px;
+      margin-left: 10px;
+
+      &:hover {
+        background: white;
+        color: #1b91e5;
+        border: solid 2px #1b91e5;
+      }
+    }
+  }
+
+  .pageHeader{
+    display: flex;
+    justify-content: space-between;
     .pageTitle{
         padding: 10px 20px;
         text-align: center;
+        width: 100%;
     }
-    .row {
-        margin: 0;
-    }
-    .col{
-        padding-right: 10px;
-        padding-left: 10px;
-    }
-    .registerForm{
-        .fieldName{
-            padding: 10px;
-        }
-        .inputField{
-            height: 38px;
-            border: solid 1px #000000;
-            border-radius: 5px;
+    .editEvent{
+        font-size: 26px;
+        color: #2196f3;
+        padding: 15px 0;
+        cursor: pointer;
+        &:hover{
+          color: #2196f375;
         }
     }
+}
+
+  .row {
+    margin: 0;
+  }
+
+  .col {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .registerForm {
+    .fieldName {
+      padding: 10px;
+    }
+
+    .inputField {
+      height: 38px;
+      border: solid 1px #000000;
+      border-radius: 5px;
+    }
+
+    .datePicker {
+      height: 40px;
+      width: 215px;
+      border: solid 1px #000;
+      border-radius: 5px;
+      margin-bottom: 14px;
+
+      .react-date-picker__inputGroup {
+        .react-date-picker__inputGroup__input:invalid {
+          background: #fff;
+          outline: none;
+        }
+      }
+
+      .react-date-picker__wrapper {
+        border: none;
+
+        .react-date-picker__button {
+          outline: none;
+        }
+      }
+
+      .react-date-picker__calendar {
+        .react-calendar__tile--now {
+          background: #1b91e5;
+          color: #fff
+        }
+      }
+    }
+  }
 }
