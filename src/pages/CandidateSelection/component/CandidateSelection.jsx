@@ -65,8 +65,11 @@ class CandidateSelection extends React.Component {
         this.setState({
           candidateList: this.candidateList,
         });
+      } else if (response && response.errCode === 404 && response.status === "No records found") {
+        this.setState({ showToast: true, candidateList: null, toastMsg: "No records found." })
+
       } else {
-        this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
+        this.setState({ showToast: true, candidateList: null, toastMsg: 'Something went Wrong. Please try again later.' })
       }
     });
   }

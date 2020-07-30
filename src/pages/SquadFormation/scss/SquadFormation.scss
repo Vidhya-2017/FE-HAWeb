@@ -1,0 +1,180 @@
+.squadWrapper {
+  min-width: 470px;
+  margin: 0 auto;
+
+  .pageHeader {
+    display: flex;
+    justify-content: space-between;
+
+    .pageTitle {
+      padding: 10px 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .addUser {
+      font-size: 26px;
+      color: #2196f3;
+      padding: 15px 0;
+      cursor: pointer;
+    }
+  }
+
+  .row {
+    margin: 0;
+  }
+
+  .col {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .candidateSelectionForm {
+    .fieldName {
+      padding: 10px;
+    }
+
+    .inputField {
+      height: 38px;
+      border: solid 1px #000000;
+      border-radius: 5px;
+    }
+  }
+
+  .candidateList {
+    max-height: 450px;
+    overflow: auto;
+    border: solid 1px #e3e3e3;
+
+    .userList {
+      display: flex;
+      justify-content: space-between;
+
+      .candidateDetails {
+        .email {
+          color: #979696;
+          font-size: 13px;
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+        }
+      }
+
+      .toggleUser {
+        height: 60px;
+        width: 40px;
+        padding: 20px 10px;
+
+        .form-check-input {
+          height: 20px;
+          width: 20px;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  .eventCoordForm {
+    .fieldName {
+      padding: 10px;
+    }
+
+    .inputField {
+      height: 38px;
+      border: solid 1px #000000;
+      border-radius: 5px;
+    }
+  }
+
+  .memberLabel {
+    padding: 0 10px;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .panelRegCntrlPanel {
+    text-align: center;
+    margin: 10px;
+
+    .fileUploadBtn {
+      background: #1b91e5;
+      border: solid 2px #1b91e5;
+      color: white;
+      font-weight: 500;
+      height: 40px;
+      margin-left: 10px;
+
+      &:hover {
+        background: white;
+        color: #1b91e5;
+        border: solid 2px #1b91e5;
+      }
+    }
+  }
+
+  .userListGroup {
+    .userList {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+
+      .userDetails {
+        p {
+          margin: 0;
+          color: #666666;
+          font-size: 13px;
+        }
+
+        h6 {
+          margin: 0;
+          font-size: 16px;
+        }
+      }
+
+      .userControl {
+        display: flex;
+
+        .toggleUser {
+          padding: 7px 0;
+        }
+
+        .deleteIcon {
+          margin: 0 10px;
+          padding: 10px 5px;
+          color: red;
+        }
+      }
+    }
+  }
+}
+
+.eventModal {
+  .userListGroup {
+    padding: 0 10px;
+
+    .userList {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .fileUploadBtn {
+    background: #1b91e5;
+    border: solid 2px #1b91e5;
+    color: white;
+    font-weight: 500;
+    height: 40px;
+    margin-left: 10px;
+
+    &:hover {
+      background: white;
+      color: #1b91e5;
+      border: solid 2px #1b91e5;
+    }
+  }
+}

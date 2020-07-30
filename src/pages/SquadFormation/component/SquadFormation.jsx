@@ -1,466 +1,337 @@
 import React from 'react';
-import '../scss/SquadFormation.scss';
-import { Button, FormCheck, Form, InputGroup, FormControl, Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { CandidatePhoto } from '../../../components/commonUI/CandidatePhoto';
-import Avatar from '../../../common/images/account.svg';
-import { SquadFormActions } from '../modules/SquadFormationActions';
+import { Row, Col, Modal, FormControl, InputGroup, ListGroup, Form, Toast, Button } from 'react-bootstrap';
+import Select from 'react-select';
 import moment from 'moment';
+import SelectStyles from '../../../common/SelectStyles';
+import '../scss/SquadFormation.scss';
 
-const inputField = {
-    value: '',
-    validation: {
-        required: true
-    },
-    valid: false
-};
-
-const squadForm = {
-    eventName: inputField,
-    squadName: inputField,
-}
 
 class SquadFormation extends React.Component {
 
-
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            formIsValid: false,
-            loading: false,
-            showToast: false,
-            toastMsg: '',
-            toastColor: 'primary',
-            squadId: '',
-            selectedCandidate: [],
-            squadList: [],
-            eventDetailsList: [],
-            candidateList: [],
-            squadRegister: { ...squadForm },
-            candidateView: false,
-            search: '',
-            imgErr: '',
-            checked: false,
-            selected: '',
-            selectedSquad: '',
-            squadTeamImg: '',
-        }
-        this.imageRef = React.createRef();
+  constructor(props) {
+    super(props);
+    this.state = {
+      showToast: false,
+      toastMsg: '',
+      EventDetailsList: [],
+      eventSelected: null,
+      showUserModal: false,
+      squadList: [],
+      selectedSquad: null,
+      newSquadName: '',
+      candidateList: [],
+      searchQuery: ''
     }
-    componentDidMount() {
-        this.setState({ loading: true })
-        SquadFormActions.getEventList().then((response) => {
-            if (response && response.arrRes) {
-                this.setState({ eventDetailsList: response.arrRes, loading: false });
-            } else {
-                this.setState({ loading: false, showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
-            }
-        })
-    }
+    this.candidateList = [];
+  }
 
-
-    getSquadList = (data) => {
-        this.setState({ loading: true })
-        SquadFormActions.getSquadList(data).then((response) => {
-            this.setState({ squadList: response.arrRes, loading: false, checked: false, selectedSquad: '' });
-        })
-    }
-
-    checkValidity(inputValue, rules, inputType) {
-        let value = '';
-        if (inputValue) value = inputValue.toString();
-        let isValid = true;
-        if (!rules) {
-            return true;
-        }
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        if (rules.isNumeric) {
-            const pattern = /^\d+$/;
-            isValid = pattern.test(value) && isValid
-        }
-
-        return isValid;
-    }
-
-    getDataUrl(img) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
-            ctx.drawImage(img, 0, 0);
-            return canvas.toDataURL('image/jpeg');
-        }
-    }
-
-
-    inputFieldChange = (e) => {
-        const targetName = e.target.name;
-        const targetValue = e.detail.value;
-        const targetType = e.target.type;
-        const updatedSquadForm = {
-            ...this.state.squadRegister
-        };
-        if (targetName === "eventName") {
-            updatedSquadForm.squadName.value = '';
-            updatedSquadForm.squadName.valid = false;
-            const data = { eventID: targetValue };
-            this.getSquadList(data);
-        }
-        const updatedFormElement = {
-            ...updatedSquadForm[targetName]
-        };
-        updatedFormElement.value = targetValue;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation, targetType);
-        updatedSquadForm[targetName] = updatedFormElement;
-
-        let formIsValid = true;
-        for (let inputIdentifier in updatedSquadForm) {
-            formIsValid = updatedSquadForm[inputIdentifier].valid && formIsValid;
-        }
-        this.setState({ squadRegister: updatedSquadForm, formIsValid });
-    }
-
-    eventFieldChange = (e) => {
-        if (e.target.value && e.target.value !== this.state.squadRegister.eventName.value) {
-            this.getEventByUser(e);
-            // console.log(e.target.value);
-            // this.getSquadList(e.target.value);
-            // this.inputFieldChange(e);
-        }
-    }
-
-    getEventByUser = (e) => {
-        const req = { EventID: e.target.value };
-        // this.setState({ loading: true });
-        const user_id = this.props.userDetails.user_id;
-        SquadFormActions.getEventByUser(req).then((response) => {
-            if (response && response.arrRes) {
-                const organiserIDs = response.arrRes[0].OrganisersId;
-                const panelistIDs = response.arrRes[0].PanelData;
-                const isOrganiser = organiserIDs.find((id) => id.userID === user_id);
-                const ispanelist = panelistIDs.find((id) => id.userID === user_id);
-                if (ispanelist !== undefined || isOrganiser !== undefined) {
-                    this.inputFieldChange(e);
-                } else {
-                    this.setState({ loading: false, showToast: true, toastMsg: "You don't have permission. Please contact Organiser." });
-                }
-            }
-        })
-    }
-
-    handleCheckClick = (e) => {
-        if (e.target.checked) {
-            //append to array
-            this.setState({
-                selectedCandidate: this.state.selectedCandidate.concat([e.target.value])
-            })
-        }
-        else {
-            //remove from array
-            this.setState({
-                selectedCandidate: this.state.selectedCandidate.filter(function (val) { return val.ID !== e.target.value.ID })
-            })
-        }
-    }
-
-    handleSquadCheckClick = (e) => {
-        var value = JSON.parse(e);
-        var image = value.squad_team_img;
-        const base64 = value.squad_team_img !== "" ? 'data:image/jpeg;base64,' + image : "";
-        if (value.ID !== this.state.squadId) {
-            const updatedSquadForm = { ...this.state.squadRegister };
-            const updatedFormElement = { ...updatedSquadForm['squadName'] };
-            updatedFormElement.value = value.SquadName;
-            updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation, '');
-            updatedSquadForm['squadName'] = updatedFormElement;
-            this.setState({
-                squadId: value.ID, squadRegister: updatedSquadForm, checked: true, selectedSquad: value.SquadName, squadTeamImg: base64
-            })
-        }
-        else {
-            const updatedSquadForm = { ...this.state.squadRegister };
-            const updatedFormElement = { ...updatedSquadForm['squadName'] };
-            updatedFormElement.value = '';
-            updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation, '');
-            updatedSquadForm['squadName'] = updatedFormElement;
-            this.setState({ checked: false, selectedSquad: '', squadRegister: updatedSquadForm, squadId: '' })
-        }
-    }
-
-    getCandidatesEvent = (req, squadId, resetSquadData, toastMsg, showToast, selectedCandidate) => {
-        this.setState({ loading: true });
-        const squadName = this.state.squadRegister.squadName.value;
-        SquadFormActions.getCandidateList(req).then((res) => {
-            var candidates = res.arrRes.filter(function (val) { return val.SquadName === squadName || val.SquadName == null })
-            this.setState({
-                candidateList: candidates,
-                squadRegister: { ...resetSquadData },
-                selectedCandidate: selectedCandidate,
-                loading: false,
-                squadId: squadId,
-                showToast: showToast,
-                toastMsg: toastMsg,
-                toastColor: "primary",
-                formIsValid: false,
-                candidateView: true,
-            });
-        })
-    }
-
-    searchCandidates = (e) => {
-        var value = e.target.value, id = this.state.squadRegister.eventName.value
-        if (value.length >= 3 || value.length === 0) {
-            const req = { 'emp_name': value, 'event_id': id }
-            if (this.state.loading === false) {
-                this.setState({ loading: true })
-                SquadFormActions.getCandidateList(req).then((res: any) => {
-                    this.setState({
-                        loading: false, candidateList: res.arrRes, search: value
-                    })
-                })
-            }
-        }
-    }
-
-    submitSquad = () => {
-        const formData = this.state.squadRegister
-        const candidateList = this.state.selectedCandidate.map((list: any) => {
-            return list.ID;
+  componentDidMount() {
+    this.props.getEventList().then((response) => {
+      if (response && response.arrRes) {
+        const eventList = response.arrRes.map(list => {
+          return {
+            value: list.EventId,
+            EventId: list.EventId,
+            label: list.Name
+          }
         });
-        // var date = moment(dateTime).format("YYYY-MM-DD HH:mm:ss");
-        const user_id = this.props.userDetails.user_id;
-        const reqObj = {
-            SquadID: this.state.squadId,
-            CandidateID: candidateList,
-            EventID: formData.eventName.value,
-            isActive: true,
-            CreatedBy: user_id,
-            UpdatedBy: user_id,
-        }
-        if (this.state.selectedCandidate.length !== 0) {
-            this.setState({ loading: true });
+        this.setState({ EventDetailsList: eventList, loading: false });
+      } else {
+        this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
+      }
+    });
+  }
 
-            SquadFormActions.squadCandidatesInsert(reqObj).then((res: any) => {
-                if (res && res.errCode === 200) {
-                    const { squadRegister } = this.state;
-                    const resetSquadData = {
-                        ...squadRegister
-                    };
-                    for (let inputIdentifier in resetSquadData) {
-                        formData[inputIdentifier] = resetSquadData[inputIdentifier].value;
-                        resetSquadData[inputIdentifier].value = '';
-                        resetSquadData[inputIdentifier].valid = false;
-                    }
-                    this.setState({
-                        toastMsg: "Squad Registered successfully",
-                        showToast: true,
-                        loading: false,
-                        toastColor: "primary",
-                        candidateView: false,
-                        squadList: [],
-                        checked: false,
-                        selectedSquad: '',
-                        squadId: '',
-                        squadRegister: { ...resetSquadData },
-                    });
-                    // this.props.history.push('/homePage');
-                }
-                else {
-                    this.setState({
-                        loading: false,
-                        toastColor: "primary",
-                        showToast: true,
-                        toastMsg: res.status,
-                    });
-                }
-            })
-        }
-        else {
-            this.setState({ toastMsg: "Please Select Candidate For Squad", toastColor: "primary", showToast: true })
-        }
-    }
+  handleEventChange = (eventSelected) => {
+    this.setState({ eventSelected, selectedSquad: null, candidateList: [] });
+    let id = eventSelected.value;
+    const user_id = this.props.userDetails.user_id;
+    const isPanelReq = { eventID: id, userID: user_id };
+    this.props.checkIsOrganiser(isPanelReq).then((panelRes) => {
+      if (panelRes && panelRes.ispanel !== '' && !panelRes.ispanel) {
+        this.getSquadList(id);
+      } else {
+        this.setState({ toastMsg: "You don't have permission. Please contact Organiser.", showToast: true });
+      }
+    });
+  }
 
-    nextClick = () => {
-        const formData = {};
-        const { squadRegister } = this.state;
-        this.setState({ loading: true });
-        const resetSquadData = {
-            ...squadRegister
-        };
-        for (let inputIdentifier in resetSquadData) {
-            formData[inputIdentifier] = resetSquadData[inputIdentifier].value;
-        }
-        var dateTime = new Date(), imageSrc, imageBase64
-        var date = moment(dateTime).format("YYYY-MM-DD HH:mm:ss");
-        const user_id = this.props.userDetails.user_id;
-        var reqObj = {
-            SquadID: this.state.squadId,
-            SquadName: formData.squadName,
-            EventID: formData.eventName,
-            CreatedDate: date,
-            CreatedBy: user_id,
-            UpdatedBy: user_id,
-            UpdatedDate: date,
-        }
-        if (this.imageRef.current && this.imageRef.current.children && this.imageRef.current.children[0].children[0].tagName === 'IMG') {
-            imageSrc = this.imageRef.current.children[0].children[0];
-            imageBase64 = this.getDataUrl(imageSrc);
-            var pair = { teamImg: imageBase64 && imageBase64.replace('data:image/jpeg;base64,', '') }
-            reqObj = { ...reqObj, ...pair }
-        }
-        // list of candidate
-        const req = { event_id: formData.eventName };
-        let toastMsg = '';
-        let selectedCandidate = this.state.selectedCandidate;
-        let showTost = false;
-        if (this.state.checked) {
-            const squad = this.state.squadList.find((list: any) => list.SquadName === formData.squadName);
-            const request = { squad_id: squad.ID };
-            SquadFormActions.editSquadImage(reqObj).then((response: any) => {
-                if (response && response.errCode === 200) {
-                    document.dispatchEvent(new CustomEvent("removePhoto", {
-                        detail: { removePhoto: true }
-                    }))
-                    SquadFormActions.getSquadCandidateList(request).then((squadResponse) => {
-                        this.getCandidatesEvent(req, this.state.squadId, resetSquadData, toastMsg, showTost, squadResponse.arrRes)
-                    })
-                }
-            })
+  getSquadList = (id, newSquadName = '') => {
+    const reqObj = { eventID: id };
+    this.props.getSquadList(reqObj).then((response) => {
+      if (response && response.arrRes) {
+        console.log(response.arrRes);
+        const squadList = response.arrRes.map(list => {
+          return {
+            value: list.ID,
+            ID: list.ID,
+            label: list.SquadName,
+            squad_team_img: list.squad_team_img
+          }
+        });
+        let selectedSquad = null;
+        if (newSquadName) {
+          selectedSquad = squadList.find(list => list.label === newSquadName);
+          this.setState({
+            squadList,
+            selectedSquad,
+            showToast: true,
+            toastMsg: 'Squad Created successfully',
+            showUserModal: false
+          })
         } else {
-            SquadFormActions.addSquad(reqObj).then((response) => {
-                if (response && response.errCode === 200) {
-                    toastMsg = 'Squad Created successfully';
-                    showTost = true;
-                    this.getCandidatesEvent(req, response.squadId, resetSquadData, toastMsg, showTost, selectedCandidate)
-                }
-                else {
-                    this.setState({
-                        loading: false,
-                        showToast: true,
-                        toastColor: "danger",
-                        toastMsg: response.status,
-                    });
-                }
-            });
+          this.setState({ squadList });
         }
+      }
+    })
+  }
+  createSquadName = () => {
+    this.setState({ showUserModal: true });
+  }
+
+  handleClose = () => this.setState({ showUserModal: false });
+
+  squadNameOnChange = (e) => {
+    this.setState({ newSquadName: e.target.value })
+  }
+
+  handleNewSquadSubmit = () => {
+    const { newSquadName, eventSelected } = this.state;
+    const reqObj = {
+      SquadID: "",
+      SquadName: newSquadName,
+      EventID: eventSelected.value,
+      CreatedDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+      CreatedBy: this.props.userDetails.user_id,
+      UpdatedBy: this.props.userDetails.user_id,
+      UpdatedDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
     }
-    render() {
-        const { formIsValid, loading, toastMsg, toastColor, showToast,
-            squadRegister, eventDetailsList, squadList,
-            candidateView, candidateList, selectedCandidate,
-            imgErr, checked, search, squadTeamImg } = this.state;
+    this.props.addSquad(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        this.getSquadList(eventSelected.value, newSquadName);
+      }
+      else {
+        this.setState({
+          showToast: true,
+          toastMsg: response.status,
+        });
+      }
+    });
+  }
 
-        return (
-            <React.Fragment>
+  handleSquadChange = (selectedSquad) => {
+    const { eventSelected } = this.state;
+    this.setState({ selectedSquad });
+    const req = { event_id: eventSelected.value };
+    const request = { squad_id: selectedSquad.value };
+    this.props.getSquadCandidateList(request).then((squadRes) => {
+      if (squadRes && squadRes.errCode === 200) {
+        const squadCandidates = squadRes.arrRes;
+        this.props.getCandidateList(req).then((res) => {
+          if (res && res.errCode === 200) {
+            const eventCandidates = res.arrRes.filter(list => list.SquadName === null || list.SquadName === '');
+            const candidateList = [...squadCandidates, ...eventCandidates]
+            this.candidateList = candidateList
+            this.setState({ candidateList })
+          } else if (res && res.errCode === 404) {
+            this.setState({ showToast: true, toastMsg: 'No Records found in Candidate List' })
+          } else {
+            this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
+          }
+        });
+      } else if (squadRes && squadRes.errCode === 404) {
+        this.setState({ showToast: true, toastMsg: 'No Records found in Squad Candidate List' })
+      } else {
+        this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
+      }
+    });
 
-                <div>
-                    {/* <CandidatePhoto fetchedImage={"asd"} /> */}
-                </div>
+  }
 
-                {!candidateView ?
-                    <div>
-                        {imgErr.length > 0 && <div className='imageErr'>{imgErr}</div>}
-                        <div >
+  searchCandidate = (e) => {
+    const query = e.target.value;
+    const lowerCaseQuery = query.toLowerCase();
+    const searchedData = (query
+      ? this.candidateList.filter((list) =>
+        list['EmpName']
+          .toLowerCase()
+          .includes(lowerCaseQuery)
+      )
+      : this.candidateList);
+    this.setState({ candidateList: searchedData, searchQuery: query });
+  }
 
-                            <div className='form-group row'>
-                                <label className='col-sm-2 col-form-label'>Event:</label>
+  handleCandidateSelection = (e, list) => {
+    const { candidateList, selectedSquad } = this.state;
+    const candidateIndex = candidateList && candidateList.findIndex((lst) => list.ID === lst.ID);
+    const updatedcandidateList = [...candidateList];
+    updatedcandidateList[candidateIndex].SquadName = e.target.checked ? selectedSquad.value : '';
+    this.setState({
+      candidateList: updatedcandidateList
+    });
+  }
 
-                                <Form.Control as="select" name='eventName' value={squadRegister.eventName.value}
-                                    onChange={this.eventFieldChange}>
-                                    {eventDetailsList.map((list) =>
-                                        <option key={list.EventId} value={list.EventId}>{list.Name}</option>
-                                    )}
-
-                                </Form.Control>
-
-                            </div>
-
-                            <div className='form-group row'>
-                                <label className='col-sm-2 col-form-label'>Squad Name:</label>
-                                <input className="form-control py-4" id="squadName"
-                                    name="squadName" onChange={this.inputFieldChange}
-                                    value={squadRegister.squadName.value}
-                                    type="text" placeholder="Enter Squad Name" disabled={checked} />
-
-                            </div>
-
-                            <div className="">
-                                {squadList.map((list) =>
-                                    <Form.Check
-                                        type="radio"
-                                        label={list.SquadName}
-                                        name="formHorizontalRadios"
-                                        id="formHorizontalRadios1"
-                                        value={list.SquadName}
-                                        onClick={() => this.handleSquadCheckClick(JSON.stringify(list))}
-                                    />
-                                )}
-                            </div>
-
-                            <Button className=' btn btn-primary shadow'
-                                onClick={this.nextClick} disabled={!formIsValid}>Next</Button>
-
-                        </div>
-                    </div>
-                    :
-                    <div>
-
-                        <div className="SearchBar">
-                            <InputGroup className="mb-3">
-                                <FormControl
-                                    placeholder="Search Candidates"
-                                    aria-label="Search Candidates"
-                                    aria-describedby="basic-addon2"
-                                    onChange={this.searchCandidates}
-                                    value={search}
-                                />
-                                <InputGroup.Append>
-                                    <Button variant="outline-secondary">Button</Button>
-                                </InputGroup.Append>
-                            </InputGroup>
-                        </div>
-
-                        <div >
-                            <label className='col-sm-2 col-form-label'>Squad Name : <b>{}</b></label>
-                            <Badge variant="primary">{selectedCandidate.length} </Badge>{' '}
-                        </div>
-                        <div>
-                            <label className='col-sm-2 col-form-label'> Selected Count:</label>
-                            <Badge variant="primary">{} </Badge>
-                        </div>
-                        <div className="candidatesList">
-                            {candidateList.map((list) =>
-                                <ListGroup>
-                                    <ListGroup.Item>
-                                        <img src={Avatar} alt="AvatarImage" />
-                                        <h3>{list.ID}</h3>
-                                        <h3>{list.EmpName}</h3>
-                                        <p>{list.SkillName}</p>
-                                    </ListGroup.Item>
-
-                                    {selectedCandidate.some((data) => data.ID === list.ID) ?
-                                        <Form.Check name="selectedCandidateList" checked={true} value={list} onClick={this.handleCheckClick} />
-                                        : <Form.Check name="selectedCandidateList" checked={false} value={list} onClick={this.handleCheckClick} />
-                                    }
-                                </ListGroup>
-
-                            )}
-                        </div>
-
-
-                        <div className='squadFormCntrlPanel'>
-                        <Button className=' btn btn-primary shadow'
-                                onClick={this.submitSquad} disabled={false}>Submit</Button>
-                       
-                        </div>
-                    </div>
-                }
-            </React.Fragment>
-        )
+  insertCandidate = () => {
+    const { eventSelected, selectedSquad } = this.state;
+    const reqObj = {
+      SquadID: selectedSquad.value,
+      CandidateID: this.CandidateIDs,
+      EventID: eventSelected.value,
+      isActive: true,
+      CreatedBy: this.props.userDetails.user_id,
+      UpdatedBy: this.props.userDetails.user_id
     }
+
+    console.log(this.CandidateIDs, 'reqObj---', reqObj);
+    this.props.squadCandidatesInsert(reqObj).then(response => {
+      if (response && response.errCode === 200) {
+        this.setState({
+          toastMsg: "Squad Registered successfully",
+          showToast: true,
+          candidateList: [],
+          eventSelected: null,
+          selectedSquad: null,
+        })
+      } else if(response && response.errCode === 404) {
+        this.setState({
+          showToast: true,
+          toastMsg: response.status,
+        });
+      } else {
+          this.setState({
+            showToast: true,
+            toastMsg: 'Something went Wrong. Please try again later.',
+          });
+        }
+    })
+  }
+
+  render() {
+    const { eventSelected, candidateList, searchQuery, squadList, newSquadName, selectedSquad, EventDetailsList, showToast, toastMsg, showUserModal } = this.state;
+    this.CandidateIDs = [];
+    candidateList.forEach(list => {
+      if (list.SquadName !== null && list.SquadName !== '') {
+        this.CandidateIDs.push(list.ID)
+      }
+    })
+    return (
+      <div className='squadWrapper'>
+        <div className="pageHeader">
+          <h3 className='pageTitle'>Squad Formation</h3>
+          {eventSelected && <i onClick={this.createSquadName} className="addUser fa fa-plus" aria-hidden="true"></i>}
+        </div>
+        <div className='eventCoordForm'>
+          <Row>
+            <Col className='fieldName'><span>Event Name:</span></Col>
+            <Col>
+              <Select
+                value={eventSelected}
+                onChange={this.handleEventChange}
+                options={EventDetailsList}
+                defaultValue={eventSelected}
+                styles={SelectStyles(220)}
+                className="mb-3"
+                placeholder='Event Name'
+              />
+            </Col>
+          </Row>
+          {squadList.length > 0 && <Row>
+            <Col className='fieldName'><span>Squad Name:</span></Col>
+            <Col>
+              <Select
+                value={selectedSquad}
+                onChange={this.handleSquadChange}
+                options={squadList}
+                defaultValue={selectedSquad}
+                styles={SelectStyles(220)}
+                className="mb-3"
+                placeholder='Event Name'
+              />
+            </Col>
+          </Row>}
+          {candidateList && candidateList.length > 0  && <div>
+            <p className='memberLabel'>Candidate List: Count - {this.CandidateIDs.length}</p>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Search Candidates"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+                onChange={this.searchCandidate}
+                value={searchQuery}
+              />
+              <InputGroup.Append>
+                <InputGroup.Text id="basic-addon1">
+                  <i className="fa fa-search" aria-hidden="true"></i>
+                </InputGroup.Text>
+              </InputGroup.Append>
+            </InputGroup>
+          </div>}
+          {candidateList && candidateList.length > 0 && <div className="candidateList">
+            <ListGroup className="userListGroup">
+              {candidateList.map(list =>
+                <ListGroup.Item key={list.EmpName} className="userList">
+                  <div className="candidateDetails">
+                    <p>{list.EmpName}</p>
+                    <p className="email">{list.SkillName}</p>
+                  </div>
+                  <Form.Check
+                    type="checkbox"
+                    size="lg"
+                    id={list.user_id}
+                    checked={list.SquadName !== null && list.SquadName !== ''}
+                    label=""
+                    className='toggleUser'
+                    onChange={(e) => this.handleCandidateSelection(e, list)}
+                  />
+                </ListGroup.Item>
+              )}
+            </ListGroup>
+          </div>}
+          {candidateList && candidateList.length > 0 && <div className='panelRegCntrlPanel'>
+            <Button disabled={this.CandidateIDs.length === 0} className='file-upload fileUploadBtn btn shadow' onClick={this.insertCandidate}>Submit</Button>
+          </div>}
+        </div>
+        <Modal className='eventModal' show={showUserModal} centered onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Squad Name</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Squad Name"
+                aria-label="Squad Name"
+                value={newSquadName}
+                aria-describedby="Squad Name"
+                onChange={this.squadNameOnChange}
+              />
+            </InputGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button disabled={newSquadName.length === 0} className='file-upload fileUploadBtn btn shadow' onClick={this.handleNewSquadSubmit}>Submit</Button>
+          </Modal.Footer>
+        </Modal>
+        {showToast &&
+          <Toast
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: '#deeddd',
+              border: '1px solid #28a745',
+              color: '#6c757d',
+              fontWeight: 500,
+              width: 400
+            }}
+            onClose={() => this.setState({ showToast: false })}
+            show={showToast}
+            delay={3000}
+            autohide
+          >
+            <Toast.Body>{toastMsg}</Toast.Body>
+          </Toast>
+        }
+      </div>
+    )
+  }
 }
-
 export default SquadFormation;
