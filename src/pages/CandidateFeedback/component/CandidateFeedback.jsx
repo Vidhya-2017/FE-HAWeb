@@ -5,7 +5,7 @@ class CandidateFeedback extends React.Component {
 
     render() {
         return (
-            <div>CandidateFeedback</div>
+            <div>CandidateFeedback<p>Test Git</p></div>
         )
     }
 }
