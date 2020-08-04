@@ -35,6 +35,7 @@ class CandidateFeedback extends React.Component {
       previousFeedbackData: [],
       showRatingDiv : false,
       formIsValid:false,
+      role: ''
       
     }
   }
@@ -86,7 +87,7 @@ class CandidateFeedback extends React.Component {
             const OtherAssessmentData = eventResponse.arrRes[0].OtherAssessmentData.map(list => {
               return { ...list, value: 1 }
             })
-            console.log("OTHER:",OtherAssessmentData);
+           
             this.setState({ CompetancyData: eventResponse.arrRes[0].CompetancyData, OtherAssessmentData });
 
             const user_id = this.props.userDetails.user_id;
@@ -168,7 +169,7 @@ class CandidateFeedback extends React.Component {
 
   onCandidateListChange = (selectedCandidate) => {
      const user_id = this.props.userDetails.user_id;
-    const findPS ='';
+ 
     const reqObj = {
       event_id: this.state.selectedEvent.value,
       candidate_id: selectedCandidate.value,
@@ -176,16 +177,40 @@ class CandidateFeedback extends React.Component {
     };
 
     this.props.candidateFeedbackList(reqObj).then((response) => {
-    console.log(response);
+ 
     let Fbtext='';
+    let roletext='';
+    let fstatus = '';
+    let fnstatus = ''; 
+    let fcompetancyRating ='';
+
     if(response.errCode == 200 ){
 
       const findFbIndex =  response.arrRes.findIndex(data =>
         this.state.selectedSprint.value === data.sprintLevel);
-        console.log("Test",findFbIndex);
-        Fbtext = response.arrRes[findFbIndex].feedbackTxt;
-
+     
         if(findFbIndex >= 0){
+          fstatus = response.arrRes[findFbIndex].sq_final_status; 
+        
+          fcompetancyRating = response.arrRes[findFbIndex].competancy_rating;
+          
+          if(this.state.selectedSprint.value === 'Show and Tell assesment' || this.state.selectedSprint.value === 'Final Assessment')
+          {
+          
+            const comIndex = this.state.CompentencyOption.findIndex(datas => fcompetancyRating === datas.label);
+          
+            fcompetancyRating =this.state.CompentencyOption[comIndex];
+            this.setState({selectedCompetancy:fcompetancyRating});
+          } 
+           if(this.state.selectedSprint.value === 'Final Assessment')
+          { 
+            const finIndex = this.state.finalStatusOption.findIndex(datas => fstatus === datas.value);
+            fnstatus = this.state.finalStatusOption[finIndex];
+            this.setState({selectedFinalStatus:fnstatus});
+          }
+          Fbtext = response.arrRes[findFbIndex].feedbackTxt;
+          roletext = response.arrRes[findFbIndex].role;
+          
           this.state.OtherAssessmentData.map(item => {
             response.arrRes[findFbIndex].AssesmentParams.map(aitem => {
               if(item.OtherAssementScaleName === aitem.ParamName){
@@ -195,24 +220,46 @@ class CandidateFeedback extends React.Component {
             })
           })
         }else{
-          console.log(findFbIndex);
+       
           const{OtherAssessmentData}=this.state;
-          console.log(OtherAssessmentData);
+          
           const updateDataAss = [...OtherAssessmentData];
           updateDataAss.forEach(item => item.value = 1);
-          console.log(updateDataAss);
-          this.setState({OtherAssessmentData :updateDataAss });
+        
+          this.setState({OtherAssessmentData :updateDataAss});
+          if(this.state.selectedSprint.value === 'Show and Tell assesment' || this.state.selectedSprint.value === 'Final Assessment')
+          {
+            const findcompIndex =  response.arrRes.findIndex(data =>
+             data.sprintLevel === 'Show and Tell assesment');
+           
+             if(findcompIndex >= 0){
+               fcompetancyRating = response.arrRes[findcompIndex].competancy_rating;
+               const comIndex = this.state.CompentencyOption.findIndex(datas => fcompetancyRating === datas.label);
+               
+               fcompetancyRating =this.state.CompentencyOption[comIndex];
+               this.setState({selectedCompetancy:fcompetancyRating});
+               
+             }
+
+             if(this.state.selectedSprint.value === 'Final Assessment'){
+              const finIndex = this.state.finalStatusOption.findIndex(datass => fstatus === datass.value);
+              fnstatus = this.state.finalStatusOption[finIndex];
+              this.setState({selectedFinalStatus:fnstatus});
+             }
+          }
+
+
         }
 
-          console.log("FD",this.state.OtherAssessmentData);
-          this.setState({previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton : true, showRatingDiv : true,fbcomment:Fbtext });
+        
+          this.setState({previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton : true, showRatingDiv : true,fbcomment:Fbtext,role:roletext ,selectedCompetancy:fcompetancyRating,selectedFinalStatus:fnstatus});
      }else{
        const{OtherAssessmentData}=this.state;
-       console.log(OtherAssessmentData);
+       
        const updateDataAss = [...OtherAssessmentData];
        updateDataAss.forEach(item => item.value = 1);
-       console.log(updateDataAss);
-       this.setState({previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton : true, showRatingDiv : true,OtherAssessmentData :updateDataAss ,fbcomment:Fbtext });
+      
+       this.setState({previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton : true, showRatingDiv : true,OtherAssessmentData :updateDataAss ,fbcomment:Fbtext, role:roletext,selectedCompetancy:'',selectedFinalStatus:''});
      }
       
     })
@@ -230,14 +277,14 @@ class CandidateFeedback extends React.Component {
     }
 
   } else if(this.state.selectedSprint.value==='Final Assessment'){
+    
+      if (this.state.fbcomment && this.state.selectedFinalStatus ) {
+        this.setState({ formIsValid });
+      } else {
+        this.setState({ formIsValid: false });
+      }
    
-    if (this.state.fbcomment && this.state.selectedFinalStatus ) {
-      this.setState({ formIsValid });
-    } else {
-      this.setState({ formIsValid: false });
     }
-  }
-
     this.setState({ selectedCompetancy});
   }
   onFinalStatusChange = (selectedFinalStatus) => {
@@ -268,15 +315,25 @@ class CandidateFeedback extends React.Component {
 
   feedbackSubmit = () => {
     let status = '';
+    let roledata = '';
+    let finalcompetancy ='';
 
     if(this.state.selectedSprint.value === 'Show and Tell assesment')
     {
-      status = this.state.selectedCompetancy.label;
+      status ='';
+      finalcompetancy = this.state.selectedCompetancy.label;
     } 
     else  if(this.state.selectedSprint.value === 'Final Assessment')
     {
       status = this.state.selectedFinalStatus.value;
+      finalcompetancy = this.state.selectedCompetancy.label;
     }
+
+    if(this.state.selectedSprint.value === 'Final Assessment')
+    {
+      roledata = this.state.role;
+    } 
+   
 
     const othAssRating = this.state.OtherAssessmentData.map(list => {
       return {
@@ -294,9 +351,11 @@ class CandidateFeedback extends React.Component {
       otherAssessment: othAssRating,
       feedback: this.state.fbcomment,
       sprintLevel: this.state.selectedSprint.value,
+      competancy_rating: finalcompetancy,
       finalStatus: status,
       userID: this.props.userDetails.user_id,
-      panelId: this.props.userDetails.user_id
+      panelId: this.props.userDetails.user_id,
+      role: roledata
 
     }
 
@@ -345,6 +404,7 @@ class CandidateFeedback extends React.Component {
     const targetValue = e.target.value;
     const targetType = e.target.type;
     let formIsValid = true;
+    
     const inputField = {
       value: '',
       validation: {
@@ -361,13 +421,29 @@ class CandidateFeedback extends React.Component {
         } else {
           formIsValid= false;
         }
-    }else if(this.state.selectedSprint.value==="Final Assessment"){
-      if (isvalid && targetValue && this.state.selectedCompetancy && this.state.selectedFinalStatus) {
-        formIsValid= true;
-      } else {
-        formIsValid= false;
-      }
-  }else{
+    }
+    else{
+    if (isvalid && targetValue) {
+      formIsValid= true;
+    } else {
+      formIsValid= false;
+    }
+  }
+
+  if(this.state.selectedSprint.value==="Final Assessment" && targetName === 'feedback' ){
+    if (isvalid && targetValue && this.state.role && this.state.selectedCompetancy && this.state.selectedFinalStatus) {
+      formIsValid= true;
+    } else {
+      formIsValid= false;
+    }
+  } else if(this.state.selectedSprint.value==="Final Assessment" && targetName === 'role' ){
+    if (isvalid && targetValue && this.state.fbcomment &&  this.state.selectedCompetancy && this.state.selectedFinalStatus) {
+      formIsValid= true;
+    } else {
+      formIsValid= false;
+    }
+  }
+  else{
     if (isvalid && targetValue) {
       formIsValid= true;
     } else {
@@ -375,7 +451,13 @@ class CandidateFeedback extends React.Component {
     }
   }
     
+  if(targetName === 'feedback'){
     this.setState({ formIsValid, fbcomment: targetValue });
+  } else {
+    this.setState({ formIsValid, role: targetValue });
+  }
+
+    
 
   }
 
@@ -393,7 +475,7 @@ class CandidateFeedback extends React.Component {
   }
 
   render() {
-    const { selectedEvent, eventList, squadList, selectedSquad, sprintList, candidateList, selectedSprint, selectedCandidate, CompentencyOption, selectedCompetancy, ShowCompentencyOption, finalStatusOption, selectedFinalStatus, OtherAssessmentData, showFinalStatus, fbcomment, showSuccessMessage, toastMessage, showPrevFeedbackButton, showModal, previousFeedbackData, showRatingDiv, formIsValid } = this.state;
+    const { selectedEvent, eventList, squadList, selectedSquad, sprintList, candidateList, selectedSprint, selectedCandidate, CompentencyOption, selectedCompetancy, ShowCompentencyOption, finalStatusOption, selectedFinalStatus, OtherAssessmentData, showFinalStatus, fbcomment, showSuccessMessage, toastMessage, showPrevFeedbackButton, showModal, previousFeedbackData, showRatingDiv, formIsValid, role } = this.state;
 
     return (
       <div className="candidateFeedBackWrapper">
@@ -535,6 +617,14 @@ class CandidateFeedback extends React.Component {
             </Col>
           </Row>
 
+          {showFinalStatus && <Row>
+            <Col className='fieldName'><span>Role </span></Col>
+            <Col>
+            <InputGroup className="mb-3">
+                <FormControl  name="role" placeholder="Role" value={role} onChange={this.inputFieldChange}  />
+              </InputGroup>
+            </Col>
+          </Row>}
          
 
           </div>}
@@ -594,9 +684,15 @@ class CandidateFeedback extends React.Component {
                    
                     )}
                      { (list.sprintLevel === 'Show and Tell assesment' || list.sprintLevel === 'Final Assessment') &&
+                      <p> Compentency Rating : {list.competancy_rating}</p> 
 
-                      <p>{list.sprintLevel === 'Show and Tell assesment' ? 'Compentency Rating' : 'Status'} : {list.sq_final_status}</p> 
-                      }
+                    }
+                    
+                    {list.sprintLevel === 'Final Assessment' && <p> Status: {list.sq_final_status}</p> }
+
+                    {list.sprintLevel === 'Final Assessment' && <p>Role: {list.role}</p> }
+
+
                       <h6><b>Comments</b></h6>
                        <p>{list.feedbackTxt}</p>
 

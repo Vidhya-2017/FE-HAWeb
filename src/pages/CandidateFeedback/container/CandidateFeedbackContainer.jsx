@@ -10,6 +10,7 @@ const mapDispatchToProps = (dispatch) => {
     getEventDetails:CandidateFeedbackActions.getEventDetails,
     candidateFB:CandidateFeedbackActions.candidateFB,
     candidateFeedbackList:CandidateFeedbackActions.candidateFeedbackList,
+    
   };
 };
 
