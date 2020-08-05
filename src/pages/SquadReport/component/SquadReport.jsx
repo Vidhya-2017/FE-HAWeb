@@ -149,10 +149,10 @@ class SquadReport extends React.Component {
             }
           });
           if (fb.sprintLevel === "Show and Tell assesment") {
-            candidateObj['compentencyRating'] = fb.sq_final_status;
+            candidateObj['compentencyRating'] = fb.competancy_rating;
             candidateObj['status'] = '--';
           } else if (fb.sprintLevel === "Final Assessment") {
-            candidateObj['compentencyRating'] = '--';
+            candidateObj['compentencyRating'] = fb.competancy_rating;
             candidateObj['status'] = fb.sq_final_status;
           } else {
             candidateObj['compentencyRating'] = '--';

@@ -58,5 +58,6 @@ export const CandidateFeedbackActions = {
             return (error.response);
         }
     },
+    
 
 } 
