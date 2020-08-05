@@ -93,15 +93,24 @@ class CandidateFeedback extends React.Component {
               this.setState({ squadList, sprintList, selectedSquad: null, candidateList: [], selectedCandidate: null, selectedSprint: null, showRatingDiv: false });
 
             } else {
-              this.setState({ squadList: [], sprintList: [], selectedSquad: null, selectedEvent: null, candidateList: [], selectedSprint: null, selectedCandidate: null, ShowCompentencyOption: false, CompentencyOption: [], selectedFinalStatus: null, showRatingDiv: false, formIsValid: false });
-              alert('You do not have permission. Please contact Organiser.');
+              this.setState({
+                showSuccessMessage: true,
+                toastMessage: 'You do not have permission. Please contact Organiser.',
+                squadList: [], sprintList: [], selectedSquad: null, selectedEvent: null, candidateList: [], selectedSprint: null, selectedCandidate: null, ShowCompentencyOption: false, CompentencyOption: [], selectedFinalStatus: null, showRatingDiv: false, formIsValid: false
+              });
             }
           } else {
-            alert('Something went wrong. Please try again later.');
+            this.setState({
+              showSuccessMessage: true,
+              toastMessage: 'Something went wrong. Please try again later.'
+            });
           }
         });
       } else {
-        alert('no squad data');
+        this.setState({
+          showSuccessMessage: true,
+          toastMessage: 'No Squad has been created.'
+        });
       }
     });
   }
@@ -428,7 +437,7 @@ class CandidateFeedback extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col className='fieldName'><span>Sprint List:</span></Col>
+            <Col className='fieldName'><span>Sprint:</span></Col>
             <Col>
               <Select
                 className="mb-3"
@@ -441,7 +450,10 @@ class CandidateFeedback extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col className='fieldName'><span>Candidate List:</span></Col>
+            <Col className='fieldName'><span>Candidate:</span>
+              {showPrevFeedbackButton &&
+                <i className="fa fa-info-circle fa-lg" onClick={this.getPreviousFeedback} style={{ padding: '0px 20px' }} aria-hidden="true"></i>}
+            </Col>
             <Col>
               <Select
                 className="mb-3"
@@ -453,11 +465,6 @@ class CandidateFeedback extends React.Component {
               />
             </Col>
           </Row>
-          {showPrevFeedbackButton &&
-            <Row>
-              <Col><Button variant="primary" onClick={this.getPreviousFeedback}>Previous Feedback</Button></Col>
-            </Row>
-          }
           {showRatingDiv && <div>
             {OtherAssessmentData.map((list) =>
               <div key={list.OtherAssessmentId}>
@@ -527,11 +534,9 @@ class CandidateFeedback extends React.Component {
               </Col>
             </Row>}
           </div>}
-          <Row>
-            <Col>
-              <Button disabled={!formIsValid} className='appButton' onClick={this.feedbackSubmit} >Submit </Button>
-            </Col>
-          </Row>
+          <div className="fbSubmitCntrlPanel">
+            <Button disabled={!formIsValid} className='file-upload fileUploadBtn btn shadow' onClick={this.feedbackSubmit} >Submit </Button>
+          </div>
           {showSuccessMessage &&
             <Toast
               style={{
@@ -549,9 +554,9 @@ class CandidateFeedback extends React.Component {
               delay={3000}
               autohide
             >
-              <Toast.Header style={{ background: '#deeddd', borderBottom: '1px solid #28a745' }}>
+              {/* <Toast.Header style={{ background: '#deeddd', borderBottom: '1px solid #28a745' }}>
                 <strong className="mr-auto">Success</strong>
-              </Toast.Header>
+              </Toast.Header> */}
               <Toast.Body>{toastMessage}</Toast.Body>
             </Toast>
           }
