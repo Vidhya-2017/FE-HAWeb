@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import { Row, Col, InputGroup, FormControl, Button, Toast, Form, Badge, Modal, Accordion, Card } from 'react-bootstrap';
 import Select from 'react-select';
+import RangeSlider from 'react-bootstrap-range-slider';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/CandidateFeedback.scss';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
-import RangeSlider from 'react-bootstrap-range-slider';
 
 class CandidateFeedback extends React.Component {
   constructor(props) {
@@ -33,10 +33,9 @@ class CandidateFeedback extends React.Component {
       showPrevFeedbackButton: false,
       showModal: false,
       previousFeedbackData: [],
-      showRatingDiv : false,
-      formIsValid:false,
+      showRatingDiv: false,
+      formIsValid: false,
       role: ''
-      
     }
   }
 
@@ -60,9 +59,7 @@ class CandidateFeedback extends React.Component {
   handleEventChange = (selectedEvent) => {
     this.setState({ selectedEvent, showPrevFeedbackButton: false });
     const reqObj = { eventID: selectedEvent.value }
-
     this.props.getSquadList(reqObj).then(response => {
-
       if (response && response.arrRes) {
         let squadList = [];
         squadList = response.arrRes.map(list => {
@@ -71,10 +68,8 @@ class CandidateFeedback extends React.Component {
             label: list.SquadName
           }
         })
-
         const req = { EventID: selectedEvent.value };
         this.props.getEventDetails(req).then((eventResponse) => {
-
           if (eventResponse && eventResponse.arrRes) {
             let sprintList = [];
             sprintList = eventResponse.arrRes[0].AssessmentScale.map(list => {
@@ -83,46 +78,36 @@ class CandidateFeedback extends React.Component {
                 label: list
               }
             })
-
             const OtherAssessmentData = eventResponse.arrRes[0].OtherAssessmentData.map(list => {
               return { ...list, value: 1 }
             })
-           
             this.setState({ CompetancyData: eventResponse.arrRes[0].CompetancyData, OtherAssessmentData });
-
             const user_id = this.props.userDetails.user_id;
             const organiserIDs = eventResponse.arrRes[0].OrganisersId;
             const panelistIDs = eventResponse.arrRes[0].PanelData;
             const isOrganiser = organiserIDs.find((id) => id.userID === user_id);
             const ispanelist = panelistIDs.find((id) => id.userID === user_id);
-
             if (ispanelist !== undefined || isOrganiser !== undefined) {
-
               const foundIndex = eventResponse.arrRes[0].AssessmentScale.findIndex(list => list === 'Final Assessment')
-
               sprintList.splice(foundIndex, 0, { value: 'Show and Tell assesment', label: 'Show and Tell assesment' });
-              this.setState({ squadList, sprintList, selectedSquad: null, candidateList: [],selectedCandidate: null , selectedSprint: null, showRatingDiv:false });
+              this.setState({ squadList, sprintList, selectedSquad: null, candidateList: [], selectedCandidate: null, selectedSprint: null, showRatingDiv: false });
 
             } else {
-              this.setState({ squadList: [], sprintList: [], selectedSquad: null, selectedEvent: null, candidateList: [], selectedSprint: null, selectedCandidate: null, ShowCompentencyOption: false, CompentencyOption: [], selectedFinalStatus: null,showRatingDiv:false,formIsValid:false });
+              this.setState({ squadList: [], sprintList: [], selectedSquad: null, selectedEvent: null, candidateList: [], selectedSprint: null, selectedCandidate: null, ShowCompentencyOption: false, CompentencyOption: [], selectedFinalStatus: null, showRatingDiv: false, formIsValid: false });
               alert('You do not have permission. Please contact Organiser.');
             }
-
           } else {
             alert('Something went wrong. Please try again later.');
           }
-
         });
-
       } else {
         alert('no squad data');
       }
     });
-
   }
 
   onSquadListChange = (selectedSquad) => {
-    this.setState({ selectedSquad, showPrevFeedbackButton: false,showRatingDiv:false,selectedCandidate:null  });
+    this.setState({ selectedSquad, showPrevFeedbackButton: false, showRatingDiv: false, selectedCandidate: null });
     this.candidateList(selectedSquad);
   }
 
@@ -140,11 +125,10 @@ class CandidateFeedback extends React.Component {
       })
       this.setState({ candidateList });
     });
-
   }
 
   onSprintListChange = (selectedSprint) => {
-    this.setState({ selectedSprint,selectedCandidate:null,showRatingDiv:false,showPrevFeedbackButton:false });
+    this.setState({ selectedSprint, selectedCandidate: null, showRatingDiv: false, showPrevFeedbackButton: false });
     let CompentencyOption = [];
     CompentencyOption = this.state.CompetancyData.map(list => {
       return {
@@ -152,146 +136,111 @@ class CandidateFeedback extends React.Component {
         label: list.CompetancyName
       }
     })
-
     if (selectedSprint.value === 'Show and Tell assesment' || selectedSprint.value === 'Final Assessment') {
-      this.setState({ CompentencyOption, ShowCompentencyOption: true, selectedFinalStatus: null, formIsValid:false,selectedCompetancy:null});
+      this.setState({ CompentencyOption, ShowCompentencyOption: true, selectedFinalStatus: null, formIsValid: false, selectedCompetancy: null });
     } else {
-      this.setState({ CompentencyOption: [], ShowCompentencyOption: false, selectedFinalStatus: null ,selectedCompetancy:null});
+      this.setState({ CompentencyOption: [], ShowCompentencyOption: false, selectedFinalStatus: null, selectedCompetancy: null });
     }
-
     if (selectedSprint.value === 'Final Assessment') {
       this.setState({ showFinalStatus: true });
     } else {
       this.setState({ showFinalStatus: false, selectedFinalStatus: null });
     }
-
   }
 
   onCandidateListChange = (selectedCandidate) => {
-     const user_id = this.props.userDetails.user_id;
- 
+    const user_id = this.props.userDetails.user_id;
     const reqObj = {
       event_id: this.state.selectedEvent.value,
       candidate_id: selectedCandidate.value,
       userID: user_id
     };
-
     this.props.candidateFeedbackList(reqObj).then((response) => {
- 
-    let Fbtext='';
-    let roletext='';
-    let fstatus = '';
-    let fnstatus = ''; 
-    let fcompetancyRating ='';
-
-    if(response.errCode == 200 ){
-
-      const findFbIndex =  response.arrRes.findIndex(data =>
-        this.state.selectedSprint.value === data.sprintLevel);
-     
-        if(findFbIndex >= 0){
-          fstatus = response.arrRes[findFbIndex].sq_final_status; 
-        
+      let Fbtext = '';
+      let roletext = '';
+      let fstatus = '';
+      let fnstatus = '';
+      let fcompetancyRating = '';
+      if (response.errCode === 200) {
+        const findFbIndex = response.arrRes.findIndex(data =>
+          this.state.selectedSprint.value === data.sprintLevel);
+        if (findFbIndex >= 0) {
+          fstatus = response.arrRes[findFbIndex].sq_final_status;
           fcompetancyRating = response.arrRes[findFbIndex].competancy_rating;
-          
-          if(this.state.selectedSprint.value === 'Show and Tell assesment' || this.state.selectedSprint.value === 'Final Assessment')
-          {
-          
+          if (this.state.selectedSprint.value === 'Show and Tell assesment' || this.state.selectedSprint.value === 'Final Assessment') {
             const comIndex = this.state.CompentencyOption.findIndex(datas => fcompetancyRating === datas.label);
-          
-            fcompetancyRating =this.state.CompentencyOption[comIndex];
-            this.setState({selectedCompetancy:fcompetancyRating});
-          } 
-           if(this.state.selectedSprint.value === 'Final Assessment')
-          { 
+            fcompetancyRating = this.state.CompentencyOption[comIndex];
+            this.setState({ selectedCompetancy: fcompetancyRating });
+          }
+          if (this.state.selectedSprint.value === 'Final Assessment') {
             const finIndex = this.state.finalStatusOption.findIndex(datas => fstatus === datas.value);
             fnstatus = this.state.finalStatusOption[finIndex];
-            this.setState({selectedFinalStatus:fnstatus});
+            this.setState({ selectedFinalStatus: fnstatus });
           }
           Fbtext = response.arrRes[findFbIndex].feedbackTxt;
           roletext = response.arrRes[findFbIndex].role;
-          
           this.state.OtherAssessmentData.map(item => {
             response.arrRes[findFbIndex].AssesmentParams.map(aitem => {
-              if(item.OtherAssementScaleName === aitem.ParamName){
-                   item.value = aitem.ParamValue;
+              if (item.OtherAssementScaleName === aitem.ParamName) {
+                item.value = aitem.ParamValue;
               }
-    
             })
           })
-        }else{
-       
-          const{OtherAssessmentData}=this.state;
-          
+        } else {
+          const { OtherAssessmentData } = this.state;
           const updateDataAss = [...OtherAssessmentData];
           updateDataAss.forEach(item => item.value = 1);
-        
-          this.setState({OtherAssessmentData :updateDataAss});
-          if(this.state.selectedSprint.value === 'Show and Tell assesment' || this.state.selectedSprint.value === 'Final Assessment')
-          {
-            const findcompIndex =  response.arrRes.findIndex(data =>
-             data.sprintLevel === 'Show and Tell assesment');
-           
-             if(findcompIndex >= 0){
-               fcompetancyRating = response.arrRes[findcompIndex].competancy_rating;
-               const comIndex = this.state.CompentencyOption.findIndex(datas => fcompetancyRating === datas.label);
-               
-               fcompetancyRating =this.state.CompentencyOption[comIndex];
-               this.setState({selectedCompetancy:fcompetancyRating});
-               
-             }
+          this.setState({ OtherAssessmentData: updateDataAss });
+          if (this.state.selectedSprint.value === 'Show and Tell assesment' || this.state.selectedSprint.value === 'Final Assessment') {
+            const findcompIndex = response.arrRes.findIndex(data =>
+              data.sprintLevel === 'Show and Tell assesment');
+            if (findcompIndex >= 0) {
+              fcompetancyRating = response.arrRes[findcompIndex].competancy_rating;
+              const comIndex = this.state.CompentencyOption.findIndex(datas => fcompetancyRating === datas.label);
+              fcompetancyRating = this.state.CompentencyOption[comIndex];
+              this.setState({ selectedCompetancy: fcompetancyRating });
+            }
 
-             if(this.state.selectedSprint.value === 'Final Assessment'){
+            if (this.state.selectedSprint.value === 'Final Assessment') {
               const finIndex = this.state.finalStatusOption.findIndex(datass => fstatus === datass.value);
               fnstatus = this.state.finalStatusOption[finIndex];
-              this.setState({selectedFinalStatus:fnstatus});
-             }
+              this.setState({ selectedFinalStatus: fnstatus });
+            }
           }
-
-
         }
 
-        
-          this.setState({previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton : true, showRatingDiv : true,fbcomment:Fbtext,role:roletext ,selectedCompetancy:fcompetancyRating,selectedFinalStatus:fnstatus});
-     }else{
-       const{OtherAssessmentData}=this.state;
-       
-       const updateDataAss = [...OtherAssessmentData];
-       updateDataAss.forEach(item => item.value = 1);
-      
-       this.setState({previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton : true, showRatingDiv : true,OtherAssessmentData :updateDataAss ,fbcomment:Fbtext, role:roletext,selectedCompetancy:'',selectedFinalStatus:''});
-     }
-      
+        this.setState({ previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton: true, showRatingDiv: true, fbcomment: Fbtext, role: roletext, selectedCompetancy: fcompetancyRating, selectedFinalStatus: fnstatus });
+      } else {
+        const { OtherAssessmentData } = this.state;
+        const updateDataAss = [...OtherAssessmentData];
+        updateDataAss.forEach(item => item.value = 1);
+        this.setState({ previousFeedbackData: response.arrRes, selectedCandidate, showPrevFeedbackButton: true, showRatingDiv: true, OtherAssessmentData: updateDataAss, fbcomment: Fbtext, role: roletext, selectedCompetancy: '', selectedFinalStatus: '' });
+      }
     })
-     
-     
   }
 
   onCompetancyChange = (selectedCompetancy) => {
     let formIsValid = true;
-  if(this.state.selectedSprint.value==='Show and Tell assesment'){
-    if (this.state.fbcomment) {
-      this.setState({ formIsValid });
-    } else {
-      this.setState({ formIsValid: false });
-    }
-
-  } else if(this.state.selectedSprint.value==='Final Assessment'){
-    
-      if (this.state.fbcomment && this.state.selectedFinalStatus ) {
+    if (this.state.selectedSprint.value === 'Show and Tell assesment') {
+      if (this.state.fbcomment) {
         this.setState({ formIsValid });
       } else {
         this.setState({ formIsValid: false });
       }
-   
+
+    } else if (this.state.selectedSprint.value === 'Final Assessment') {
+      if (this.state.fbcomment && this.state.selectedFinalStatus) {
+        this.setState({ formIsValid });
+      } else {
+        this.setState({ formIsValid: false });
+      }
     }
-    this.setState({ selectedCompetancy});
+    this.setState({ selectedCompetancy });
   }
   onFinalStatusChange = (selectedFinalStatus) => {
-    
     let formIsValid = true;
-   if(this.state.selectedSprint.value==='Final Assessment'){
-      if (this.state.fbcomment && selectedFinalStatus && this.state.selectedCompetancy ) {
+    if (this.state.selectedSprint.value === 'Final Assessment') {
+      if (this.state.fbcomment && selectedFinalStatus && this.state.selectedCompetancy) {
         this.setState({ formIsValid });
       } else {
         this.setState({ formIsValid: false });
@@ -301,49 +250,36 @@ class CandidateFeedback extends React.Component {
   }
 
   onSilderChange = (e, list) => {
-
     const { OtherAssessmentData } = this.state;
-
     list.value = e.target.value;
     const findAssessmentIndex = OtherAssessmentData.findIndex(assessment =>
       list.OtherAssessmentId === assessment.OtherAssessmentId);
     const updatedAssessmentData = [...OtherAssessmentData];
     updatedAssessmentData[findAssessmentIndex].value = e.target.value;
     this.setState({ OtherAssessmentData: updatedAssessmentData });
-
   }
 
   feedbackSubmit = () => {
     let status = '';
     let roledata = '';
-    let finalcompetancy ='';
-
-    if(this.state.selectedSprint.value === 'Show and Tell assesment')
-    {
-      status ='';
+    let finalcompetancy = '';
+    if (this.state.selectedSprint.value === 'Show and Tell assesment') {
+      status = '';
       finalcompetancy = this.state.selectedCompetancy.label;
-    } 
-    else  if(this.state.selectedSprint.value === 'Final Assessment')
-    {
+    }
+    else if (this.state.selectedSprint.value === 'Final Assessment') {
       status = this.state.selectedFinalStatus.value;
       finalcompetancy = this.state.selectedCompetancy.label;
     }
-
-    if(this.state.selectedSprint.value === 'Final Assessment')
-    {
+    if (this.state.selectedSprint.value === 'Final Assessment') {
       roledata = this.state.role;
-    } 
-   
-
+    }
     const othAssRating = this.state.OtherAssessmentData.map(list => {
       return {
         scaleID: list.OtherAssessmentId,
         scaleVAL: list.value
       }
     })
-   
-  
-    
     const reqObj = {
       eventID: this.state.selectedEvent.value,
       squadID: this.state.selectedSquad.value,
@@ -356,10 +292,8 @@ class CandidateFeedback extends React.Component {
       userID: this.props.userDetails.user_id,
       panelId: this.props.userDetails.user_id,
       role: roledata
-
     }
-
-   this.props.candidateFB(reqObj).then((response) => {
+    this.props.candidateFB(reqObj).then((response) => {
       if (response.status === 'Already Feedback submitted') {
         this.setState({
           showSuccessMessage: true,
@@ -368,43 +302,37 @@ class CandidateFeedback extends React.Component {
         //  this.props.history.push('/homePage');
       }
       else {
-
-         const findcanIndex =  this.state.candidateList.findIndex(data =>
+        const findcanIndex = this.state.candidateList.findIndex(data =>
           this.state.selectedCandidate.value === data.value);
-          if(this.state.candidateList.length > (findcanIndex+1)){
-               this.onCandidateListChange(this.state.candidateList[findcanIndex+1]);
-               this.setState({
-                showSuccessMessage: true,
-                toastMessage: 'Feedback submitted successfully and next candidate loaded.'
-              });
-          }else{
-              this.setState({
-              showSuccessMessage: true,
-              toastMessage: 'Feedback submitted successfully this is the last candidate for the current sprint.'
-            });
-          }
-         
+        if (this.state.candidateList.length > (findcanIndex + 1)) {
+          this.onCandidateListChange(this.state.candidateList[findcanIndex + 1]);
+          this.setState({
+            showSuccessMessage: true,
+            toastMessage: 'Feedback submitted successfully and next candidate loaded.'
+          });
+        } else {
+          this.setState({
+            showSuccessMessage: true,
+            toastMessage: 'Feedback submitted successfully this is the last candidate for the current sprint.'
+          });
+        }
       }
-    }) 
-
+    })
   }
 
   getPreviousFeedback = () => {
-      this.setState({ showModal: true});
+    this.setState({ showModal: true });
   }
 
   handleClose = () => {
     this.setState({ showModal: false });
-
   }
-
 
   inputFieldChange = (e) => {
     const targetName = e.target.name;
     const targetValue = e.target.value;
     const targetType = e.target.type;
     let formIsValid = true;
-    
     const inputField = {
       value: '',
       validation: {
@@ -412,53 +340,46 @@ class CandidateFeedback extends React.Component {
       },
       valid: false
     };
-
     const isvalid = this.checkValidity(targetValue, inputField.validation, targetType);
-     
-    if(this.state.selectedSprint.value==="Show and Tell assesment"){
-        if (isvalid && targetValue && this.state.selectedCompetancy) {
-          formIsValid= true;
-        } else {
-          formIsValid= false;
-        }
+    if (this.state.selectedSprint.value === "Show and Tell assesment") {
+      if (isvalid && targetValue && this.state.selectedCompetancy) {
+        formIsValid = true;
+      } else {
+        formIsValid = false;
+      }
     }
-    else{
-    if (isvalid && targetValue) {
-      formIsValid= true;
+    else {
+      if (isvalid && targetValue) {
+        formIsValid = true;
+      } else {
+        formIsValid = false;
+      }
+    }
+    if (this.state.selectedSprint.value === "Final Assessment" && targetName === 'feedback') {
+      if (isvalid && targetValue && this.state.role && this.state.selectedCompetancy && this.state.selectedFinalStatus) {
+        formIsValid = true;
+      } else {
+        formIsValid = false;
+      }
+    } else if (this.state.selectedSprint.value === "Final Assessment" && targetName === 'role') {
+      if (isvalid && targetValue && this.state.fbcomment && this.state.selectedCompetancy && this.state.selectedFinalStatus) {
+        formIsValid = true;
+      } else {
+        formIsValid = false;
+      }
+    }
+    else {
+      if (isvalid && targetValue) {
+        formIsValid = true;
+      } else {
+        formIsValid = false;
+      }
+    }
+    if (targetName === 'feedback') {
+      this.setState({ formIsValid, fbcomment: targetValue });
     } else {
-      formIsValid= false;
+      this.setState({ formIsValid, role: targetValue });
     }
-  }
-
-  if(this.state.selectedSprint.value==="Final Assessment" && targetName === 'feedback' ){
-    if (isvalid && targetValue && this.state.role && this.state.selectedCompetancy && this.state.selectedFinalStatus) {
-      formIsValid= true;
-    } else {
-      formIsValid= false;
-    }
-  } else if(this.state.selectedSprint.value==="Final Assessment" && targetName === 'role' ){
-    if (isvalid && targetValue && this.state.fbcomment &&  this.state.selectedCompetancy && this.state.selectedFinalStatus) {
-      formIsValid= true;
-    } else {
-      formIsValid= false;
-    }
-  }
-  else{
-    if (isvalid && targetValue) {
-      formIsValid= true;
-    } else {
-      formIsValid= false;
-    }
-  }
-    
-  if(targetName === 'feedback'){
-    this.setState({ formIsValid, fbcomment: targetValue });
-  } else {
-    this.setState({ formIsValid, role: targetValue });
-  }
-
-    
-
   }
 
   checkValidity(inputValue, rules, inputType) {
@@ -476,7 +397,6 @@ class CandidateFeedback extends React.Component {
 
   render() {
     const { selectedEvent, eventList, squadList, selectedSquad, sprintList, candidateList, selectedSprint, selectedCandidate, CompentencyOption, selectedCompetancy, ShowCompentencyOption, finalStatusOption, selectedFinalStatus, OtherAssessmentData, showFinalStatus, fbcomment, showSuccessMessage, toastMessage, showPrevFeedbackButton, showModal, previousFeedbackData, showRatingDiv, formIsValid, role } = this.state;
-
     return (
       <div className="candidateFeedBackWrapper">
         <h3 className='pageTitle'>Candidate Feedback</h3>
@@ -491,12 +411,9 @@ class CandidateFeedback extends React.Component {
                 options={eventList}
                 onChange={this.handleEventChange}
                 styles={SelectStyles()}
-                placeholder='Select the Event'
               />
-
             </Col>
           </Row>
-
           <Row>
             <Col className='fieldName'><span>Squad Name:</span></Col>
             <Col>
@@ -507,12 +424,9 @@ class CandidateFeedback extends React.Component {
                 options={squadList}
                 onChange={this.onSquadListChange}
                 styles={SelectStyles()}
-                placeholder='Select the Squad'
               />
-
             </Col>
           </Row>
-
           <Row>
             <Col className='fieldName'><span>Sprint List:</span></Col>
             <Col>
@@ -523,12 +437,9 @@ class CandidateFeedback extends React.Component {
                 options={sprintList}
                 onChange={this.onSprintListChange}
                 styles={SelectStyles()}
-                placeholder='Select the Sprints'
               />
-
             </Col>
           </Row>
-
           <Row>
             <Col className='fieldName'><span>Candidate List:</span></Col>
             <Col>
@@ -539,10 +450,7 @@ class CandidateFeedback extends React.Component {
                 options={candidateList}
                 styles={SelectStyles()}
                 onChange={this.onCandidateListChange}
-                placeholder='Select the Candidate'
-
               />
-
             </Col>
           </Row>
           {showPrevFeedbackButton &&
@@ -550,92 +458,80 @@ class CandidateFeedback extends React.Component {
               <Col><Button variant="primary" onClick={this.getPreviousFeedback}>Previous Feedback</Button></Col>
             </Row>
           }
-
           {showRatingDiv && <div>
-          {OtherAssessmentData.map((list) =>
-            <div key={list.OtherAssessmentId}>
-              <Form.Group controlId="formBasicRange">
-                <Row>
-                  <Col>
-                    <Form.Label>{list.OtherAssementScaleName}</Form.Label> {' '}
-                    <Badge pill variant="primary">{list.value}</Badge>
-                  </Col>
-                  <Col>
-                    <RangeSlider
-                      value={list.value}
-                      onChange={(e) => this.onSilderChange(e, list)}
-                      min={1}
-                      max={5}
-                      step={1}
-                      tooltip='auto'
-                      tooltipPlacement='top'
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-            </div>
-          )}
-          {ShowCompentencyOption && <Row>
-            <Col className='fieldName'><span>Compentency Rating</span></Col>
-            <Col>
-              <Select
-                name="compentencyRating"
-                className="mb-3"
-                value={selectedCompetancy}
-                placeholder='Candidate List'
-                options={CompentencyOption}
-                styles={SelectStyles()}
-                placeholder='Select Compentency'
-                onChange={this.onCompetancyChange}
-              />
-
-            </Col>
-          </Row>}
-
-          {showFinalStatus && <Row>
-            <Col className='fieldName'><span>Final Status </span></Col>
-            <Col>
-              <Select
-                name="finalStatus"
-                className="mb-3"
-                value={selectedFinalStatus}
-                placeholder='Select Final Status'
-                options={finalStatusOption}
-                styles={SelectStyles()}
-                onChange={this.onFinalStatusChange}
-              />
-
-            </Col>
-          </Row>}
-
-          <Row>
-            <Col className='fieldName'><span>Feedback</span></Col>
-            <Col>
-              <InputGroup className="mb-3">
-                <FormControl as="textarea" name="feedback" placeholder="Candidate Feedback" value={fbcomment} onChange={this.inputFieldChange}  />
-              </InputGroup>
-            </Col>
-          </Row>
-
-          {showFinalStatus && <Row>
-            <Col className='fieldName'><span>Role </span></Col>
-            <Col>
-            <InputGroup className="mb-3">
-                <FormControl  name="role" placeholder="Role" value={role} onChange={this.inputFieldChange}  />
-              </InputGroup>
-            </Col>
-          </Row>}
-         
-
+            {OtherAssessmentData.map((list) =>
+              <div key={list.OtherAssessmentId}>
+                <Form.Group controlId="formBasicRange">
+                  <Row>
+                    <Col>
+                      <Form.Label>{list.OtherAssementScaleName}</Form.Label> {' '}
+                      <Badge pill variant="primary">{list.value}</Badge>
+                    </Col>
+                    <Col>
+                      <RangeSlider
+                        value={list.value}
+                        onChange={(e) => this.onSilderChange(e, list)}
+                        min={1}
+                        max={5}
+                        step={1}
+                        tooltip='auto'
+                        tooltipPlacement='top'
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+              </div>
+            )}
+            {ShowCompentencyOption && <Row>
+              <Col className='fieldName'><span>Compentency Rating</span></Col>
+              <Col>
+                <Select
+                  name="compentencyRating"
+                  className="mb-3"
+                  value={selectedCompetancy}
+                  placeholder='Candidate List'
+                  options={CompentencyOption}
+                  styles={SelectStyles()}
+                  onChange={this.onCompetancyChange}
+                />
+              </Col>
+            </Row>}
+            {showFinalStatus && <Row>
+              <Col className='fieldName'><span>Final Status </span></Col>
+              <Col>
+                <Select
+                  name="finalStatus"
+                  className="mb-3"
+                  value={selectedFinalStatus}
+                  placeholder='Select Final Status'
+                  options={finalStatusOption}
+                  styles={SelectStyles()}
+                  onChange={this.onFinalStatusChange}
+                />
+              </Col>
+            </Row>}
+            <Row>
+              <Col className='fieldName'><span>Feedback</span></Col>
+              <Col>
+                <InputGroup className="mb-3">
+                  <FormControl as="textarea" name="feedback" placeholder="Candidate Feedback" value={fbcomment} onChange={this.inputFieldChange} />
+                </InputGroup>
+              </Col>
+            </Row>
+            {showFinalStatus && <Row>
+              <Col className='fieldName'><span>Role </span></Col>
+              <Col>
+                <InputGroup className="mb-3">
+                  <FormControl name="role" placeholder="Role" value={role} onChange={this.inputFieldChange} />
+                </InputGroup>
+              </Col>
+            </Row>}
           </div>}
-
-
           <Row>
             <Col>
-              <Button  disabled={!formIsValid}  className='appButton' onClick={this.feedbackSubmit} >Submit </Button>
+              <Button disabled={!formIsValid} className='appButton' onClick={this.feedbackSubmit} >Submit </Button>
             </Col>
           </Row>
-
           {showSuccessMessage &&
             <Toast
               style={{
@@ -659,57 +555,44 @@ class CandidateFeedback extends React.Component {
               <Toast.Body>{toastMessage}</Toast.Body>
             </Toast>
           }
-
-        <Modal show={showModal} onHide={this.handleClose}>
-        <Modal.Header closeButton>
-        <Modal.Title>Previous FeedBack Details </Modal.Title>
+          <Modal show={showModal} onHide={this.handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Previous FeedBack Details </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {previousFeedbackData.length >0 && <Accordion defaultActiveKey="0">
-              {previousFeedbackData.map((list) =>
-                <Card key={list.sidz}> 
-                  <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey={list.sidz}>
-                    {list.sprintLevel}
-                  </Accordion.Toggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey={list.sidz}>
-                    <Card.Body>
-                    <h6><b>Scores</b></h6>
-                    {list.AssesmentParams.map((listData) =>
-                    <Fragment key={listData.ParamName}>
-                       <p>{listData.ParamName} : {listData.ParamValue}</p> 
-                      
-                    </Fragment>
-                   
-                    )}
-                     { (list.sprintLevel === 'Show and Tell assesment' || list.sprintLevel === 'Final Assessment') &&
-                      <p> Compentency Rating : {list.competancy_rating}</p> 
-
-                    }
-                    
-                    {list.sprintLevel === 'Final Assessment' && <p> Status: {list.sq_final_status}</p> }
-
-                    {list.sprintLevel === 'Final Assessment' && <p>Role: {list.role}</p> }
-
-
-                      <h6><b>Comments</b></h6>
-                       <p>{list.feedbackTxt}</p>
-
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              )}
+              {previousFeedbackData.length > 0 && <Accordion defaultActiveKey="0">
+                {previousFeedbackData.map((list) =>
+                  <Card key={list.sidz}>
+                    <Card.Header>
+                      <Accordion.Toggle as={Button} variant="link" eventKey={list.sidz}>
+                        {list.sprintLevel}
+                      </Accordion.Toggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey={list.sidz}>
+                      <Card.Body>
+                        <h6><b>Scores</b></h6>
+                        {list.AssesmentParams.map((listData) =>
+                          <Fragment key={listData.ParamName}>
+                            <p>{listData.ParamName} : {listData.ParamValue}</p>
+                          </Fragment>
+                        )}
+                        {(list.sprintLevel === 'Show and Tell assesment' || list.sprintLevel === 'Final Assessment') &&
+                          <p> Compentency Rating : {list.competancy_rating}</p>
+                        }
+                        {list.sprintLevel === 'Final Assessment' && <p> Status: {list.sq_final_status}</p>}
+                        {list.sprintLevel === 'Final Assessment' && <p>Role: {list.role}</p>}
+                        <h6><b>Comments</b></h6>
+                        <p>{list.feedbackTxt}</p>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                )}
               </Accordion>}
-              {previousFeedbackData.length === 0 &&       
-              <p>No data found.</p>}
-
+              {previousFeedbackData.length === 0 &&
+                <p>No data found.</p>}
             </Modal.Body>
-           
           </Modal>
-
         </div>
-
       </div>
     )
   }
