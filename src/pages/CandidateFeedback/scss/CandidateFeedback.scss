@@ -69,19 +69,26 @@
         }
       }
 
-    .fileUploadBtn{
-        background: #1b91e5;
-        border: solid 2px #1b91e5;
-        color: white;
-        font-weight: 500;
-        height: 40px;
-        margin-left: 10px;
-        &:hover {
+  
+      .fbSubmitCntrlPanel {
+        text-align: center;
+        margin: 10px 10px 100px;
+    
+        .fileUploadBtn {
+          background: #1b91e5;
+          border: solid 2px #1b91e5;
+          color: white;
+          font-weight: 500;
+          height: 40px;
+          margin-left: 10px;
+    
+          &:hover {
             background: white;
             color: #1b91e5;
             border: solid 2px #1b91e5;
+          }
         }
-    }
+      }
 }
 .star{
     
