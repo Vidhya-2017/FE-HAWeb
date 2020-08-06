@@ -100,7 +100,6 @@ class EventRegistration extends React.Component {
       var assessmentScale = [];
       if (response.arrRes && response.arrRes.length > 0) {
         const myObject = response.arrRes[0];
-        console.log('myObject---', myObject);
         const user_id = this.props.userDetails.user_id;
         const isEventMappedUser = myObject.OrganisersId.find((org) => org.userID === user_id);
         let showEditBtn = false;
@@ -178,7 +177,6 @@ class EventRegistration extends React.Component {
     for (let inputIdentifier in updatedRegForm) {
       formIsValid = updatedRegForm[inputIdentifier].valid && formIsValid;
     }
-    console.log('-updatedRegForm--', updatedRegForm);
     this.setState({ registerEvent: updatedRegForm, formIsValid });
   }
 
@@ -234,7 +232,6 @@ class EventRegistration extends React.Component {
       CreatedBy: user_id,
       UpdatedBy: user_id
     }
-    console.log('--this.state.editEvent-', this.state.editEvent);
     if (!this.state.editEvent) {
       const isUserExist = reqObj.OrganizerData.find((id) => id === user_id);
       if (!isUserExist) {
@@ -280,6 +277,7 @@ class EventRegistration extends React.Component {
       registerEvent: { ...regEventForm },
       organizerList: [],
       editEvent: false,
+      showEditBtn: true,
       selectedEvent: null,
       formIsValid: false
     })

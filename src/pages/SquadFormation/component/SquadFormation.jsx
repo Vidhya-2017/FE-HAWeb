@@ -128,7 +128,7 @@ class SquadFormation extends React.Component {
       if (squadRes && squadRes.errCode === 200) {
         const squadCandidates = squadRes.arrRes;
         this.props.getCandidateList(req).then((res) => {
-          if (res && res.errCode === 200) {
+          if (res && res.errCode === 200 && squadRes.errCode === 404) {
             const eventCandidates = res.arrRes.filter(list => list.SquadName === null || list.SquadName === '');
             const candidateList = [...squadCandidates, ...eventCandidates]
             this.candidateList = candidateList
@@ -139,8 +139,6 @@ class SquadFormation extends React.Component {
             this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
           }
         });
-      } else if (squadRes && squadRes.errCode === 404) {
-        this.setState({ showToast: true, toastMsg: 'No Records found in Squad Candidate List' })
       } else {
         this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
       }

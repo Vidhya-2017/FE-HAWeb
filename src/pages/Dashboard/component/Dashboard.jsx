@@ -358,7 +358,7 @@ class Dashboard extends React.Component {
     return (
       <Fragment>
         <div className='eventStatusContainer'>
-          <h3 className='pageTitle'>Event Status</h3>
+          <h3 className='pageTitle'>Dashboard</h3>
           <section className='statusHandlerContainer'>
             <Fragment>
               <div className="sprintlabel">
