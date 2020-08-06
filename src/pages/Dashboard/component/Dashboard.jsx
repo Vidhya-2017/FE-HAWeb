@@ -120,7 +120,12 @@ class Dashboard extends React.Component {
         this.setState({ panelReport: panelresponse.feedBack });
         if (panelresponse.feedBack.length > 0) {
           this.feedbackChart(panelresponse.feedBack, panelresponse.eventDetail[0]);
+        } else {
+          this.feedbackChart([], panelresponse.eventDetail[0]);
         }
+      } else {
+        this.setState({ panelReport: [] });
+        this.feedbackChart([], panelresponse.eventDetail[0]);
       }
     });
     this.props.eventReportWeb(eventReportReqObj).then(response => {
@@ -250,49 +255,52 @@ class Dashboard extends React.Component {
   feedbackChart = (feedback, event) => {
     const yAxisData = feedback.map(fb => Number(fb.cf_rating));
     const xAxisData = feedback.map(fb => fb.first_name);
-    this.clientFbChart = Highcharts.chart('feedBackChart', {
-      title: {
-        text: `Client: ${event.ClientName}`
-      },
-      subtitle: {
-        text: 'Feedback'
-      },
-      credits: {
-        enabled: false
-      },
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: '100%'
-          },
-        }]
-      },
-      tooltip: {
-        formatter: function () {
-          return '<b>' + this.x + '</b><br/>' +
-            '<b>Comments: </b>' + feedback[this.point.index].cf_comment;
-        }
-      },
-      xAxis: {
-        categories: xAxisData,
-      },
-      yAxis: {
+    if(feedback.length > 0) {
+      this.clientFbChart = Highcharts.chart('feedBackChart', {
         title: {
-          enabled: true,
-          text: 'Rating',
-          style: {
-            fontWeight: 'normal'
+          text: `Client: ${event.ClientName}`
+        },
+        subtitle: {
+          text: 'Feedback'
+        },
+        credits: {
+          enabled: false
+        },
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: '100%'
+            },
+          }]
+        },
+        tooltip: {
+          formatter: function () {
+            return '<b>' + this.x + '</b><br/>' +
+              '<b>Comments: </b>' + feedback[this.point.index].cf_comment;
           }
-        }
-      },
-      series: [{
-        type: 'column',
-        colors: ['#b8daff', '#ffeeba', '#c3e6cb', '#f5c6cb'],
-        colorByPoint: true,
-        data: yAxisData,
-        showInLegend: false
-      }]
-    });
+        },
+        xAxis: {
+          categories: xAxisData,
+        },
+        yAxis: {
+          title: {
+            enabled: true,
+            text: 'Rating',
+            style: {
+              fontWeight: 'normal'
+            }
+          }
+        },
+        series: [{
+          type: 'column',
+          colors: ['#b8daff', '#ffeeba', '#c3e6cb', '#f5c6cb'],
+          colorByPoint: true,
+          data: yAxisData,
+          showInLegend: false
+        }]
+      });
+    }
+
   }
 
   setChart = (eventData, event) => {
@@ -476,6 +484,7 @@ class Dashboard extends React.Component {
 
               <Col sm className='feedBackChart'>
                 {panelReport.length > 0 && <div id="feedBackChart" style={{ height: 250, border: 'solid 1px lightgray' }}></div>}
+                {panelReport.length === 0 && this.clientFbChart && this.clientFbChart.current && <div id="feedBackChart">No feedback has been provided</div>}
               </Col>
             </Row>
           </section>
