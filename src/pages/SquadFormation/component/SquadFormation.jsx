@@ -125,10 +125,10 @@ class SquadFormation extends React.Component {
     const req = { event_id: eventSelected.value };
     const request = { squad_id: selectedSquad.value };
     this.props.getSquadCandidateList(request).then((squadRes) => {
-      if (squadRes && squadRes.errCode === 200) {
+      if (squadRes && (squadRes.errCode === 200 || squadRes.errCode === 404)) {
         const squadCandidates = squadRes.arrRes;
         this.props.getCandidateList(req).then((res) => {
-          if (res && res.errCode === 200 && squadRes.errCode === 404) {
+          if (res && (res.errCode === 200 || res.errCode === 404)) {
             const eventCandidates = res.arrRes.filter(list => list.SquadName === null || list.SquadName === '');
             const candidateList = [...squadCandidates, ...eventCandidates]
             this.candidateList = candidateList
