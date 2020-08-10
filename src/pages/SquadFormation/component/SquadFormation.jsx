@@ -129,9 +129,10 @@ class SquadFormation extends React.Component {
         const squadCandidates = squadRes.arrRes;
         this.props.getCandidateList(req).then((res) => {
           if (res && (res.errCode === 200 || res.errCode === 404)) {
-            const eventCandidates = res.arrRes.filter(list => list.SquadName === null || list.SquadName === '');
-            const candidateList = [...squadCandidates, ...eventCandidates]
-            this.candidateList = candidateList
+            let eventCandidates = res.arrRes.filter(list => list.SquadName === null || list.SquadName === '');
+            eventCandidates = eventCandidates.sort((a, b) => (a.EmpName > b.EmpName) ? 1 : -1);
+            const candidateList = [...squadCandidates, ...eventCandidates];
+            this.candidateList = candidateList;
             this.setState({ candidateList })
           } else if (res && res.errCode === 404) {
             this.setState({ showToast: true, toastMsg: 'No Records found in Candidate List' })
@@ -247,7 +248,7 @@ class SquadFormation extends React.Component {
               />
             </Col>
           </Row>}
-          {candidateList && candidateList.length > 0  && <div>
+          {candidateList && selectedSquad && <div>
             <p className='memberLabel'>Candidate List: Count - {this.CandidateIDs.length}</p>
             <InputGroup className="mb-3">
               <FormControl
