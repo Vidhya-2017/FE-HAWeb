@@ -64,6 +64,14 @@ class SideNavBar extends React.Component {
       pathname: '/more',
       value: 'more',
       id: ''
+    }, {
+      pathname: '/demandDashboard',
+      value: 'demandDashboard',
+      id: ''
+    },{
+      pathname: '/createCandidate',
+      value: 'createCandidate',
+      id: ''
     }];
     const activeNav = navBars.find(nav => nav.pathname === props.history.location.pathname);
     this.state = {
@@ -183,10 +191,16 @@ class SideNavBar extends React.Component {
                     </Accordion.Collapse>
                   </Fragment>
                 </Accordion>
+                <Button className={`${activeNav === "demandDashboard"} nav-link`} onClick={() => this.pageRedirect('/demandDashboard', 'demandDashboard')}>
+                  <div className={`sb-nav-link-icon ${activeNav === "demandDashboard"}`}><i className="fa fa-tachometer"></i></div>
+                  Demand Supply
+                </Button>
+
                 <Button className={`${activeNav === "more"} nav-link`} onClick={() => this.pageRedirect('/more', 'more')}>
                   <div className={`sb-nav-link-icon ${activeNav === "more"}`}><i className="fa fa-ellipsis-v"></i></div>
                   More
                 </Button>
+                
               </div>
             </div>
             <div className="sb-sidenav-footer">

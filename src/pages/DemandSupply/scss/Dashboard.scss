@@ -1,0 +1,110 @@
+.eventStatusContainer{
+    .eventStatus{
+        .statusRow{
+            padding: 10px;
+            margin: 0;
+            .colStatus{
+                padding: 10px;
+                background-color: #fff;
+                text-align: center;
+                // display: flex;
+                // justify-content: space-between;
+                border: 1px solid #d6d6d6;
+                margin: 0 10px;
+                border-radius: 5px;
+                height: 80px;
+                box-shadow: 1px 1px 4px #d6d6d6;
+                &.secondaryBorder{
+                    border-left: .25rem solid #263238!important;
+                }&.warningBorder{
+                    border-left: .25rem solid #FB8C00!important;
+                }&.dangerBorder{
+                    border-left: .25rem solid #F44336!important;
+                }&.primaryBorder{
+                    border-left: .25rem solid #007aff!important;
+                }&.successBorder{
+                    border-left: .25rem solid #249600!important;
+                }
+                .fbIcon{
+                    width: 36px;
+                    height: 36px;
+                    margin: 11px 0;
+                }
+                p{
+                    margin: 0;
+                    font-size: 16px;
+                    &.success{
+                        font-size: 26px;
+                        color: #249600;
+                    }
+                    &.primary{
+                        font-size: 26px;
+                        color: #007aff;
+                    }
+                    &.danger{
+                        font-size: 26px;
+                        color: #F44336;
+                    }
+                    &.warning{
+                        font-size: 26px;
+                        color: #FB8C00;
+                    }
+                    &.secondary{
+                        font-size: 26px;
+                        color: #263238;
+                    }
+                }
+            }
+        }
+    }
+    .statusHandlerContainer{
+        display: flex;
+        padding: 0 20px;
+        flex-wrap: wrap;
+        .sprintlabel {
+            display: flex;
+        }
+        .eventLabel {
+            line-height: normal;
+            font-size: 15px;
+            padding: 10px 10px 10px 0;
+            margin: 0;
+            min-width: 100px;
+        }
+        .fileUploadBtn{
+            background: #1b91e5;
+            border: solid 2px #1b91e5;
+            color: white;
+            font-weight: 500;
+            height: 40px;
+            margin-left: 10px;
+            &:hover {
+                background: white;
+                color: #1b91e5;
+                border: solid 2px #1b91e5;
+            }
+        }
+    }
+    .statusList{
+        padding: 20px;
+        // display: flex;
+        // justify-content: space-evenly;
+        // flex-wrap: wrap;
+        .card{
+            width: 400px;
+            border: none;
+            margin-bottom: 20px;
+            margin-right: 10px;
+            .statusContainer{
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+    .errorLabel {
+        text-align: center;
+        font-size: 24px;
+        color: indianred;
+        font-weight: 400;
+    }
+}

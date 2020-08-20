@@ -11,7 +11,8 @@ import SquadReportContainer from './pages/SquadReport/container/SquadReportConta
 import EventFeedbackContainer from './pages/EventFeedback/container/EventFeedbackContainer';
 import EventStatusContainer from './pages/EventStatus/container/EventStatusContainer';
 import EventRegistrationContainer from './pages/EventRegistration/container/EventRegistrationContainer';
-
+import DemandDashboardContainer from './pages/DemandSupply/container/DashboardContainer';
+import CreateCandidateContainer from './pages/CreateCandidate/container/CreateCandidateContainer';
 import MoreContainer from './pages/More/container/MoreContainer';
 import CandidateFeedbackContainer from './pages/CandidateFeedback/container/CandidateFeedbackContainer';
 import SquadFormationContainer from './pages/SquadFormation/container/SquadFormationContainer';
@@ -91,8 +92,9 @@ class Home extends React.Component {
               <Route path="/eventRegister" component={EventRegistrationContainer} />
               <Route path="/eventFeedback" component={EventFeedbackContainer} />
               <Route path="/eventStatus" component={EventStatusContainer} />
-
+              <Route path="/demandDashboard" component={DemandDashboardContainer} />
               <Route path="/more" component={MoreContainer} />
+              <Route path="/createCandidate" component={CreateCandidateContainer} />
               <Route path="/candidateFeedback" component={CandidateFeedbackContainer} />
               <Route path="/squadFormation" component={SquadFormationContainer} />
               <Route path="/candidateSelection" component={CandidateSelectionContainer} />
