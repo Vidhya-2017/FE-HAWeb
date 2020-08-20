@@ -13,7 +13,7 @@ class EventCoordinator extends React.Component {
       showToast: false,
       toastMsg: '',
       EventDetailsList: [],
-      userList: null,
+      userList: [],
       clientName: '',
       searchedText: '',
       eventSelected: null,
@@ -41,7 +41,7 @@ class EventCoordinator extends React.Component {
   }
 
   handleEventChange = (eventSelected) => {
-    this.setState({ eventSelected, userList: null, clientName: '' });
+    this.setState({ eventSelected, userList: [], clientName: '' });
     let id = eventSelected.value;
     let clientName = '';
     let clientId = '';
@@ -127,7 +127,7 @@ class EventCoordinator extends React.Component {
           eventSelected: null,
           loading: false,
           showToast: true,
-          userList: null,
+          userList: [],
           clientName: '',
           clientId: '',
           toastMsg: 'Panel Registered successfully.'
@@ -208,9 +208,9 @@ class EventCoordinator extends React.Component {
           {eventSelected && eventSelected.value && clientName &&
             <p className="clientName">Client: {clientName}</p>
           }
-          {userList && <p className='memberLabel'>Member List:</p>}
-          {userList && <p className='toggleNote'>Note: Toggle this to become Event Organiser.</p>}
-          {userList && userList.length === 0 &&
+          {userList && eventSelected && <p className='memberLabel'>Member List:</p>}
+          {userList && eventSelected && <p className='toggleNote'>Note: Toggle this to become Event Organiser.</p>}
+          {userList && userList.length === 0 && eventSelected &&
             <ListGroup.Item variant="danger">No records found.</ListGroup.Item>
           }
           <ListGroup className="userListGroup">
