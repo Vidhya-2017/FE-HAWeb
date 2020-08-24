@@ -33,6 +33,10 @@
             border: solid 1px #000000;
             border-radius: 5px;
         }
+        .checkBoxAll{
+            display:flex;
+            justify-content: space-between;
+        }
     }
     .candidateList{
         max-height: 500px;

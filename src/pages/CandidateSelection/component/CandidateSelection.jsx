@@ -14,7 +14,8 @@ class CandidateSelection extends React.Component {
       EventDetailsList: [],
       eventSelected: null,
       candidateList: [],
-      searchQuery: ''
+      searchQuery: '',
+      count: 0
     }
     this.candidateList = [];
   }
@@ -65,6 +66,7 @@ class CandidateSelection extends React.Component {
         this.setState({
           candidateList: this.candidateList,
         });
+        this.handleCounter();
       } else if (response && response.errCode === 404 && response.status === "No records found") {
         this.setState({ showToast: true, candidateList: null, toastMsg: "No records found." })
 
@@ -95,6 +97,7 @@ class CandidateSelection extends React.Component {
     this.setState({
       candidateList: updatedcandidateList
     });
+    this.handleCounter();
   }
 
 
@@ -121,8 +124,24 @@ class CandidateSelection extends React.Component {
     })
   }
 
+  handleCandidateSelectionAll = (e) => {
+    const { candidateList, eventSelected } = this.state;
+    const updatedcandidateList = [...candidateList];
+    updatedcandidateList.map(list => (list.EventID = e.target.checked ? eventSelected.value : ''))
+    this.setState({
+      candidateList: updatedcandidateList
+    })
+    this.handleCounter();
+
+  }
+
+  handleCounter = () => {
+    this.count = this.candidateList.filter(value => value.EventID).length
+    this.setState({ count: this.count })
+  }
+
   render() {
-    const { showToast, toastMsg, candidateList, EventDetailsList, searchQuery, eventSelected } = this.state;
+    const { showToast, toastMsg, candidateList, EventDetailsList, searchQuery, eventSelected, count } = this.state;
     return (
       <div className='candidateSelectionWrapper'>
         <div className="pageHeader">
@@ -159,11 +178,21 @@ class CandidateSelection extends React.Component {
                 </InputGroup.Text>
               </InputGroup.Append>
             </InputGroup>
+            <div className="checkBoxAll">
+              <p>Selected Candidate:{count}</p>
+              <Form.Check
+                type="checkbox"
+                size="lg"
+                label="Select All"
+                className='toggleUser'
+                onChange={(e) => this.handleCandidateSelectionAll(e)}
+              />
+            </div>
           </div>}
           {candidateList && candidateList.length > 0 && <div className="candidateList">
           <ListGroup className="userListGroup">
             {candidateList.map(list =>
-            <ListGroup.Item key={list.EmpName} className="userList">
+            <ListGroup.Item key={list.ID} className="userList">
               <div className="candidateDetails">
               <p>{list.EmpName}</p>
               <p>{list.SkillName}</p>
