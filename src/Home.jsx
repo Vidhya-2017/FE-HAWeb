@@ -20,6 +20,7 @@ import CandidateSelectionContainer from './pages/CandidateSelection/container/Ca
 import EventCoordinatorContainer from './pages/EventCoordinator/container/EventCoordinatorContainer';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+import EventListContainer from './pages/EventList/container/EventListContainer';
 import './App.scss';
 
 class Home extends React.Component {
@@ -99,6 +100,7 @@ class Home extends React.Component {
               <Route path="/squadFormation" component={SquadFormationContainer} />
               <Route path="/candidateSelection" component={CandidateSelectionContainer} />
               <Route path="/eventCoordinator" component={EventCoordinatorContainer} />
+              <Route path="/eventList" component={EventListContainer} />
             </Switch>
             <Footer />
           </div>

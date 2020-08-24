@@ -1,0 +1,32 @@
+.EventList_container {
+  .container {
+    width: 95%;
+    min-height: auto;
+    padding-bottom: 20px;
+    padding-top: 20px;
+   
+  }
+  #bar {
+    resize: both;
+    overflow:scroll;
+    display:block;
+    width: auto;
+    height: auto;
+    min-height: 20px;
+    min-width: 20px;
+    white-space:pre;
+    table-layout:fixed;
+
+  }
+  
+  $breakpoint-tablet: 775px;
+  @media (max-width: $breakpoint-tablet) {
+    .container {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+
+
