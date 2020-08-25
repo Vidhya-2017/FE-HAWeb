@@ -5,23 +5,136 @@ import { Modal, FormControl, InputGroup, Row, Col, ListGroup, Form, Toast, Butto
 import moment from 'moment';
 import '../scss/CreateCandidate.scss';
 
+
 class CreateCandidate extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            skills: "",
+            skills: [],
+            location: [],
+            recruiter: [],
+            source:[],
+            spoc:[],
             addskills: "",
             showToast: false,
-            toastMsg: null
+            toastMsg: null,
+            selectedSkillId: "",
+            selectedAddSkillId: [],
+            selectedLocationId: "",
+            selectedPrefLocationId: [],
+            selectedrecruiter: "",
+            selectedSourceId: "",
+            selectedSpocId: "",
           };
 
     }
-    handleDropdownChange = (e) => {
-        this.setState({ skills: e.target.value });
-      }
     
+      getPrimarySkills = () =>{
+        this.props.getPrimarySkillsReport().then((res) => {
+            if (res.errCode === 200) {
+               
+                const options = res.arrRes.map(d => ({
+                    "value" : d.skill_id,
+                    "label" : d.skill_name
+              
+                  }))
+                  this.setState({
+                    skills:  options
+                })
+            }
+
+        })
+    }
+    getListLocation = () =>{
+        this.props.getListLocation().then((res) => {
+            if (res.errCode === 200) {
+                const options = res.arrRes.map(d => ({
+                    "value" : d.location_id,
+                    "label" : d.location_name
+              
+                  }))
+                this.setState({
+                    location:  options
+                })
+            }
+        })
+    }
+    getListRecruiter = () =>{
+        this.props.getListRecruiter().then((res) => {
+            if (res.errCode === 200) {
+                const options = res.arrRes.map(d => ({
+                    "value" : d.recruiter_id,
+                    "label" : d.recruiter_name
+              
+                  }))
+                  this.setState({
+                    recruiter:  options
+                })
+            }
+        })
+    }
+    getListSource = () => {
+        this.props.getListSource().then((res) => {
+            if (res.errCode === 200) {
+                const options = res.arrRes.map(d => ({
+                    "value" : d.source_id,
+                    "label" : d.source_name
+              
+                  }))
+                  this.setState({
+                    source:  options
+                })
+            }
+        })
+    }
+    
+    getListSpoc = () => {
+        this.props.getListSpoc().then((res) => {
+            if (res.errCode === 200) {
+                const options = res.arrRes.map(d => ({
+                    "value" : d.spoc_id,
+                    "label" : d.spoc_name
+              
+                  }))
+                  this.setState({
+                    spoc:  options
+                })
+            }
+        })
+    }
+    selectSecondarySkill(e){
+        this.setState({selectedAddSkillId:e})
+       }
+    selectSkill = (e) => {
+        this.setState({selectedSkillId:e.value})
+    }
+    selectLocation = (e) => {
+        this.setState({selectedLocationId: e.value})
+    }
+    selectPrefLocation(e){
+        this.setState({selectedPrefLocationId:e})
+       }
+    selectRecruiter = (e) => {
+        this.setState({selectedrecruiter: e.value})
+    }
+    selectSource = (e) => {
+        this.setState({selectedSourceId: e.value})
+    }
+    
+    selectSpoc = (e) => {
+        this.setState({selectedSpocId: e.value})
+    }
     handleSubmit(event) {
+        let getAddId = this.state.selectedAddSkillId.map(function(id) {
+            return id['value'];
+          });
+          let addSkillId = getAddId.toString();
+          let getPrefLocation = this.state.selectedPrefLocationId.map(function(id){
+              return id['value'];
+          })
+          let PrefLocationID = getPrefLocation.toString();
+
         event.preventDefault();
         const data = new FormData(event.target);
         let dateTime = new Date(data.get('testcompleted'));
@@ -34,18 +147,18 @@ class CreateCandidate extends React.Component {
             "relevant_experience": data.get('re'),
             "current_company": data.get('currcompany'),
             "notice_period": data.get('noticeperiod'),
-            "current_location": data.get('currlocation'),
-            "preferred_location": data.get('preflocation'),
+            "current_location": this.state.selectedLocationId,
+            "preferred_location": PrefLocationID,
             "hr_test_taken":"0", 
             "testlink_received_dt":completedDate,
             "test_completed_dt": completedDate,
             "hr_score": data.get('hrscore'),
             "hr_remarks": data.get('hrremarks'),
-            "source": data.get('source'),
-            "spoc": data.get('spoc'),
-            "recruiter": data.get('recruiter'),
-            "primary_skill": data.get('skills'),
-            "secondary_skill": data.get('addskills'),
+            "source": this.state.selectedSourceId,
+            "spoc": this.state.selectedSpocId,
+            "recruiter": this.state.selectedrecruiter,
+            "primary_skill": this.state.selectedSkillId,
+            "secondary_skill": addSkillId,
             "created_by": "1",
             "created_date": "2020-01-03",
             "updated_by": "",
@@ -55,14 +168,22 @@ class CreateCandidate extends React.Component {
         this.props.createCandidateForm(reqObj).then((res) => {
             if (res.errCode === 201) {
                 this.setState({ showToast: true, toastMsg: 'Candidate Successfully Added!' });
+            } else{
+                alert(res.status)
             }
 
         })
     }
-
+    componentDidMount() {
+        this.getPrimarySkills()
+        this.getListLocation();
+        this.getListRecruiter();
+        this.getListSource();
+        this.getListSpoc();
+    }
 
     render() {
-        const { showToast, toastMsg } = this.state;
+        const { showToast, toastMsg, selectedOption } = this.state;
         return (
             <section className="container-fluid candidate-wrapper">
                 <h5>Create Candidate</h5>
@@ -88,21 +209,15 @@ class CreateCandidate extends React.Component {
                         </Form.Row>
                         <Form.Row>
                         <Form.Group as={Col} controlId="formHorizontalSkills">
-                                <Form.Label>Skills</Form.Label>
-                                <Form.Control as="select" defaultValue="Skills" name="skills" onChange={(e) => this.setState({skills: e.target.value})}>
-                                    <option>Choose...</option>
-                                    <option>Angular</option>
-                                    <option>React</option>
-                                </Form.Control>
+                                <Form.Label>Primary Skills</Form.Label>
+                                
+                                <Select options={this.state.skills} onChange={this.selectSkill.bind(this)} />
 
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalAddSkills">
-                                <Form.Label>Additional Skills </Form.Label>
-                                <Form.Control as="select" defaultValue="Additional Skills" name="addskills">
-                                    <option>Choose...</option>
-                                    <option>HTML5</option>
-                                    <option>SASS</option>
-                                </Form.Control>
+                                <Form.Label>Secondary Skills </Form.Label>
+                                <Select options={this.state.skills} onChange={this.selectSecondarySkill.bind(this)} isMulti  />
+                                
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
@@ -122,13 +237,15 @@ class CreateCandidate extends React.Component {
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalCurrLocation">
                                 <Form.Label>Current Location </Form.Label>
-                                <Form.Control type="text" placeholder="Current Location" name="currlocation"/>
+                                <Select options={this.state.location} onChange={this.selectLocation.bind(this)} />
+                                
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalPrefLocation">
                                 <Form.Label>Pref Location</Form.Label>
-                                <Form.Control type="text" placeholder="Pref Location" name="preflocation"/>
+                                <Select options={this.state.location} onChange={this.selectPrefLocation.bind(this)} isMulti  />
+                                
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalNoticePeriod">
                                 <Form.Label> Notice Period</Form.Label>
@@ -182,15 +299,11 @@ class CreateCandidate extends React.Component {
                             
                             <Form.Group as={Col} controlId="formHorizontalSource">
                                 <Form.Label>Source</Form.Label>
-                                <Form.Control type="text" placeholder="Source" name="source"/>
+                                <Select options={this.state.source} onChange={this.selectSource.bind(this)} />
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalDA">
                                 <Form.Label> D&A Spoc</Form.Label>
-                                <Form.Control as="select" defaultValue="D&A Spoc" name="spoc">
-                                    <option>panel one</option>
-                                    <option>panel two</option>
-                                    <option>panel three</option>
-                                </Form.Control>
+                                <Select options={this.state.spoc} onChange={this.selectSpoc.bind(this)} />
                             </Form.Group>
 
                         </Form.Row>
@@ -198,11 +311,7 @@ class CreateCandidate extends React.Component {
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalRecruiter">
                                 <Form.Label>Recruiter</Form.Label>
-                                <Form.Control as="select" defaultValue="recruiter" name="recruiter">
-                                    <option>panel one</option>
-                                    <option>panel two</option>
-                                    <option>panel three</option>
-                                </Form.Control>
+                                <Select options={this.state.recruiter} onChange={this.selectRecruiter.bind(this)} />
                             </Form.Group>
                            
                         </Form.Row>

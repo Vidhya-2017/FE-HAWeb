@@ -4,7 +4,12 @@ import { CreateCandidateActions } from '../modules/CreateCandidateActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createCandidateForm: CreateCandidateActions.createCandidateForm
+    createCandidateForm: CreateCandidateActions.createCandidateForm,    
+    getPrimarySkillsReport: CreateCandidateActions.getPrimarySkillsReport,
+    getListLocation: CreateCandidateActions.getListLocation,
+    getListRecruiter: CreateCandidateActions.getListRecruiter,
+    getListSource: CreateCandidateActions.getListSource,
+    getListSpoc: CreateCandidateActions.getListSpoc
   };
 };
 
