@@ -69,6 +69,20 @@ class SideNavBar extends React.Component {
       value: 'demandDashboard',
       id: ''
     }, {
+      pathname: '/addSPOC',
+      value: 'SPOC Creation',
+      id: ''
+    },
+    {
+      pathname: '/addRecruiter',
+      value: 'ADD Recruiters',
+      id: ''
+    },
+    {
+      pathname: '/previousEmpolyer',
+      value: 'Master Company',
+      id: ''
+    }, {
       pathname: '/createCandidate',
       value: 'createCandidate',
       id: ''
@@ -205,6 +219,18 @@ class SideNavBar extends React.Component {
                   Demand Supply
                 </Button>
 
+                <Button className={`${activeNav === "addSPOC"} nav-link`} onClick={() => this.pageRedirect('/addSPOC', 'addSPOC')}>
+                  <div className={`sb-nav-link-icon ${activeNav === "addSPOC"}`}><i className="fa fa-users"></i></div>
+                  ADD SPOC
+                </Button>
+                <Button className={`${activeNav === "addRecruiter"} nav-link`} onClick={() => this.pageRedirect('/addRecruiter', 'addRecruiter')}>
+                  <div className={`sb-nav-link-icon ${activeNav === "addRecruiter"}`}><i className="fa fa-users"></i></div>
+                  Add Recruiter
+                </Button>
+                <Button className={`${activeNav === "previousEmpolyer"} nav-link`} onClick={() => this.pageRedirect('/previousEmpolyer', 'previousEmpolyer')}>
+                  <div className={`sb-nav-link-icon ${activeNav === "previousEmpolyer"}`}><i className="fa fa-users"></i></div>
+                  Company List
+                </Button>
                 <Button className={`${activeNav === "more"} nav-link`} onClick={() => this.pageRedirect('/more', 'more')}>
                   <div className={`sb-nav-link-icon ${activeNav === "more"}`}><i className="fa fa-ellipsis-v"></i></div>
                   More

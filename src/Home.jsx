@@ -12,6 +12,9 @@ import EventFeedbackContainer from './pages/EventFeedback/container/EventFeedbac
 import EventStatusContainer from './pages/EventStatus/container/EventStatusContainer';
 import EventRegistrationContainer from './pages/EventRegistration/container/EventRegistrationContainer';
 import DemandDashboardContainer from './pages/DemandSupply/container/DashboardContainer';
+import SPOCCreationContainer from './pages/SPOC/container/SPOCCreationContainer';
+import PreviousEmployerContainer from './pages/PreviousEmployer/container/PreviousEmployerContainer';
+import AddRecruitersContainer from './pages/AddRecruiters/container/AddRecruitersContainer';
 import CreateCandidateContainer from './pages/CreateCandidate/container/CreateCandidateContainer';
 import MoreContainer from './pages/More/container/MoreContainer';
 import CandidateFeedbackContainer from './pages/CandidateFeedback/container/CandidateFeedbackContainer';
@@ -94,6 +97,9 @@ class Home extends React.Component {
               <Route path="/eventFeedback" component={EventFeedbackContainer} />
               <Route path="/eventStatus" component={EventStatusContainer} />
               <Route path="/demandDashboard" component={DemandDashboardContainer} />
+              <Route path="/addSPOC" component={SPOCCreationContainer} />
+              <Route path="/previousEmpolyer" component={PreviousEmployerContainer} />
+              <Route path="/addRecruiter" component={AddRecruitersContainer} />
               <Route path="/more" component={MoreContainer} />
               <Route path="/createCandidate" component={CreateCandidateContainer} />
               <Route path="/candidateFeedback" component={CandidateFeedbackContainer} />
