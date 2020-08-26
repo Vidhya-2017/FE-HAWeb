@@ -72,7 +72,7 @@ export class Login extends React.Component {
     getCandidateData = (inputValue) =>{
         let reqObj = {
             "search": inputValue? inputValue : '',    
-           "start_limit" :"",
+            "start_limit" :"",
             "page":""
         }
         this.props.getCandidateReport(reqObj).then((res) => {
@@ -80,7 +80,7 @@ export class Login extends React.Component {
                 this.setState({
                     tableData:  res.arrRes
                 })
-                console.log(this.state);
+           
             }
 
         })
@@ -88,9 +88,32 @@ export class Login extends React.Component {
     componentDidMount() {
         this.getCandidateData()
     }
-   
+
+    changeCandidateInterviewStatus = async (candidate,status) =>{
+
+        let candidateIds = candidate.map((data,i)=>{
+            return data.candidate_id
+        })
+
+     
+        let reqObj = {
+            "candidate_id":candidateIds.toString(),
+            "interview_level":status.interview_status,
+            "interview_schedule_dt" :"",
+            "interview_status": status.interview_status,
+            "interview_comment" :""
+        }
+
+        this.props.changeCandidateInterviewStatus(reqObj).then((res) => {
+            if (res.errCode === 200) {
+
+                this.getCandidateData()
+             
+            }
+        })
+    }
     render() {
-        const { classes } = this.props
+        const { classes,deleteCandidate} = this.props
         //const { statements } = this.state.tableData
 
         return (
@@ -101,6 +124,8 @@ export class Login extends React.Component {
                         <TableLayout classes={classes} statements={this.state.tableData} 
                         history={this.props.history}
                         getCandidateData = {this.getCandidateData}
+                        deleteCandidate = {deleteCandidate}
+                        changeCandidateInterviewStatus = {this.changeCandidateInterviewStatus}
                         />
                     </div>
                 </Container>

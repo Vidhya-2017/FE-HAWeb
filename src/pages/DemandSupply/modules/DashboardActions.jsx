@@ -11,4 +11,22 @@ export const DashboardActions = {
             return (error.response);
         }
     },
+    deleteCandidate: async (data) =>{
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateDelete.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
+    changeCandidateInterviewStatus: async (data) =>{
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateLevelFeedback.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    }
 }

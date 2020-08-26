@@ -4,7 +4,9 @@ import { DashboardActions } from '../modules/DashboardActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getCandidateReport: DashboardActions.getCandidateReport
+    getCandidateReport: DashboardActions.getCandidateReport,
+    changeCandidateInterviewStatus : DashboardActions.changeCandidateInterviewStatus,
+    deleteCandidate : DashboardActions.deleteCandidate,
   };
 };
 

@@ -43,7 +43,7 @@ const StyledMenuItem = withStyles((theme) => ({
 export default function CustomizedMenus(props) {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const { classes, buttonName, status,disabled } = props
+    const { classes, buttonName, status, disabled, changeCandidateInterviewStatus } = props
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -53,6 +53,7 @@ export default function CustomizedMenus(props) {
         setAnchorEl(null);
     };
 
+ //  console.log('--->status',status)
     return (
         <React.Fragment>
             <Button
@@ -63,7 +64,7 @@ export default function CustomizedMenus(props) {
                 onClick={handleClick}
                 size='small'
                 className={classes.button}
-                disabled = {disabled}
+                disabled={disabled}
             >
                 {buttonName}
             </Button>
@@ -82,7 +83,7 @@ export default function CustomizedMenus(props) {
                                 {/* <ListItemIcon>
                                     <SendIcon fontSize="small" />
                                 </ListItemIcon> */}
-                                <ListItemText primary={item.title} />
+                                <ListItemText primary={item.title} onClick={() => {changeCandidateInterviewStatus(item)}} />
                             </StyledMenuItem>
                         )
                     })

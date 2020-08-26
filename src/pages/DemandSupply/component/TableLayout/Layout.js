@@ -78,7 +78,6 @@ export class Layout extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps', nextProps);
         if (this.props.statements !== nextProps.statements) {
             this.setState({
                 actualData: nextProps.statements
@@ -92,22 +91,22 @@ export class Layout extends Component {
         return (
             <TableRow style={{ color: 'white !important' }} >
                 <TableCell> Select</TableCell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='name' style={{ width: '100px' }}>Name</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='candidate_name' style={{ width: '100px' }}>Name</Cell>
                 <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={false} name='contact' style={{ width: '100px' }}>Contact</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={false} name='email' style={{ width: '100px' }}>Email</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='totalExperience' style={{ width: '50px' }}>Total Experience</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='relevantExperience' style={{ width: '50px' }}>Relevent Experience</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='currentCompany' style={{ width: '100px' }}>Current Company</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='noticePeriod' style={{ width: '100px' }}>Notice Periods</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='currentLocation' style={{ width: '50px' }}>Current Location</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='preferedoction' style={{ width: '50px' }}>Preferred Location</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='hackerRankTest' style={{ width: "10px" }}> Hacker Rank</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='hackerRankScore' > HackerRankScore</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={false} name='hackerRankRemarks' >Hacker Rank Remarks</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='spoc' >SPOC</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={false} name='email_id' style={{ width: '100px' }}>Email</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='total_experience' style={{ width: '50px' }}>Total Experience</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='relevant_experience' style={{ width: '50px' }}>Relevent Experience</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='current_company' style={{ width: '100px' }}>Current Company</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='notice_period' style={{ width: '100px' }}>Notice Periods</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='current_location' style={{ width: '50px' }}>Current Location</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='preferred_location' style={{ width: '50px' }}>Preferred Location</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='hr_test_taken' style={{ width: "10px" }}> Hacker Rank</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='hr_score' > HackerRankScore</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={false} name='hr_remarks' >Hacker Rank Remarks</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='spoc_name' >SPOC</Cell>
                 <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='recruiter' >Recruiter</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary' >Primary</Cell>
-                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='secondary' >Secondary</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary_skill' >Primary</Cell>
+                <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='secondary_skill' >Secondary</Cell>
             </TableRow>
         )
     }
@@ -186,13 +185,27 @@ export class Layout extends Component {
 
         const { actualData } = this.state
         const filteredData = actualData.filter((data) => {
-            return data.checked == undefined || !data.checked
+            return data.checked !== undefined && data.checked
         })
-        this.setState({
-            page: 0,
-            enableEditIcon: false,
-            enableDeleteIcon: false,
-            actualData: filteredData
+
+        let candidateIds = filteredData .map((data, i) => {
+            return data.candidate_id
+        })
+
+        console.log(filteredData)
+        let reqObj = {
+            candidate_id: candidateIds.toString()
+        }
+
+        this.props.deleteCandidate(reqObj).then((res) => {
+            if (res.errCode === 201) {
+                this.props.getCandidateData()
+                this.setState({
+                    page: 0,
+                    enableEditIcon: false,
+                    enableDeleteIcon: false,
+                })
+            }
         })
 
     }
@@ -201,12 +214,24 @@ export class Layout extends Component {
         this.props.history.push('/createCandidate');
     }
 
+    changeCandidateInterviewStatus = async (status) => {
+        const { actualData } = this.state
+        const { changeCandidateInterviewStatus } = this.props
+
+        const filteredData = actualData.filter((data) => {
+            return data.checked != undefined || data.checked
+        })
+
+        changeCandidateInterviewStatus(filteredData, status)
+
+    }
+
     render() {
         const { classes, getCandidateData } = this.props
         const { page, rowsPerPage, actualData, enableEditIcon, enableDeleteIcon } = this.state
         return (
             <React.Fragment>
-                <Search getCandidateData = {getCandidateData}/>
+                <Search getCandidateData={getCandidateData} />
                 <Button
                     variant="contained"
                     color="primary"
@@ -267,20 +292,22 @@ export class Layout extends Component {
 
                 <CustomisedMenu buttonName='Fitment Status'
                     status={[
-                        { title: 'Fitment On hold' },
-                        { title: 'Fitment Reject' },
-                        { title: 'Fitment WIP' },
+                        { title: 'Fitment On hold', interview_status: 9 },
+                        { title: 'Fitment Reject', interview_status: 10 },
+                        { title: 'Fitment WIP', interview_status: 11 },
                     ]}
                     classes={classes}
+                    changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
                     disabled={!enableDeleteIcon}
                 />
-                <CustomisedMenu buttonName='Offer Statud'
+                <CustomisedMenu buttonName='Offer Status'
                     status={[
-                        { title: 'Offer On hold' },
-                        { title: 'Offer WIP' },
-                        { title: 'Offered' },
-                        { title: 'Joined' },
+                        { title: 'Offer On hold', interview_status: 14 },
+                        { title: 'Offer WIP', interview_status: 21 },
+                        { title: 'Offered', interview_status: 15 },
+                        { title: 'Joined', interview_status: 20 },
                     ]}
+                    changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
                     classes={classes}
                     disabled={!enableDeleteIcon}
                 />
