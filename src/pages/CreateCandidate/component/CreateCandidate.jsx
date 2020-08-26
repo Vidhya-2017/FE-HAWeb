@@ -30,7 +30,9 @@ class CreateCandidate extends React.Component {
             selectedSpocId: "",
             selectedOption: "",
             isHanRankerTest: false,
-            selectedCompanyId: ""
+            selectedCompanyId: "",
+            selectedNPId: '',
+            np: [ {'label':'30 days', 'value': '30'}, {'label':'60 days', 'value': '60'},{'label':'90 days', 'value': '90'},{'label':'Can join immediately', 'value': '15'}]
         };
 
     }
@@ -133,6 +135,9 @@ class CreateCandidate extends React.Component {
     selectSecondarySkill(e) {
         this.setState({ selectedAddSkillId: e })
     }
+    selectNP = (e) => {
+        this.setState({ selectedNPId: e.value })
+    }
     selectCompany = (e) => {
         this.setState({ selectedCompanyId: e.label })
     }
@@ -179,7 +184,7 @@ class CreateCandidate extends React.Component {
             "total_experience": data.get('te'),
             "relevant_experience": data.get('re'),
             "current_company": this.state.selectedCompanyId,
-            "notice_period": data.get('noticeperiod'),
+            "notice_period": this.state.selectedNPId,
             "current_location": this.state.selectedLocationId,
             "preferred_location": PrefLocationID,
             "hr_test_taken": "0",
@@ -284,26 +289,21 @@ class CreateCandidate extends React.Component {
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalNoticePeriod">
                                 <Form.Label> Notice Period</Form.Label>
-                                <Form.Control as="select" defaultValue="Notice Period" name="noticeperiod">
-                                    <option>30 days</option>
-                                    <option>60 days</option>
-                                    <option>90 days</option>
-                                    <option>Can join immediately</option>
-                                </Form.Control>
+                                <Select options={this.state.np}  onChange={this.selectNP.bind(this)}/>
                             </Form.Group>
                         </Form.Row>
 
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalHackerTest">
-                                <Form.Label>Hacker Rank Test Taken </Form.Label>
-                                <Col>
-                                    <div onChange={this.onChangeValue} className="row">
-                                        <div className="col-1"><input type="radio" value="Yes" name="HackerRankTest" /> Yes</div>
+                                
+                                <div className="row">
+                                <Form.Label className="col-3">Hacker Rank Test Taken </Form.Label>
+                                    <div onChange={this.onChangeValue}  className="row col-6">
+                                        <div className="col-2"><input type="radio" value="Yes" name="HackerRankTest" /> Yes</div>
                                         <div className="col-2"><input type="radio" value="No" name="HackerRankTest" /> No</div>
                                     </div>
 
-
-                                </Col>
+                                    </div>
                             </Form.Group>
                         </Form.Row>
                         {isHanRankerTest &&
@@ -345,7 +345,7 @@ class CreateCandidate extends React.Component {
                         </Form.Row>
 
                         <Form.Row>
-                            <Form.Group as={Col} controlId="formHorizontalRecruiter">
+                            <Form.Group as={Col} controlId="formHorizontalRecruiter" className="col-6">
                                 <Form.Label>Recruiter</Form.Label>
                                 <Select options={this.state.recruiter} onChange={this.selectRecruiter.bind(this)} />
                             </Form.Group>
@@ -354,7 +354,7 @@ class CreateCandidate extends React.Component {
 
                         <Form.Group as={Row}>
                             <Col >
-                                <Button type="submit">Create</Button>
+                                <Button type="submit" className="btn-create">Create</Button>
                             </Col>
                         </Form.Group>
                     </Form>
