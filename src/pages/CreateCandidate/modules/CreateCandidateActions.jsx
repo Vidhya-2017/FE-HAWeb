@@ -55,4 +55,13 @@ export const CreateCandidateActions = {
             return (error.response);
         }
     },
+    getCompanyLists: async () => {
+        try {
+            const response = await clients.DSaxiosAPI.get('/ListsCompany.php');
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
 }

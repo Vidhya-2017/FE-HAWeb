@@ -76,7 +76,7 @@ export class Login extends React.Component {
             "page":""
         }
         this.props.getCandidateReport(reqObj).then((res) => {
-            if (res.errCode === 200) {
+            if (res && res.errCode === 200) {
                 this.setState({
                     tableData:  res.arrRes
                 })
