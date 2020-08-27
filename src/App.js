@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { Provider } from 'react-redux';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from "redux-persist/lib/storage";
 import thunk from 'redux-thunk';
@@ -30,16 +31,25 @@ let store = createStore(persistedReducer, composeEnhancers(
 let persistor = persistStore(store);
 
 
+const outerTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#1b91e5',
+    },
+  },
+});
 class App extends React.Component {
   render() {
     return (
-      <div className='appContainer sb-nav-fixed'>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <Home history={this.props.history} />
-          </PersistGate>
-        </Provider>
-      </div>
+      <ThemeProvider theme={outerTheme}>
+        <div className='appContainer sb-nav-fixed'>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <Home history={this.props.history} />
+            </PersistGate>
+          </Provider>
+        </div>
+      </ThemeProvider>
     );
   }
 }

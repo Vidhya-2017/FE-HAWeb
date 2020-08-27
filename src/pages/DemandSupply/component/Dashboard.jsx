@@ -28,7 +28,7 @@ const styles = theme => ({
   table: {
     minWidth: 300,
     '& thead': {
-      backgroundColor: '#007bff',
+      backgroundColor: '#2196f3',
       '& tr ': {
         '& th ': {
           color: 'white !important'
