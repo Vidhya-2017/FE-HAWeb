@@ -7,6 +7,7 @@ const mapDispatchToProps = (dispatch) => {
     getCandidateReport: DashboardActions.getCandidateReport,
     changeCandidateInterviewStatus : DashboardActions.changeCandidateInterviewStatus,
     deleteCandidate : DashboardActions.deleteCandidate,
+    getSearchResult: DashboardActions.getSearchResult
   };
 };
 

@@ -121,7 +121,7 @@ export class Layout extends Component {
             <React.Fragment>
                 {
                     tableData.map((statement, i) => (
-                        <TableRow key={statement.transactionId}>
+                        <TableRow key={`${statement.transactionId}-${i}`}>
                             <Cell sort={false} ><input type='checkbox' onChange={() => { this.onSelectCandidate((page * rowsPerPage) + i) }} checked={statement.checked} /></Cell>
                             <Cell sort={false} style={{ whiteSpace: 'nowrap' }}>{statement.candidate_name}</Cell>
                             <Cell sort={false} >{statement.contact}</Cell>
@@ -225,13 +225,29 @@ export class Layout extends Component {
         changeCandidateInterviewStatus(filteredData, status)
 
     }
+    getSearchResult = (reqObj) => {
+        this.props.getSearchResult(reqObj).then((res) => {
+            console.log(res)
+            if (res && res.errCode === 200) {
+              this.setState({
+                actualData: res.arrRes
+              })
+            } else if(res && res.errCode === 404) {
+                this.setState({
+                    actualData: []
+                  })
+            }
+          })
+    }
 
     render() {
         const { classes, getCandidateData } = this.props
         const { page, rowsPerPage, actualData, enableEditIcon, enableDeleteIcon } = this.state
         return (
             <React.Fragment>
-                <Search getCandidateData={getCandidateData} />
+                <Search getCandidateData={getCandidateData}
+                    getSearchResult={this.getSearchResult}
+                />
                 <Button
                     variant="contained"
                     color="primary"

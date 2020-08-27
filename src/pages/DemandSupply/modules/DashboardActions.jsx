@@ -11,6 +11,15 @@ export const DashboardActions = {
             return (error.response);
         }
     },
+    getSearchResult: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/SearchListing.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
     deleteCandidate: async (data) =>{
         try {
             const response = await clients.DSaxiosAPI.post('/CandidateDelete.php', data);

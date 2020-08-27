@@ -14,47 +14,47 @@ import TableLayout from './TableLayout/Layout'
 
 
 const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: '50px'
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    },
-    paper: {
-        //marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+  root: {
+    width: '100%',
+    marginTop: '50px'
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  paper: {
+    //marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
 
-        // [theme.breakpoints.up('lg')]: {
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '30px'
-        //},
+    // [theme.breakpoints.up('lg')]: {
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '30px'
+    //},
 
-    },
-    table: {
-        minWidth: 300,
-        '& thead': {
-            backgroundColor: '#007bff',
-            '& tr ': {
-                '& th ': {
-                    color: 'white !important'
-                }
-            }
-        },
-        '& tbody >tr:nth-child(even)': {
-            backgroundColor: '#dddddd'
-        },
-        '& tbody >tr:nth-child(odd)': {
-            backgroundColor: 'white'
+  },
+  table: {
+    minWidth: 300,
+    '& thead': {
+      backgroundColor: '#007bff',
+      '& tr ': {
+        '& th ': {
+          color: 'white !important'
         }
+      }
     },
-    button: {
-        margin: theme.spacing(1.5),
-      },
+    '& tbody >tr:nth-child(even)': {
+      backgroundColor: '#dddddd'
+    },
+    '& tbody >tr:nth-child(odd)': {
+      backgroundColor: 'white'
+    }
+  },
+  button: {
+    margin: theme.spacing(1.5),
+  },
 
 });
 
@@ -63,75 +63,75 @@ const styles = theme => ({
 
 export class Login extends React.Component {
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            tableData: {}
-        }
+  constructor(props) {
+    super(props)
+    this.state = {
+      tableData: {}
     }
-    getCandidateData = (inputValue) =>{
-        let reqObj = {
-            "search": inputValue? inputValue : '',    
-            "start_limit" :"",
-            "page":""
-        }
-        this.props.getCandidateReport(reqObj).then((res) => {
-            if (res && res.errCode === 200) {
-                this.setState({
-                    tableData:  res.arrRes
-                })
-           
-            }
-
+  }
+  getCandidateData = (inputValue) => {
+    let reqObj = {
+      "search": inputValue ? inputValue : '',
+      "start_limit": "",
+      "page": ""
+    }
+    this.props.getCandidateReport(reqObj).then((res) => {
+      if (res && res.errCode === 200) {
+        this.setState({
+          tableData: res.arrRes
         })
+      }
+
+    })
+  }
+  componentDidMount() {
+    this.getCandidateData()
+  }
+
+  changeCandidateInterviewStatus = async (candidate, status) => {
+
+    let candidateIds = candidate.map((data, i) => {
+      return data.candidate_id
+    })
+
+
+    let reqObj = {
+      "candidate_id": candidateIds.toString(),
+      "interview_level": status.interview_status,
+      "interview_schedule_dt": "",
+      "interview_status": status.interview_status,
+      "interview_comment": ""
     }
-    componentDidMount() {
+
+    this.props.changeCandidateInterviewStatus(reqObj).then((res) => {
+      if (res.errCode === 200) {
+
         this.getCandidateData()
-    }
 
-    changeCandidateInterviewStatus = async (candidate,status) =>{
+      }
+    })
+  }
+  render() {
+    const { classes, deleteCandidate } = this.props
+    //const { statements } = this.state.tableData
 
-        let candidateIds = candidate.map((data,i)=>{
-            return data.candidate_id
-        })
+    return (
+      <React.Fragment>
 
-     
-        let reqObj = {
-            "candidate_id":candidateIds.toString(),
-            "interview_level":status.interview_status,
-            "interview_schedule_dt" :"",
-            "interview_status": status.interview_status,
-            "interview_comment" :""
-        }
-
-        this.props.changeCandidateInterviewStatus(reqObj).then((res) => {
-            if (res.errCode === 200) {
-
-                this.getCandidateData()
-             
-            }
-        })
-    }
-    render() {
-        const { classes,deleteCandidate} = this.props
-        //const { statements } = this.state.tableData
-
-        return (
-            <React.Fragment>
-
-                <Container >
-                    <div className={classes.root}>
-                        <TableLayout classes={classes} statements={this.state.tableData} 
-                        history={this.props.history}
-                        getCandidateData = {this.getCandidateData}
-                        deleteCandidate = {deleteCandidate}
-                        changeCandidateInterviewStatus = {this.changeCandidateInterviewStatus}
-                        />
-                    </div>
-                </Container>
-            </React.Fragment>
-        );
-    }
+        <Container >
+          <div className={classes.root}>
+            <TableLayout classes={classes} statements={this.state.tableData}
+              history={this.props.history}
+              getCandidateData={this.getCandidateData}
+              getSearchResult={this.props.getSearchResult}
+              deleteCandidate={deleteCandidate}
+              changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+            />
+          </div>
+        </Container>
+      </React.Fragment>
+    );
+  }
 }
 
 
