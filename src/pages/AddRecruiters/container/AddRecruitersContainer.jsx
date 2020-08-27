@@ -5,14 +5,17 @@ import AddRecruiters from '../component/AddRecruiters';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addRecruiters: AddRecruitersAction.addSPOC,
+    getRecruiter: AddRecruitersAction.getRecruiter,
+    deleteRecruiter: AddRecruitersAction.deleteRecruiter,
+    editRecruiter: AddRecruitersAction.editRecruiter,
+    addRecruiter: AddRecruitersAction.addRecruiter
+
   };
 };
 
 
 const mapStateToProps = (state) => {
   return {
-    userDetails: state.loginReducer.userDetails
   }
 }
 

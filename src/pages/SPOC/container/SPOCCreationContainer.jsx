@@ -5,14 +5,16 @@ import SPOCCreation from '../component/SPOCCreation';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addSPOC: SPOCCreationAction.addSPOC,
+    getSPOC: SPOCCreationAction.getSPOC,
+    deleteSPOC: SPOCCreationAction.deleteSPOC,
+    editSPOC: SPOCCreationAction.editSPOC,
+    addSPOC: SPOCCreationAction.addSPOC
   };
 };
 
 
 const mapStateToProps = (state) => {
   return {
-    userDetails: state.loginReducer.userDetails
   }
 }
 
