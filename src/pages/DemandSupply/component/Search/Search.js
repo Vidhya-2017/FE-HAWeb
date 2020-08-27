@@ -58,13 +58,10 @@ export class Search extends React.Component {
 
       searchInput: e.target.value,
     })
-    console.log(searchText)
-    console.log(this.state.searchColumn, 'column')
     const reqObj = {
       search_column: this.state.searchColumn,
       search_text: searchText
     }
-    console.log(reqObj)
     this.props.getSearchResult(reqObj);
   }
   render() {

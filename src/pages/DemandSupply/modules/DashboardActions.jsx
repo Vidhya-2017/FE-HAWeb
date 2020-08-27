@@ -11,6 +11,24 @@ export const DashboardActions = {
             return (error.response);
         }
     },
+    updatTp1ScheduleDetails: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateLevelFeedback.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
+    updatTp2ScheduleDetails: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateLevelFeedback.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
     getSearchResult: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/SearchListing.php', data);

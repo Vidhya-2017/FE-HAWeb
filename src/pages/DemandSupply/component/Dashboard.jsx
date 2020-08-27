@@ -3,16 +3,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
 import TableLayout from './TableLayout/Layout'
 
-
-
-
-
-/**
- * @param {*} theme 
- * This is Landing Dashboard Component
- */
-
-
 const styles = theme => ({
   root: {
     width: '100%',
@@ -45,12 +35,12 @@ const styles = theme => ({
         }
       }
     },
-    '& tbody >tr:nth-child(even)': {
-      backgroundColor: '#dddddd'
-    },
-    '& tbody >tr:nth-child(odd)': {
-      backgroundColor: 'white'
-    }
+    // '& tbody >tr:nth-child(even)': {
+    //   backgroundColor: '#dddddd'
+    // },
+    // '& tbody >tr:nth-child(odd)': {
+    //   backgroundColor: 'white'
+    // }
   },
   button: {
     margin: theme.spacing(1.5),
@@ -69,6 +59,22 @@ export class Login extends React.Component {
       tableData: {}
     }
   }
+  tp1scheduleUpdate = (res) => {
+    this.props.updatTp1ScheduleDetails(res).then((res) => {
+      if (res && res.errCode === 201) {
+        alert("TP1 Status Scheduled Successfully")
+      }
+    })
+  }
+  tp2scheduleUpdate = (res) => {
+    this.props.updatTp2ScheduleDetails(res).then((res) => {
+      if (res && res.errCode === 201) {
+        alert("TP2 Status Scheduled Successfully")
+
+      }
+    })
+  }
+
   getCandidateData = (inputValue) => {
     let reqObj = {
       "search": inputValue ? inputValue : '',
@@ -126,6 +132,8 @@ export class Login extends React.Component {
               getSearchResult={this.props.getSearchResult}
               deleteCandidate={deleteCandidate}
               changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+              tp1scheduleUpdate={this.tp1scheduleUpdate}
+              tp2scheduleUpdate={this.tp2scheduleUpdate}
             />
           </div>
         </Container>

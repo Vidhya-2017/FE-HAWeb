@@ -3,11 +3,11 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+// import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import SendIcon from '@material-ui/icons/Send';
+// import InboxIcon from '@material-ui/icons/MoveToInbox';
+// import DraftsIcon from '@material-ui/icons/Drafts';
+// import SendIcon from '@material-ui/icons/Send';
 
 const StyledMenu = withStyles({
     paper: {
@@ -43,7 +43,7 @@ const StyledMenuItem = withStyles((theme) => ({
 export default function CustomizedMenus(props) {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const { classes, buttonName, status, disabled, changeCandidateInterviewStatus } = props
+    const { classes, buttonName, status, disabled, onSendPress, changeCandidateInterviewStatus } = props
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -53,7 +53,16 @@ export default function CustomizedMenus(props) {
         setAnchorEl(null);
     };
 
- //  console.log('--->status',status)
+    const handleListItemClick = (e, item) => {
+        setAnchorEl(null);
+        console.log('---', item);
+        if (item.id === 1) {
+            onSendPress(item);
+        }
+        if(item.interview_status) {
+        changeCandidateInterviewStatus(item);
+        }
+    }
     return (
         <React.Fragment>
             <Button
@@ -80,10 +89,7 @@ export default function CustomizedMenus(props) {
                     status.map((item, i) => {
                         return (
                             <StyledMenuItem key={i}>
-                                {/* <ListItemIcon>
-                                    <SendIcon fontSize="small" />
-                                </ListItemIcon> */}
-                                <ListItemText primary={item.title} onClick={() => {changeCandidateInterviewStatus(item)}} />
+                                <ListItemText primary={item.title} onClick={(event) => handleListItemClick(event, item)} />
                             </StyledMenuItem>
                         )
                     })
