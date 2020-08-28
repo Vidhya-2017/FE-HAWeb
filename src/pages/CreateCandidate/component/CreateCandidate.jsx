@@ -32,7 +32,7 @@ class CreateCandidate extends React.Component {
             isHanRankerTest: false,
             selectedCompanyId: "",
             selectedNPId: '',
-            np: [ {'label':'30 days', 'value': '30'}, {'label':'60 days', 'value': '60'},{'label':'90 days', 'value': '90'},{'label':'Can join immediately', 'value': '15'}]
+            np: [{ 'label': '30 days', 'value': '30' }, { 'label': '60 days', 'value': '60' }, { 'label': '90 days', 'value': '90' }, { 'label': 'Can join immediately', 'value': '15' }]
         };
 
     }
@@ -232,78 +232,128 @@ class CreateCandidate extends React.Component {
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalCandidateName">
                                 <Form.Label >Candidate Name</Form.Label>
-                                <Form.Control type="CandidateName" name="username" placeholder="Candidate Name" />
+                                <Form.Control type="CandidateName" name="username" placeholder="Candidate Name" required />
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalContact">
                                 <Form.Label>Contact</Form.Label>
-                                <Form.Control type="number" placeholder="Contact" name="contact" />
+                                <Form.Control type="number" placeholder="Contact" name="contact" required />
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="formHorizontalEmail">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control type="email" placeholder="Email" name="email" />
+                                <Form.Control type="email" placeholder="Email" name="email" required />
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalSkills">
                                 <Form.Label>Primary Skills</Form.Label>
-
                                 <Select options={this.state.skills} onChange={this.selectSkill.bind(this)} />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedSkillId}
+                                        required
+                                    />
+                                )}
 
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalAddSkills">
                                 <Form.Label>Secondary Skills </Form.Label>
-                                <Select options={this.state.skills} onChange={this.selectSecondarySkill.bind(this)} isMulti />
+                                <Select options={this.state.skills} onChange={this.selectSecondarySkill.bind(this)} isMulti required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedAddSkillId}
+                                        required
+                                    />
+                                )}
 
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalTE">
                                 <Form.Label>Total Experience</Form.Label>
-                                <Form.Control type="number" placeholder="Total Experience" name="te" />
+                                <Form.Control type="number" placeholder="Total Experience" name="te" required />
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalRE">
                                 <Form.Label >Relevant Experience</Form.Label>
-                                <Form.Control type="number" placeholder="Relevant Experience" name="re" />
+                                <Form.Control type="number" placeholder="Relevant Experience" name="re" required />
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalCurrCompany">
                                 <Form.Label> Current Company</Form.Label>
-                                <Select options={this.state.listCompany} onChange={this.selectCompany.bind(this)} />
-
+                                <Select options={this.state.listCompany} onChange={this.selectCompany.bind(this)} required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedCompanyId}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalCurrLocation">
                                 <Form.Label>Current Location </Form.Label>
-                                <Select options={this.state.location} onChange={this.selectLocation.bind(this)} />
-
+                                <Select options={this.state.location} onChange={this.selectLocation.bind(this)} required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedLocationId}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalPrefLocation">
                                 <Form.Label>Pref Location</Form.Label>
-                                <Select options={this.state.location} onChange={this.selectPrefLocation.bind(this)} isMulti />
-
+                                <Select options={this.state.location} onChange={this.selectPrefLocation.bind(this)} isMulti required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedPrefLocationId}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalNoticePeriod">
                                 <Form.Label> Notice Period</Form.Label>
-                                <Select options={this.state.np}  onChange={this.selectNP.bind(this)}/>
+                                <Select options={this.state.np} onChange={this.selectNP.bind(this)} required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedNPId}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
                         </Form.Row>
 
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalHackerTest">
-                                
+
                                 <div className="row">
-                                <Form.Label className="col-3">Hacker Rank Test Taken </Form.Label>
-                                    <div onChange={this.onChangeValue}  className="row col-6">
-                                        <div className="col-2"><input type="radio" value="Yes" name="HackerRankTest" /> Yes</div>
-                                        <div className="col-2"><input type="radio" value="No" name="HackerRankTest" /> No</div>
+                                    <Form.Label className="col-3">Hacker Rank Test Taken </Form.Label>
+                                    <div onChange={this.onChangeValue} className="row col-6">
+                                        <div className="col-2"><input type="radio" value="Yes" name="HackerRankTest" required /> Yes</div>
+                                        <div className="col-2"><input type="radio" value="No" name="HackerRankTest" required /> No</div>
                                     </div>
 
-                                    </div>
+                                </div>
                             </Form.Group>
                         </Form.Row>
                         {isHanRankerTest &&
@@ -311,22 +361,22 @@ class CreateCandidate extends React.Component {
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="formHorizontalTestCompletedDate">
                                         <Form.Label>Test Completed Date</Form.Label>
-                                        <Form.Control type="date" placeholder="Test Completed Date" name="testcompleted" />
+                                        <Form.Control type="date" placeholder="Test Completed Date" name="testcompleted" required />
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formHorizontalHackerRankScore">
                                         <Form.Label> Hacker Rank Score</Form.Label>
-                                        <Form.Control type="text" placeholder="Hacker Rank Score" name="hrscore" />
+                                        <Form.Control type="text" placeholder="Hacker Rank Score" name="hrscore" required />
                                     </Form.Group>
                                 </Form.Row>
 
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="formHorizontalHackerRankRemarks">
                                         <Form.Label> Hacker Rank Remarks</Form.Label>
-                                        <Form.Control type="text" placeholder="Hacker Rank Remarks" name="hrremark" />
+                                        <Form.Control type="text" placeholder="Hacker Rank Remarks" name="hrremark" required />
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formHorizontalHackerRankRemarks">
                                         <Form.Label>Test shared Date</Form.Label>
-                                        <Form.Control type="date" placeholder="Test shared Date" name="sharedDate" />
+                                        <Form.Control type="date" placeholder="Test shared Date" name="sharedDate" required />
                                     </Form.Group>
                                 </Form.Row>
                             </div>
@@ -335,11 +385,29 @@ class CreateCandidate extends React.Component {
 
                             <Form.Group as={Col} controlId="formHorizontalSource">
                                 <Form.Label>Source</Form.Label>
-                                <Select options={this.state.source} onChange={this.selectSource.bind(this)} />
+                                <Select options={this.state.source} onChange={this.selectSource.bind(this)} required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedSourceId}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
                             <Form.Group as={Col} controlId="formHorizontalDA">
                                 <Form.Label> D&A Spoc</Form.Label>
-                                <Select options={this.state.spoc} onChange={this.selectSpoc.bind(this)} />
+                                <Select options={this.state.spoc} onChange={this.selectSpoc.bind(this)} required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedSpocId}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
 
                         </Form.Row>
@@ -347,7 +415,16 @@ class CreateCandidate extends React.Component {
                         <Form.Row>
                             <Form.Group as={Col} controlId="formHorizontalRecruiter" className="col-6">
                                 <Form.Label>Recruiter</Form.Label>
-                                <Select options={this.state.recruiter} onChange={this.selectRecruiter.bind(this)} />
+                                <Select options={this.state.recruiter} onChange={this.selectRecruiter.bind(this)} required />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                        value={this.state.selectedrecruiter}
+                                        required
+                                    />
+                                )}
                             </Form.Group>
 
                         </Form.Row>
