@@ -1,7 +1,8 @@
 import React from 'react';
 import { withStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
-import TableLayout from './TableLayout/Layout'
+import TableLayout from './TableLayout/Layout';
+import { Toast } from 'react-bootstrap';
 
 const styles = theme => ({
   root: {
@@ -56,20 +57,50 @@ export class Login extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      tableData: {}
+      tableData: {},
+      panelList: [],
+      showToast: false,
+      toastMsg: null
     }
   }
-  tp1scheduleUpdate = (res) => {
-    this.props.updatTp1ScheduleDetails(res).then((res) => {
-      if (res && res.errCode === 201) {
-        alert("TP1 Status Scheduled Successfully")
+
+  SendTP1CandidatePrimarySkillId = (res) => {
+    const { panelList } = this.state;
+    let primariSkillId = {
+      "skill_id": res
+    }
+    this.props.getCandidatePrimarySkillId(primariSkillId).then((res) => {
+      if (res && res.errCode === 200) {
+        const users = res.arrRes
+
+        this.setState({
+          panelList: users
+        }, () => { console.log(this.state.panelList, " -- panels List ") })
+
       }
     })
   }
+
+  tp1scheduleUpdate = (res) => {
+    this.props.updatTp1ScheduleDetails(res).then((res) => {
+      if (res && res.errCode === 201) {
+        this.setState({
+          showToast: true, toastMsg: 'TP1 Status Scheduled Successfully!'
+        }, () => {
+          console.log(this.state.toastMsg, "tp1 status added succesfully");
+        });
+      }
+    })
+  }
+
   tp2scheduleUpdate = (res) => {
     this.props.updatTp2ScheduleDetails(res).then((res) => {
       if (res && res.errCode === 201) {
-        alert("TP2 Status Scheduled Successfully")
+        this.setState({
+          showToast: true, toastMsg: 'TP2 Status Scheduled Successfully!'
+        }, () => {
+          console.log(this.state.toastMsg, "tp1 status added succesfully");
+        });
 
       }
     })
@@ -118,6 +149,7 @@ export class Login extends React.Component {
     })
   }
   render() {
+    const { showToast, toastMsg } = this.state
     const { classes, deleteCandidate } = this.props
     //const { statements } = this.state.tableData
 
@@ -134,9 +166,32 @@ export class Login extends React.Component {
               changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
               tp1scheduleUpdate={this.tp1scheduleUpdate}
               tp2scheduleUpdate={this.tp2scheduleUpdate}
+              SendTP1CandidatePrimarySkillId={this.SendTP1CandidatePrimarySkillId}
+              panels={this.state.panelList}
             />
           </div>
         </Container>
+        {showToast &&
+          <Toast
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: '#deeddd',
+              border: '1px solid #28a745',
+              color: '#6c757d',
+              fontWeight: 500,
+              width: 400
+            }}
+
+            onClose={() => this.setState({ showToast: false })}
+            show={showToast}
+            delay={3000}
+            autohide
+          >
+            <Toast.Body>{this.state.toastMsg}</Toast.Body>
+          </Toast>
+        }
       </React.Fragment>
     );
   }

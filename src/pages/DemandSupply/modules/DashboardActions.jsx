@@ -11,6 +11,15 @@ export const DashboardActions = {
             return (error.response);
         }
     },
+    getCandidatePrimarySkillId: async(data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/PanelListsBySkillId.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
     updatTp1ScheduleDetails: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/CandidateLevelFeedback.php', data);

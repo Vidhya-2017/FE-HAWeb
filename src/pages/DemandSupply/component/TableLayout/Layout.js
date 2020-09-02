@@ -55,12 +55,13 @@ export class Layout extends Component {
       tp2PanelName: '',
       tp1InterviewDate: '',
       tp2InterviewDate: '',
-      panelName: [
-        { name: 'panel one', id: 1 },
-        { name: 'panel two', id: 2 },
-        { name: 'panel three', id: 3 },
-        { name: 'panel four', id: 4, },
-      ],
+      tp1Panels: []
+      // panelName: [
+      //   { name: 'panel one', id: 1 },
+      //   { name: 'panel two', id: 2 },
+      //   { name: 'panel three', id: 3 },
+      //   { name: 'panel four', id: 4, },
+      // ],
     }
     this.tp1Status = [
       { id: 1, title: 'TP1 Schedule' },
@@ -94,6 +95,8 @@ export class Layout extends Component {
         actualData: nextProps.statements
       })
     }
+    const tp1Panels = nextProps.panels;
+    this.setState({ tp1Panels })
   }
 
   getTp1StatusModal = (i) => {
@@ -101,6 +104,11 @@ export class Layout extends Component {
     const filteredDataone = actualData.filter((data) => {
       return data.checked === true || data.checked
     })
+    let primarySkillId = filteredDataone.map(a => a.primary_skill_id);
+    let CandidatePrimarySkillId = primarySkillId.toString();
+
+    this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
+
     this.setState({
       showModal1: true,
       tp1data: filteredDataone
@@ -111,8 +119,11 @@ export class Layout extends Component {
     const filtertp2Data = actualData.filter((data) => {
       return data.checked === true || data.checked
     })
-    toast.error("Schedule panel from TP1 status")
+    // toast.error("Schedule panel from TP1 status")
+    let primarySkillId = filtertp2Data.map(a => a.primary_skill_id);
+    let CandidatePrimarySkillId = primarySkillId.toString();
 
+    this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
 
     this.setState({
       showModal2: true,
@@ -146,7 +157,8 @@ export class Layout extends Component {
       interview_level: tp1PanelName,
       interview_schedule_dt: tp1InterviewDate,
       interview_status: 1,
-      interview_comment: "TP1 Scheduled"
+      interview_comment: "TP1 Scheduled",
+      created_by: 1
     }
     this.props.tp1scheduleUpdate(tp1ScheduleDetails);
   }
@@ -161,7 +173,8 @@ export class Layout extends Component {
       interview_level: tp2PanelName,
       interview_schedule_dt: tp2InterviewDate,
       interview_status: 5,
-      interview_comment: "TP2 Scheduled"
+      interview_comment: "TP2 Scheduled",
+      created_by: 1
     }
     this.props.tp2scheduleUpdate(tp2ScheduleDetails);
   }
@@ -283,6 +296,7 @@ export class Layout extends Component {
       <TableRow style={{ color: 'white !important' }} >
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary' >Panel Name</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='secondary' >Date</Cell>
+        <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary' >Created By</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='name' style={{ width: '100px' }}>Name</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='recruiter' >Recruiter</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='spoc' >DNA SPOC</Cell>
@@ -293,34 +307,37 @@ export class Layout extends Component {
   }
 
   renderTP1TableBody = () => {
-    let { tp1data, panelName } = this.state;
+    let { tp1data, panelName, tp1Panels } = this.state;
     let tableData = tp1data;
+    let status2 = tableData.map(a => a.feedback && a.feedback[0]);
     return (
       <React.Fragment>
         {
           tableData.map((statement, i) => (
-            <TableRow key={statement.transactionId}>
-              <Cell sort={false} >
-                <select onChange={this.onTp1PanelSelect}>
-                  <option value="none" selected disabled hidden>
-                    Select Panel
-                            </option>
-                  {panelName.map(item => (
-                    <>
-                      <option key={item.id} value={item.name}>
-                        {item.name}
-                      </option>
-                    </>
-                  ))}
-                </select>
-              </Cell>
-              <Cell sort={false} ><input type="date" placeholder="Select Date" onChange={this.onTp1InterviewDateSelect} /></Cell>
-              <Cell sort={false} style={{ whiteSpace: 'nowrap' }}>{statement.candidate_name}</Cell>
-              <Cell sort={false} >{statement.recruiter}</Cell>
-              <Cell sort={false}>{statement.spoc_name}</Cell>
-              <Cell sort={false} >{statement.primary_skill}</Cell>
-              <Cell sort={false} >{statement.secondary_skill}</Cell>
-            </TableRow>
+            (!statement.feedback && !statement.feedback[0] ?
+              <TableRow key={statement.transactionId}>
+                <Cell sort={false} >
+                  <select onChange={this.onTp1PanelSelect}>
+                    <option value="none" selected disabled hidden>
+                      Select Panel
+                              </option>
+                    {tp1Panels.map(item => (
+                      <>
+                        <option key={item.id} value={item.panel_name}>
+                          {item.panel_name}
+                        </option>
+                      </>
+                    ))}
+                  </select>
+                </Cell>
+                <Cell sort={false} ><input type="date" placeholder="Select Date" onChange={this.onTp1InterviewDateSelect} /></Cell>
+                <Cell sort={false} > {statement.created_by}</Cell>
+                <Cell sort={false} style={{ whiteSpace: 'nowrap' }}>{statement.candidate_name}</Cell>
+                <Cell sort={false} >{statement.recruiter}</Cell>
+                <Cell sort={false}>{statement.spoc_name}</Cell>
+                <Cell sort={false} >{statement.primary_skill}</Cell>
+                <Cell sort={false} >{statement.secondary_skill}</Cell>
+              </TableRow> : null)
           ))
         }
       </React.Fragment>
@@ -359,6 +376,7 @@ export class Layout extends Component {
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='secondary' >Date</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary' >TP1 Panel Name</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary' >TP1 Interview Date</Cell>
+        <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='primary' >Created By</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='name' style={{ width: '100px' }}>Name</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='recruiter' >Recruiter</Cell>
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={true} name='spoc' >DNA SPOC</Cell>
@@ -369,24 +387,24 @@ export class Layout extends Component {
   }
 
   renderTP2TableBody = () => {
-    let { tp2data, panelName } = this.state;
+    let { tp2data, tp1Panels } = this.state;
     let tableData = tp2data;
     let status1 = tableData.map(a => a.feedback && a.feedback[0]);
     return (
       <React.Fragment>
         {
           tableData.map((statement, i) => (
-            (statement.feedback && statement.feedback[0] ?
+            (statement.feedback && statement.feedback[0] && !statement.feedback[1] ?
               <TableRow key={statement.transactionId}>
                 <Cell sort={false} >
                   <select onChange={this.onTp2PanelSelect}>
                     <option value="none" selected disabled hidden>
                       Select Panel
                             </option>
-                    {panelName.map(item => (
+                    {tp1Panels.map(item => (
                       <>
-                        <option key={item.id} value={item.name}>
-                          {item.name}
+                        <option key={item.id} value={item.panel_name}>
+                          {item.panel_name}
                         </option>
                       </>
                     ))}
@@ -400,12 +418,13 @@ export class Layout extends Component {
                 <Cell sort={false} >
                   {statement.feedback && statement.feedback[0] ? statement.feedback[0].interview_schedule_dt : ''}
                 </Cell>
+                <Cell sort={false} style={{ whiteSpace: 'nowrap' }}>{statement.created_by}</Cell>
                 <Cell sort={false} style={{ whiteSpace: 'nowrap' }}>{statement.candidate_name}</Cell>
                 <Cell sort={false} >{statement.recruiter}</Cell>
                 <Cell sort={false}>{statement.spoc_name}</Cell>
                 <Cell sort={false} >{statement.primary_skill}</Cell>
                 <Cell sort={false} >{statement.secondary_skill}</Cell>
-              </TableRow> : <ToastContainer />)
+              </TableRow> : null)
           ))
         }
       </React.Fragment>
@@ -516,7 +535,7 @@ export class Layout extends Component {
             <Button autoFocus onClick={() => this.setState({ showModal1: false })} color="primary">
               Back
             </Button>
-            <Button autoFocus onClick={this.onTp1ScheduleSubmit} color="primary">
+            <Button autoFocus onClick={this.onTp1ScheduleSubmit} color="primary" disabled={!this.state.tp1PanelName}>
               Submit
             </Button>
           </DialogActions>
@@ -530,7 +549,7 @@ export class Layout extends Component {
             <Button autoFocus onClick={() => this.setState({ showModal2: false })} color="primary">
               Back
             </Button>
-            <Button autoFocus onClick={this.onTp2ScheduleSubmit} color="primary">
+            <Button autoFocus onClick={this.onTp2ScheduleSubmit} color="primary" disabled={!this.state.tp2PanelName}>
               Submit
             </Button>
           </DialogActions>
