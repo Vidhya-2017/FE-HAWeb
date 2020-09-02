@@ -55,7 +55,6 @@ export class Search extends React.Component {
   handleChange = (e) => {
     const searchText = e.target.value;
     this.setState({
-
       searchInput: e.target.value,
     })
     const reqObj = {
@@ -102,12 +101,13 @@ export class Search extends React.Component {
               <MenuItem value="secondary_skill"> Secondary</MenuItem>
             </Select>
           </FormControl>
-          <Paper component="form" className={classes.root}>
+          <Paper className={classes.root}>
             <InputBase
               className={classes.input}
               placeholder="Enter Search Value"
               onChange={this.handleChange}
               value={this.state.searchInput}
+              type="text"
               inputProps={{ 'aria-label': 'Enter Search Value' }}
             />
             <IconButton disabled className={classes.iconButton} aria-label="search">
