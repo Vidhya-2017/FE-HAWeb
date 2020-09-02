@@ -55,7 +55,7 @@ export class Layout extends Component {
       enableEditIcon: false,
       test: props.statements,
       enableDeleteIcon: false,
-      rowToDelete: [],
+      selectedRows: [],
       actualData: [],
       showModal1: false,
       showModal2: false,
@@ -84,7 +84,7 @@ export class Layout extends Component {
       { id: 2, title: 'TP2 Feedback Pending' },
       { id: 3, title: 'TP2 On hold' },
       { id: 4, title: 'TP2 Pending' },
-      { id: 4, title: 'TP2 Rejected' },
+      { id: 5, title: 'TP2 Rejected' },
     ];
 
     this.columnFields = [
@@ -160,6 +160,37 @@ export class Layout extends Component {
               onChange={e => props.onChange(e.target.value)}
             />
           )
+        },
+        validate: rowData => rowData.relevant_experience !== '',
+      },
+      {
+        title: "Last Interview Status",
+        field: "feedback",
+        render: (rowData) => {
+          let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
+            rowData.feedback[rowData.feedback.length - 1].status_name : '-'
+          return <div>{display}</div>
+        },
+        validate: rowData => rowData.relevant_experience !== '',
+      },
+      {
+        title: "Last Interview Panel",
+        field: "feedback",
+        render: (rowData) => {
+          let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
+            rowData.feedback[rowData.feedback.length - 1].interview_level : '-'
+          return <div>{display}</div>
+        },
+        validate: rowData => rowData.relevant_experience !== '',
+      },
+      {
+        title: "Last Interview  Date",
+        field: "feedback",
+        render: (rowData) => {
+          let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
+            rowData.feedback[rowData.feedback.length - 1].interview_schedule_dt : '-'
+            console.log(display)
+          return <div>{display.split(' ')[0]}</div>
         },
         validate: rowData => rowData.relevant_experience !== '',
       },
@@ -516,7 +547,7 @@ export class Layout extends Component {
     if (this.props.statements !== nextProps.statements) {
       this.setState({
         actualData: nextProps.statements,
-        rowToDelete: []
+        selectedRows: []
       })
     }
     const tp1Panels = nextProps.panels;
@@ -688,9 +719,9 @@ export class Layout extends Component {
   };
 
   _handleDelete = () => {
-    const { actualData, rowToDelete } = this.state
+    const { actualData, selectedRows } = this.state
 
-    let candidateIds = rowToDelete.map((data, i) => {
+    let candidateIds = selectedRows.map((data, i) => {
       return data.candidate_id
     })
     let reqObj = {
@@ -954,7 +985,7 @@ export class Layout extends Component {
               color: '#FFF'
             },
             cellStyle: {
-             padding:10
+              padding: 10
             },
             rowStyle: {
               fontSize: 14,
@@ -966,7 +997,7 @@ export class Layout extends Component {
             this.setState({
               enableEditIcon: rows.length == 1 ? true : false,
               enableDeleteIcon: rows.length > 0 ? true : false,
-              rowToDelete: rows,
+              selectedRows: rows,
             })
           }}
 
