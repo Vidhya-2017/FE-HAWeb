@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  OutlinedInput,
+  MenuItem,
+  TextField,
+} from "@material-ui/core";
 import { withStyles, Button, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogTitle, TablePagination } from '@material-ui/core';
+import MaterialTable from "material-table";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Cell from '../Table/Cell'
@@ -46,6 +55,7 @@ export class Layout extends Component {
       enableEditIcon: false,
       test: props.statements,
       enableDeleteIcon: false,
+      rowToDelete: [],
       actualData: [],
       showModal1: false,
       showModal2: false,
@@ -77,6 +87,419 @@ export class Layout extends Component {
       { id: 4, title: 'TP2 Rejected' },
     ];
 
+    this.columnFields = [
+      {
+        title: "Name",
+        field: "candidate_name",
+        editComponent: props => {
+          return (
+            <TextField
+              name="candidate_name"
+              type="text"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.candidate_name !== '',
+      },
+      {
+        title: "Email",
+        field: "email_id",
+        editComponent: props => {
+          return (
+            <TextField
+              name="email_id"
+              type="text"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.email_id !== '',
+      },
+      {
+        title: "Contact",
+        field: "contact",
+        editComponent: props => {
+          return (
+            <TextField
+              name="contact"
+              type="number"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.contact !== '',
+      },
+      {
+        title: "Total Experience",
+        field: "total_experience",
+        editComponent: props => {
+          return (
+            <TextField
+              name="total_experience"
+              type="number"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.total_experience !== '',
+      },
+      {
+        title: "Relavent Experience",
+        field: "relevant_experience",
+        editComponent: props => {
+          return (
+            <TextField
+              name="relevant_experience"
+              type="number"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.relevant_experience !== '',
+      },
+      {
+        title: "Current Company",
+        field: "current_company",
+        validate: rowData => rowData.current_company !== '',
+      },
+      {
+        title: "Notice Period",
+        field: "notice_period",
+        editComponent: props => {
+          return (
+            <TextField
+              name="notice_period"
+              type="number"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.notice_period !== '',
+      },
+      {
+        title: "Current Location",
+        field: "current_location",
+        editComponent: x => (
+          <FormControl>
+          </FormControl>
+        ),
+        validate: rowData => rowData.current_location !== '',
+      },
+      {
+        title: "Prefered Location",
+        field: "preferred_location",
+        editComponent: x => (
+          <FormControl>
+          </FormControl>
+        ),
+        validate: rowData => rowData.preferred_location !== '',
+      },
+      // {
+      //   title: "HackerRank Test Taken",
+      //   field: "hr_test_taken",
+      //   validate: rowData => rowData.hr_test_taken !== '',
+      // },
+      {
+        title: "HackerRank Score",
+        field: "hr_score",
+        editComponent: props => {
+          return (
+            <TextField
+              name="hr_score"
+              type="number"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.hr_score !== '',
+      },
+      {
+        title: "HackerRank Remarks",
+        field: "hr_remarks",
+        editComponent: props => {
+          return (
+            <TextField
+              name="hr_remarks"
+              type="text"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          )
+        },
+        validate: rowData => rowData.hr_remarks !== '',
+      },
+      {
+        title: "SPOC",
+        field: "spoc_name",
+        validate: rowData => rowData.spoc_name !== '',
+        editComponent: props => {
+          return (
+            <FormControl>
+            </FormControl>
+          )
+        },
+      },
+      {
+        title: "Recruiter",
+        field: "recruiter",
+        validate: rowData => rowData.recruiter !== '',
+      },
+      {
+        title: "Primary Skill",
+        field: "primary_skill",
+        editComponent: x => (
+          <FormControl>
+          </FormControl>
+        ),
+        validate: rowData => rowData.primary_skill !== '',
+        //lookup: {},
+      },
+      {
+        title: "Secondary Skill",
+        field: "secondary_skill",
+        editComponent: x => (
+          <FormControl>
+          </FormControl>
+        ),
+        validate: rowData => rowData.secondary_skill_id !== '',
+      },
+    ]
+  }
+
+  componentDidMount() {
+    this.getPrimarySkills()
+    this.getListLocation();
+    this.getListRecruiter();
+    this.getListSource();
+    this.getListSpoc();
+    this.getCompanyLists();
+  }
+
+  getPrimarySkills = () => {
+    this.props.getPrimarySkillsReport().then((res) => {
+      if (res && res.errCode === 200) {
+        let primarySkillIndex = this.columnFields.findIndex(d => d.field == 'primary_skill')
+        this.columnFields[primarySkillIndex].editComponent = (x) => {
+          return (<FormControl>
+            <Select
+              value={x.rowData.primary_skill_id}
+              onChange={e => {
+                x.rowData.primary_skill_id = e.target.value
+                this.forceUpdate()
+              }}
+              input={<OutlinedInput name="Prefix" />}
+            >
+              {
+                res.arrRes.map(d =>
+                  <MenuItem key={d.skill_id} value={d.skill_id}>
+                    {d.skill_name}
+                  </MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>)
+        }
+        let sendarySkilIndex = this.columnFields.findIndex(d => d.field == 'secondary_skill')
+        this.columnFields[sendarySkilIndex].editComponent = (x) => {
+          return (<FormControl>
+            <Select
+              value={x.rowData.secondary_skill_id}
+              multiple
+              onChange={(event) => {
+                x.rowData.secondary_skill_id = event.target.value
+                this.forceUpdate()
+              }}
+              // onChange={e => x.onChange(e)}
+              input={<OutlinedInput name="Prefix" />}
+            >
+              {
+                res.arrRes.map(d =>
+                  <MenuItem key={d.skill_id} value={d.skill_id}>
+                    {d.skill_name}
+                  </MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>)
+        }
+
+      }
+    })
+  }
+
+  getListLocation = () => {
+    this.props.getListLocation().then((res) => {
+      if (res && res.errCode === 200) {
+        let currentLocationIndex = this.columnFields.findIndex(d => d.field == 'current_location')
+        this.columnFields[currentLocationIndex].editComponent = (x) => {
+          return (<FormControl>
+            <Select
+              value={x.rowData.current_location_id}
+              onChange={e => {
+                x.rowData.current_location_id = e.target.value
+                this.forceUpdate()
+              }}
+              input={<OutlinedInput name="Prefix" />}
+            >
+              {
+                res.arrRes.map(d =>
+                  <MenuItem key={d.location_id} value={d.location_id}>
+                    {d.location_name}
+                  </MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>)
+        }
+        let preferedLocationIndex = this.columnFields.findIndex(d => d.field == 'preferred_location')
+        this.columnFields[preferedLocationIndex].editComponent = (x) => {
+          return (<FormControl>
+            <Select
+              value={x.rowData.preferred_location_id}
+              multiple
+              onChange={(event) => {
+                x.rowData.preferred_location_id = event.target.value
+                this.forceUpdate()
+              }}
+              input={<OutlinedInput name="Prefix" />}
+            >
+              {
+                res.arrRes.map(d =>
+                  <MenuItem key={d.location_id} value={d.location_id}>
+                    {d.location_name}
+                  </MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>)
+        }
+      }
+    })
+  }
+
+
+  getCompanyLists = () => {
+    this.props.getCompanyLists().then((res) => {
+      if (res && res.errCode === 200) {
+        const options = res.arrRes.map(d => ({
+          "value": d.company_id,
+          "label": d.company_name
+
+        }))
+        this.setState({
+          listCompany: options
+        })
+      }
+
+    })
+  }
+
+  getListRecruiter = () => {
+    this.props.getListRecruiter().then((res) => {
+      if (res && res.errCode === 200) {
+        let recruiterIndex = this.columnFields.findIndex(d => d.field == 'recruiter')
+        this.columnFields[recruiterIndex].editComponent = (x) => {
+          return (<FormControl>
+            <Select
+              value={x.rowData.recruiter_id}
+              onChange={e => {
+                x.rowData.recruiter_id = e.target.value
+
+                this.forceUpdate()
+              }}
+              input={<OutlinedInput name="Prefix" />}
+            >
+              {
+                res.arrRes.map(d =>
+                  <MenuItem key={d.recruiter_id} value={d.recruiter_id}>
+                    {d.recruiter_name}
+                  </MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>)
+        }
+      }
+    })
+  }
+  getListSource = () => {
+    this.props.getListSource().then((res) => {
+      if (res && res.errCode === 200) {
+        const options = res.arrRes.map(d => ({
+          "value": d.source_id,
+          "label": d.source_name
+
+        }))
+        this.setState({
+          source: options
+        })
+      }
+    })
+  }
+  getListSpoc = () => {
+    this.props.getListSpoc().then((res) => {
+      if (res && res.errCode === 200) {
+        let spocNmeIndex = this.columnFields.findIndex(d => d.field == 'spoc_name')
+        this.columnFields[spocNmeIndex].editComponent = (x) => {
+          return (<FormControl>
+            <Select
+              value={x.rowData.spoc_id}
+              onChange={e => {
+                x.rowData.spoc_id = e.target.value
+
+                this.forceUpdate()
+              }}
+              input={<OutlinedInput name="Prefix" />}
+            >
+              {
+                res.arrRes.map(d =>
+                  <MenuItem key={d.spoc_id} value={d.spoc_id}>
+                    {d.spoc_name}
+                  </MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>)
+        }
+      }
+    })
+  }
+
+  editCandidate = async (newData, oldData) => {
+    let request = {
+      "id": newData.candidate_id,
+      "candidate_name": newData.candidate_name,
+      "email_id": newData.email_id,
+      "contact": newData.contact,
+      "total_experience": newData.total_experience,
+      "relevant_experience": newData.relevant_experience,
+      "current_company": newData.current_company,
+      "notice_period": newData.notice_period,
+      "current_location": newData.current_location_id,
+      "preferred_location": newData.preferred_location_id.toString(),
+      "hr_test_taken": newData.hr_test_taken,
+      "testlink_received_dt": newData.testlink_received_dt,
+      "test_completed_dt": newData.test_completed_dt,
+      "hr_score": newData.hr_score,
+      "hr_remarks": newData.hr_remarks,
+      "source": newData.source_id,
+      "spoc": newData.spoc_id,
+      "recruiter": newData.recruiter_id,
+      "primary_skill": newData.primary_skill_id,
+      "secondary_skill": newData.secondary_skill_id.toString(),
+      "updated_by": '0',
+      "updated_date": new Date()
+    }
+    await this.props.editCandidate(request)
+    await this.props.getCandidateData()
   }
 
   _handleSort = (name, cellType, sortType) => {
@@ -92,7 +515,8 @@ export class Layout extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.statements !== nextProps.statements) {
       this.setState({
-        actualData: nextProps.statements
+        actualData: nextProps.statements,
+        rowToDelete: []
       })
     }
     const tp1Panels = nextProps.panels;
@@ -264,11 +688,9 @@ export class Layout extends Component {
   };
 
   _handleDelete = () => {
-    const { actualData } = this.state
-    const filteredData = actualData.filter((data) => {
-      return data.checked !== undefined && data.checked
-    })
-    let candidateIds = filteredData.map((data, i) => {
+    const { actualData, rowToDelete } = this.state
+
+    let candidateIds = rowToDelete.map((data, i) => {
       return data.candidate_id
     })
     let reqObj = {
@@ -355,7 +777,6 @@ export class Layout extends Component {
 
   getSearchResult = (reqObj) => {
     this.props.getSearchResult(reqObj).then((res) => {
-      console.log(res)
       if (res && res.errCode === 200) {
         this.setState({
           actualData: res.arrRes
@@ -447,9 +868,9 @@ export class Layout extends Component {
           onClick={this.navToCandidate}
         >
           Add
-                 </Button>
+        </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           disabled={!enableEditIcon}
@@ -458,7 +879,7 @@ export class Layout extends Component {
           endIcon={<EditIcon />}
         >
           Edit
-        </Button>
+        </Button> */}
         <Button
           variant="contained"
           color="secondary"
@@ -515,15 +936,49 @@ export class Layout extends Component {
           disabled={!enableDeleteIcon}
         />
 
-        <Table classes={classes} tableHeader={this.renderTableHeader()} tableBody={this.renderTableBody()} />
-        <TablePagination
-          rowsPerPageOptions={[5, 10]}
-          component="div"
-          count={actualData.length}
-          page={page}
-          onChangePage={this.handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+        <MaterialTable
+          title="Candidate List"
+          columns={this.columnFields}
+          data={actualData}
+          style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
+          options={{
+            search: false,
+            selection: true,
+            actionsColumnIndex: -1,
+            pageSize: 5,
+            // maxBodyHeight : '2', 
+            pageSizeOptions: [5, 10],
+            sorting: true,
+            headerStyle: {
+              backgroundColor: '#01579b',
+              color: '#FFF'
+            },
+            cellStyle: {
+             padding:10
+            },
+            rowStyle: {
+              fontSize: 14,
+              height: 20
+            }
+          }}
+
+          onSelectionChange={(rows) => {
+            this.setState({
+              enableEditIcon: rows.length == 1 ? true : false,
+              enableDeleteIcon: rows.length > 0 ? true : false,
+              rowToDelete: rows,
+            })
+          }}
+
+          editable={{
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve) => {
+                resolve();
+                if (oldData) {
+                  this.editCandidate(newData, oldData);
+                }
+              }),
+          }}
         />
 
         <Dialog fullScreen aria-labelledby="responsive-dialog-title" open={showModal1} >

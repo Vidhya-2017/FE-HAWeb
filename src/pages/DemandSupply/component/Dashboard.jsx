@@ -114,8 +114,15 @@ export class Login extends React.Component {
     }
     this.props.getCandidateReport(reqObj).then((res) => {
       if (res && res.errCode === 200) {
+        let filterData = res.arrRes.map((data) => {
+          return {
+            ...data,
+            secondary_skill_id: data.secondary_skill_id.split(','),
+            preferred_location_id: data.preferred_location_id.split(',')
+          }
+        })
         this.setState({
-          tableData: res.arrRes
+          tableData: filterData
         })
       }
 
@@ -130,8 +137,6 @@ export class Login extends React.Component {
     let candidateIds = candidate.map((data, i) => {
       return data.candidate_id
     })
-
-
     let reqObj = {
       "candidate_id": candidateIds.toString(),
       "interview_level": status.interview_status,
@@ -142,9 +147,7 @@ export class Login extends React.Component {
 
     this.props.changeCandidateInterviewStatus(reqObj).then((res) => {
       if (res.errCode === 200) {
-
         this.getCandidateData()
-
       }
     })
   }
@@ -168,6 +171,13 @@ export class Login extends React.Component {
               tp2scheduleUpdate={this.tp2scheduleUpdate}
               SendTP1CandidatePrimarySkillId={this.SendTP1CandidatePrimarySkillId}
               panels={this.state.panelList}
+              editCandidate={this.props.editCandidate}
+              getPrimarySkillsReport={this.props.getPrimarySkillsReport}
+              getListLocation={this.props.getListLocation}
+              getListRecruiter={this.props.getListRecruiter}
+              getListSource={this.props.getListSource}
+              getListSpoc={this.props.getListSpoc}
+              getCompanyLists={this.props.getCompanyLists}
             />
           </div>
         </Container>

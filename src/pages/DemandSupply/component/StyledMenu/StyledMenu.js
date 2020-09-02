@@ -55,7 +55,7 @@ export default function CustomizedMenus(props) {
 
     const handleListItemClick = (e, item) => {
         setAnchorEl(null);
-        console.log('---', item);
+        console.log(buttonName, '---', item);
         if (item.id === 1) {
             onSendPress(item);
         }

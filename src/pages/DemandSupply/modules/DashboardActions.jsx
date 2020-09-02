@@ -64,5 +64,14 @@ export const DashboardActions = {
         catch (error) {
             return (error.response);
         }
+    },
+    editCandidate: async (data) =>{
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateEdit.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
     }
 }
