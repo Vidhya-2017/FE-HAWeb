@@ -550,11 +550,14 @@ export class Layout extends Component {
   }
 
   getTp1StatusModal = (i) => {
-    const { actualData } = this.state
-    const filteredDataone = actualData.filter((data) => {
-      return data.feedback === '' && !data.feedback && data.checked === true
+    const { actualData, selectedRows } = this.state
+    let filteredDataone = selectedRows.map((data, i) => {
+      return data
+    });
+    let filteredDataoneList = filteredDataone.filter(function (data) {
+      return data.feedback === '' && !data.feedback;
     })
-    let primarySkillId = filteredDataone.map(a => a.primary_skill_id);
+    let primarySkillId = filteredDataoneList.map(a => a.primary_skill_id);
     let CandidatePrimarySkillId = primarySkillId.toString();
 
     this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
@@ -565,11 +568,16 @@ export class Layout extends Component {
     })
   }
   getTp2StatusModal = (i) => {
-    const { actualData } = this.state
-    const filtertp2Data = actualData.filter((data) => {
-      return data.feedback !== '' && data.feedback[0] && data.checked === true
+    const { actualData, selectedRows } = this.state
+    let filtertp2Data = selectedRows.map((data, i) => {
+      return data
     })
-    let primarySkillId = filtertp2Data.map(a => a.primary_skill_id);
+
+    let filtertp2DataList = filtertp2Data.filter(function (data) {
+      return data.feedback === '' && !data.feedback;
+    })
+
+    let primarySkillId = filtertp2DataList.map(a => a.primary_skill_id);
     let CandidatePrimarySkillId = primarySkillId.toString();
 
     this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
@@ -763,7 +771,7 @@ export class Layout extends Component {
         panelListData.push(obj.panel_name)
       })
     })
-  
+
     return (
       <React.Fragment>
         {
