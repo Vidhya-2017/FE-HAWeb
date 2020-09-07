@@ -21,6 +21,8 @@ import EventCoordinatorContainer from './pages/EventCoordinator/container/EventC
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import EventListContainer from './pages/EventList/container/EventListContainer';
+import SignUpContainer from './pages/SignUp/container/SignUpContainer';
+import ForgotPasswordContainer from './pages/ForgotPassword/container/ForgotPasswordContainer';
 import './App.scss';
 
 class Home extends React.Component {
@@ -101,6 +103,8 @@ class Home extends React.Component {
               <Route path="/candidateSelection" component={CandidateSelectionContainer} />
               <Route path="/eventCoordinator" component={EventCoordinatorContainer} />
               <Route path="/eventList" component={EventListContainer} />
+              <Route path="/signUp" component={SignUpContainer} />
+              <Route path="/forgotPassword" component={ForgotPasswordContainer} />
             </Switch>
             <Footer />
           </div>
