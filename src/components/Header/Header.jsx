@@ -28,7 +28,8 @@ class Header extends React.Component {
         {this.props.userDetails && this.props.userDetails.user_id && <button className="btn btn-link" id="sidebarToggle" onClick={this.showSidebar}>
           <i className="fa fa-bars"></i>
         </button>}
-        <Navbar.Brand onClick={this.goHome}>DiEvA</Navbar.Brand>
+        <Navbar.Brand onClick={this.goHome}>DiEvA <span className="brand-name" >  by DNA Capability  </span>
+        </Navbar.Brand>
         {/* <Nav className="mr-auto">
         <Nav.Link href="#">Home</Nav.Link>
       </Nav> */}

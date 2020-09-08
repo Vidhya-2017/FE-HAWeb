@@ -9,7 +9,7 @@ class Footer extends React.Component {
         <div className="d-flex align-items-center justify-content-between small">
           <div className="text-muted">Copyright &copy; HCL 2020</div>
           <div>
-           D&A Capability
+           DNA Capability
           </div>
         </div>
       </div>

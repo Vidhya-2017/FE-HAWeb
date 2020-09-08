@@ -597,7 +597,7 @@ export class Layout extends Component {
     })
 
     let filtertp2DataList = filtertp2Data.filter(function (data) {
-      return data.feedback === '' && !data.feedback;
+      return data.feedback != '' && data.feedback;
     })
 
     let primarySkillId = filtertp2DataList.map(a => a.primary_skill_id);
