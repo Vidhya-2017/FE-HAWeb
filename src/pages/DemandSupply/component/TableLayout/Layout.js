@@ -13,7 +13,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Cell from '../Table/Cell'
 import Search from '../Search/Search'
-import CustomisedMenu from '../StyledMenu/StyledMenu'
+import CustomisedMenu from '../StyledMenu/StyledMenu';
+import CustomiseView from '../CustomiseView/CustomiseView';
+import CustomiseColumn from '../CustomiseColumn/CustomiseColumn';
 import Table from '../Table/Table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -66,7 +68,9 @@ export class Layout extends Component {
       tp1InterviewDate: '',
       tp2InterviewDate: '',
       tp1Panels: [],
-      panelListData: []
+      panelListData: [],
+      viewType: 1,
+      customColumns: []
     }
     this.tp1Status = [
       { id: 1, title: 'TP1 Schedule' },
@@ -82,9 +86,16 @@ export class Layout extends Component {
       { id: 5, title: 'TP2 Rejected' },
     ];
 
+    this.view = [
+      { id: 1, title: 'Basic View', columns: ['name', 'email', 'contact', 'totalExperience', 'relevantExperience', 'currentCompany', 'noticePeriod', 'currentLocation', 'preferredLocation','interviewStatus'] },
+      { id: 2, title: 'Recruiter View', columns: ['name', 'recruiter', 'interviewStatus', 'interviewPanel', 'interviewDate', 'totalExperience', 'hrScore', 'hrRemarks'] },
+      { id: 3, title: 'SPOC View', columns: ['name', 'spoc', 'interviewStatus', 'interviewPanel', 'interviewDate'] },
+    ]
+
     this.columnFields = [
       {
         title: "Name",
+        name : 'name',
         field: "candidate_name",
         editComponent: props => {
           return (
@@ -100,6 +111,7 @@ export class Layout extends Component {
       },
       {
         title: "Email",
+        name : 'email',
         field: "email_id",
         editComponent: props => {
           return (
@@ -115,6 +127,7 @@ export class Layout extends Component {
       },
       {
         title: "Contact",
+        name : 'contact',
         field: "contact",
         editComponent: props => {
           return (
@@ -130,6 +143,7 @@ export class Layout extends Component {
       },
       {
         title: "Total Experience",
+        name : 'totalExperience',
         field: "total_experience",
         editComponent: props => {
           return (
@@ -145,6 +159,7 @@ export class Layout extends Component {
       },
       {
         title: "Relavent Experience",
+        name : 'relevantExperience',
         field: "relevant_experience",
         editComponent: props => {
           return (
@@ -160,6 +175,7 @@ export class Layout extends Component {
       },
       {
         title: "Last Interview Status",
+        name : 'interviewStatus',
         field: "feedback",
         render: (rowData) => {
           let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
@@ -170,6 +186,7 @@ export class Layout extends Component {
       },
       {
         title: "Last Interview Panel",
+        name : 'interviewPanel',
         field: "feedback",
         render: (rowData) => {
           let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
@@ -180,11 +197,12 @@ export class Layout extends Component {
       },
       {
         title: "Last Interview  Date",
+        name : 'interviewDate',
         field: "feedback",
         render: (rowData) => {
           let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
             rowData.feedback[rowData.feedback.length - 1].interview_schedule_dt : '-'
-            console.log(display)
+          console.log(display)
           return <div>{display.split(' ')[0]}</div>
         },
         validate: rowData => rowData.relevant_experience !== '',
@@ -192,11 +210,13 @@ export class Layout extends Component {
       {
         title: "Current Company",
         field: "current_company",
+        name : 'currentCompany',
         validate: rowData => rowData.current_company !== '',
       },
       {
         title: "Notice Period",
         field: "notice_period",
+        name : 'noticePeriod',
         editComponent: props => {
           return (
             <TextField
@@ -212,6 +232,7 @@ export class Layout extends Component {
       {
         title: "Current Location",
         field: "current_location",
+        name : 'currentLocation',
         editComponent: x => (
           <FormControl>
           </FormControl>
@@ -221,20 +242,17 @@ export class Layout extends Component {
       {
         title: "Prefered Location",
         field: "preferred_location",
+        name : 'preferredLocation',
         editComponent: x => (
           <FormControl>
           </FormControl>
         ),
         validate: rowData => rowData.preferred_location !== '',
       },
-      // {
-      //   title: "HackerRank Test Taken",
-      //   field: "hr_test_taken",
-      //   validate: rowData => rowData.hr_test_taken !== '',
-      // },
       {
         title: "HackerRank Score",
         field: "hr_score",
+        name : 'hrScore',
         editComponent: props => {
           return (
             <TextField
@@ -249,6 +267,7 @@ export class Layout extends Component {
       },
       {
         title: "HackerRank Remarks",
+        name : 'hrRemarks',
         field: "hr_remarks",
         editComponent: props => {
           return (
@@ -265,6 +284,7 @@ export class Layout extends Component {
       {
         title: "SPOC",
         field: "spoc_name",
+        name : 'spoc',
         validate: rowData => rowData.spoc_name !== '',
         editComponent: props => {
           return (
@@ -276,11 +296,13 @@ export class Layout extends Component {
       {
         title: "Recruiter",
         field: "recruiter",
+        name : 'recuiter',
         validate: rowData => rowData.recruiter !== '',
       },
       {
         title: "Primary Skill",
         field: "primary_skill",
+        name : 'primarySkill',
         editComponent: x => (
           <FormControl>
           </FormControl>
@@ -291,6 +313,7 @@ export class Layout extends Component {
       {
         title: "Secondary Skill",
         field: "secondary_skill",
+        name : 'secondarySkill',
         editComponent: x => (
           <FormControl>
           </FormControl>
@@ -898,9 +921,38 @@ export class Layout extends Component {
     )
   }
 
+
+  setViewType = (data) => {
+    //console.log(data)
+    this.setState({
+      viewType: data.id,
+    })
+  }
+
+  applyCustomColumn = (data) => {
+    this.setState({
+      viewType: 4,
+      customColumns: data
+    })
+  }
+
+  renderColumns = () => {
+    const { viewType, customColumns } = this.state;
+    if (viewType === 4) {
+      let columns = customColumns.filter((data) => data.checked !== undefined && data.checked).map(data => data.name)
+      let tableColoumns = this.columnFields.filter(data => {
+        return columns.includes(data.name)
+      }) 
+      return tableColoumns
+    }
+    let view = this.view.find(view => view.id == viewType)
+    return this.columnFields.filter(col => view.columns.includes(col.name));
+  }
+
   render() {
     const { classes, getCandidateData } = this.props
     const { page, rowsPerPage, actualData, enableEditIcon, enableDeleteIcon, showModal1, showModal2 } = this.state
+    const columns = this.renderColumns();
     return (
       <React.Fragment>
         <Search getCandidateData={getCandidateData}
@@ -982,9 +1034,22 @@ export class Layout extends Component {
           disabled={!enableDeleteIcon}
         />
 
+        <div></div>
+        <CustomiseView buttonName='View Type'
+          status={this.view}
+          classes={classes}
+          setViewType={this.setViewType}
+        />
+        <CustomiseColumn buttonName='Customise Columns'
+          columns={this.columnFields}
+          status={this.view}
+          classes={classes}
+          setViewType={this.applyCustomColumn}
+        />
+
         <MaterialTable
           title="Candidate List"
-          columns={this.columnFields}
+          columns={columns}
           data={actualData}
           style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
           options={{
@@ -1017,13 +1082,13 @@ export class Layout extends Component {
           }}
 
           editable={{
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve) => {
-                resolve();
-                if (oldData) {
-                  this.editCandidate(newData, oldData);
-                }
-              }),
+            // onRowUpdate: (newData, oldData) =>
+            //   new Promise((resolve) => {
+            //     resolve();
+            //     if (oldData) {
+            //       this.editCandidate(newData, oldData);
+            //     }
+            //   }),
           }}
         />
 
