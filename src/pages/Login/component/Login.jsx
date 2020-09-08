@@ -3,6 +3,8 @@ import { Toast } from 'react-bootstrap';
 import Android from '../../../common/images/android.png';
 import Ios from '../../../common/images/ios.png';
 import '../scss/Login.scss';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
 
 class Login extends React.Component {
 
@@ -129,6 +131,24 @@ class Login extends React.Component {
                     </div>
                     <div className="form-group d-flex align-items-center justify-content-center">
                       <button disabled={!formIsValid} className="btn btn-primary loginBtn" onClick={this.login}>Sign In</button></div>
+                    <Grid container justify="flex-end">
+                      <Grid item>
+                        <Link
+                          style={{ color: 'blue', cursor: 'pointer' }}
+                          onClick={()=>this.props.history.push('/signUp')} variant="body2">
+                          Don't have an account? Sign Up
+                        </Link>
+                      </Grid>
+                    </Grid>
+                    <Grid container justify="flex-end">
+                      <Grid item>
+                        <Link
+                          style={{ color: 'blue', cursor: 'pointer' }}
+                          onClick={()=>this.props.history.push('/forgotPassword')} variant="body2">
+                          Forgot Password ? Click here
+                        </Link>
+                      </Grid>
+                    </Grid>
                   </div>
                 </div>
               </div>
