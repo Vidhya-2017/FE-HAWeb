@@ -79,12 +79,29 @@ export class Layout extends Component {
       { id: 4, title: 'TP1 Reject' },
     ];
     this.tp2Status = [
-      { id: 1, title: 'TP2 Scheduled' },
-      { id: 2, title: 'TP2 Feedback Pending' },
-      { id: 3, title: 'TP2 On hold' },
-      { id: 4, title: 'TP2 Pending' },
-      { id: 5, title: 'TP2 Rejected' },
+      { id: 5, title: 'TP2 Schedule' },
+      { id: 7, title: 'TP2 Select' },
+      { id: 22, title: 'TP2 On Hold' },
+      { id: 6, title: 'TP2 Pending' },
+      { id: 8, title: 'TP2 Reject' },
     ];
+    this.fitmentStatus = [
+      { id: 9, title: 'Fitment on hold' },
+      { id: 10, title: 'Fitment Reject' },
+      { id: 11, title: 'Fitment WIP' }
+    ];
+    this.offerStatus = [
+      { id: 14, title: 'Offer On hold' },
+      { id: 21, title: 'Offer WIP' },
+      { id: 15, title: 'Offered' },
+      { id: 20, title: 'Joined' }
+    ];
+    this.dropStatus = [
+      { id: 23, title: 'Client Reject' },
+      { id: 24, title: 'Demand Dropped' },
+      { id: 25, title: 'Dropped' }
+    ];
+
 
     this.view = [
       { id: 1, title: 'Basic View', columns: ['name', 'email', 'contact', 'totalExperience', 'relevantExperience', 'currentCompany', 'noticePeriod', 'currentLocation', 'preferredLocation','interviewStatus'] },
@@ -572,25 +589,39 @@ export class Layout extends Component {
     this.setState({ tp1Panels })
   }
 
-  getTp1StatusModal = (i) => {
-    const { actualData, selectedRows } = this.state
+  getCandiddateStatus = (status) => { 
+    const { actualData, selectedRows, tp1data } = this.state
     let filteredDataone = selectedRows.map((data, i) => {
       return data
     });
     let filteredDataoneList = filteredDataone.filter(function (data) {
       return data.feedback === '' && !data.feedback;
     })
-    let primarySkillId = filteredDataoneList.map(a => a.primary_skill_id);
-    let CandidatePrimarySkillId = primarySkillId.toString();
+      if (status.id === 1){
+        let primarySkillId = filteredDataoneList.map(a => a.primary_skill_id);
+        let CandidatePrimarySkillId = primarySkillId.toString();
+        this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
 
-    this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
+        this.setState({
+          showModal1: true,
+          tp1data: filteredDataone
+        }) 
+      } else if (status.id && status.id != ''){
+          let CandidateId = filteredDataone.map(a => a.candidate_id);
+          let CandidateIdUniqueId = CandidateId.toString();
 
-    this.setState({
-      showModal1: true,
-      tp1data: filteredDataone
-    })
+          const tp1Status = {
+            candidate_id: CandidateIdUniqueId,
+            interview_level: "",
+            interview_schedule_dt: "",
+            interview_comment: "",
+            interview_status: status.id,
+            created_by: 1
+          }
+          this.props.tp1StatusUpdate(tp1Status);
+        } 
   }
-  getTp2StatusModal = (i) => {
+  getTp2StatusModal = (status) => {
     const { actualData, selectedRows } = this.state
     let filtertp2Data = selectedRows.map((data, i) => {
       return data
@@ -603,12 +634,27 @@ export class Layout extends Component {
     let primarySkillId = filtertp2DataList.map(a => a.primary_skill_id);
     let CandidatePrimarySkillId = primarySkillId.toString();
 
-    this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
+    if (status.id === 5){
+      this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
 
-    this.setState({
-      showModal2: true,
-      tp2data: filtertp2Data
-    })
+      this.setState({
+        showModal2: true,
+        tp2data: filtertp2Data
+      })
+    } else if (status.id == 7 || 22 || 6 || 8){
+        let CandidateId = filtertp2DataList.map(a => a.candidate_id);
+        let CandidateIdUniqueId = CandidateId.toString();
+
+        const tp2Status = {
+          candidate_id: CandidateIdUniqueId,
+          interview_level: "",
+          interview_schedule_dt: "",
+          interview_comment: "",
+          interview_status: status.id,
+          created_by: 1
+        }
+        this.props.tp2StatusUpdate(tp2Status);
+      }
   }
   onTp1PanelSelect = e => {
     this.setState({ tp1PanelName: e.target.value })
@@ -992,7 +1038,8 @@ export class Layout extends Component {
         <CustomisedMenu buttonName='TP1 Status'
           status={this.tp1Status}
           classes={classes}
-          onSendPress={this.getTp1StatusModal}
+          onSendPress={this.getCandiddateStatus}
+          SendStatus={this.props.SendStatus}
           disabled={!enableDeleteIcon}
         />
 
@@ -1004,33 +1051,23 @@ export class Layout extends Component {
         />
 
         <CustomisedMenu buttonName='Fitment Status'
-          status={[
-            { title: 'Fitment On hold', interview_status: 9 },
-            { title: 'Fitment Reject', interview_status: 10 },
-            { title: 'Fitment WIP', interview_status: 11 },
-          ]}
+          status={this.fitmentStatus}
           classes={classes}
-          changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+          // changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+          onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
         <CustomisedMenu buttonName='Offer Status'
-          status={[
-            { title: 'Offer On hold', interview_status: 14 },
-            { title: 'Offer WIP', interview_status: 21 },
-            { title: 'Offered', interview_status: 15 },
-            { title: 'Joined', interview_status: 20 },
-          ]}
-          changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+          status={this.offerStatus}
+          // changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+          onSendPress={this.getCandiddateStatus}
           classes={classes}
           disabled={!enableDeleteIcon}
         />
         <CustomisedMenu buttonName='Drop Status'
-          status={[
-            { title: 'Client Reject' },
-            { title: 'Demand Dropped' },
-            { title: 'Dropped' },
-          ]}
+          status={this.dropStatus}
           classes={classes}
+          onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
 

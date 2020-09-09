@@ -60,7 +60,8 @@ export class Login extends React.Component {
       tableData: {},
       panelList: [],
       showToast: false,
-      toastMsg: null
+      toastMsg: null,
+      candidateId: ''
     }
   }
 
@@ -81,6 +82,39 @@ export class Login extends React.Component {
     })
   }
 
+  tp1StatusUpdate = (res) => {
+    this.props.updatTp1ScheduleDetails(res).then((res) => {
+      if (res && res.errCode === 201) {
+        this.setState({
+          showToast: true, toastMsg: 'Status Updated Successfully!'
+        }, () => {
+          console.log(this.state.toastMsg, "Status Updated succesfully");
+        });
+      } else if (res && res.errCode === 400 ) {
+        this.setState({
+          showToast: true, toastMsg: 'Failed to update !'
+        });
+      }
+    })
+  }
+
+  tp2StatusUpdate = (res) => {
+    this.props.updatTp1ScheduleDetails(res).then((res) => {
+      if (res && res.errCode === 201) {
+        this.setState({
+          showToast: true, toastMsg: 'Status Updated Successfully!'
+        }, () => {
+          console.log(this.state.toastMsg, " status Updated succesfully");
+        });
+        
+      } else if (res && res.errCode === 400 ) {
+        this.setState({
+          showToast: true, toastMsg: 'Failed to update !'
+        });
+      }
+    })
+  }
+
   tp1scheduleUpdate = (res) => {
     this.props.updatTp1ScheduleDetails(res).then((res) => {
       if (res && res.errCode === 201) {
@@ -88,6 +122,10 @@ export class Login extends React.Component {
           showToast: true, toastMsg: 'TP1 Status Scheduled Successfully!'
         }, () => {
           console.log(this.state.toastMsg, "tp1 status added succesfully");
+        });
+      } else if (res && res.errCode === 404 && res.errCode === 400) {
+        this.setState({
+          showToast: true, toastMsg: 'Failed to update!'
         });
       }
     })
@@ -98,8 +136,6 @@ export class Login extends React.Component {
       if (res && res.errCode === 201) {
         this.setState({
           showToast: true, toastMsg: 'TP2 Status Scheduled Successfully!'
-        }, () => {
-          console.log(this.state.toastMsg, "tp1 status added succesfully");
         });
 
       }
@@ -178,6 +214,9 @@ export class Login extends React.Component {
               getListSource={this.props.getListSource}
               getListSpoc={this.props.getListSpoc}
               getCompanyLists={this.props.getCompanyLists}
+               SendStatus ={ this.SendStatus}
+              tp1StatusUpdate={this.tp1StatusUpdate}
+              tp2StatusUpdate={this.tp2StatusUpdate}
             />
           </div>
         </Container>
