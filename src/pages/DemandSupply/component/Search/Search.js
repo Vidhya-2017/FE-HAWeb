@@ -67,7 +67,7 @@ export class Search extends React.Component {
     const { classes } = this.props;
     return (
       <React.Fragment>
-        <Container className={classes.containerRoot}>
+        <div className={classes.containerRoot}>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">Search Column</InputLabel>
             <Select
@@ -114,7 +114,7 @@ export class Search extends React.Component {
               <SearchIcon />
             </IconButton>
           </Paper>
-        </Container>
+          </div>
       </React.Fragment>
     );
   }

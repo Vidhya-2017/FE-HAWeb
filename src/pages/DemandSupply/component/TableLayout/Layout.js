@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles, Button, TableRow, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { withStyles, Typography, Button, TableRow, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import MaterialTable from "material-table";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -612,6 +612,7 @@ export class Layout extends Component {
     const { actualData, enableDeleteIcon, showModal1, showModal2 } = this.state
     return (
       <React.Fragment>
+        <Typography variant='h4'>Candidate List</Typography>
         <Search getCandidateData={getCandidateData}
           getSearchResult={this.getSearchResult}
         />
@@ -696,24 +697,30 @@ export class Layout extends Component {
         />
 
         <MaterialTable
-          title="Candidate List"
+          // title="Candidate List"
           columns={this.renderColumns()}
           data={actualData}
           style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
           options={{
             search: false,
+            toolbar: false,
             selection: true,
             actionsColumnIndex: -1,
-            pageSize: 5,
+            pageSize: 10,
             // maxBodyHeight : '2', 
-            pageSizeOptions: [5, 10],
+            pageSizeOptions: [10, 20],
+            selectionProps: {
+              color: 'primary',
+            },
             sorting: true,
             headerStyle: {
-              backgroundColor: '#01579b',
-              color: '#FFF'
+              backgroundColor: '#E0E0E0',
+              color: '#000',
+              padding: '5px 10px 5px 5px',
+              minWidth: 100,
             },
             cellStyle: {
-              padding: 10
+              padding: '5px 10px 5px 5px',
             },
             rowStyle: {
               fontSize: 14,
