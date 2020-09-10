@@ -32,7 +32,13 @@ class CreateCandidate extends React.Component {
             isHanRankerTest: false,
             selectedCompanyId: "",
             selectedNPId: '',
-            np: [{ 'label': '30 days', 'value': '30' }, { 'label': '60 days', 'value': '60' }, { 'label': '90 days', 'value': '90' }, { 'label': 'Can join immediately', 'value': '15' }]
+            selectedPriority:'',
+            np: [{ 'label': '30 days', 'value': '30' }, { 'label': '60 days', 'value': '60' }, { 'label': '90 days', 'value': '90' }, { 'label': 'Can join immediately', 'value': '15' }],
+            priority: [
+                { 'label': 'High' }, 
+                { 'label': 'Low' }, 
+                { 'label': 'Critical' }, 
+            ]
         };
 
     }
@@ -160,6 +166,9 @@ class CreateCandidate extends React.Component {
     selectSpoc = (e) => {
         this.setState({ selectedSpocId: e.value })
     }
+    selectPriority = (e) => {
+        this.setState({ selectedPriority: e.label })
+    }
     handleSubmit(event) {
         let getAddId = this.state.selectedAddSkillId.map(function (id) {
             return id['value'];
@@ -200,7 +209,8 @@ class CreateCandidate extends React.Component {
             "created_by": "1",
             "created_date": SharedDate,
             "updated_by": "",
-            "updated_date": ""
+            "updated_date": "",
+            "priority": this.state.selectedPriority
         }
 
         this.props.createCandidateForm(reqObj).then((res) => {
@@ -422,6 +432,22 @@ class CreateCandidate extends React.Component {
                                         autoComplete="off"
                                         style={{ opacity: 0, height: 0, position: "absolute" }}
                                         value={this.state.selectedrecruiter}
+                                        required
+                                    />
+                                )}
+                            </Form.Group>
+                            <Form.Group as={Col} controlId="formHorizontalPriority" className="col-6">
+                                <Form.Label>Priority</Form.Label>
+                                <Select options={this.state.priority} 
+                                    onChange={this.selectPriority.bind(this)} 
+                                    required 
+                                />
+                                {!this.props.disabled && (
+                                    <input
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        style={{ opacity: 0, height: 0, position: "absolute" }}
+                                         value={this.state.priority}
                                         required
                                     />
                                 )}
