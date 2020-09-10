@@ -188,8 +188,8 @@ class CandidateFeedback extends React.Component {
           }
           Fbtext = response.arrRes[findFbIndex].feedbackTxt;
           roletext = response.arrRes[findFbIndex].role;
-          this.state.OtherAssessmentData.map(item => {
-            response.arrRes[findFbIndex].AssesmentParams.map(aitem => {
+          this.state.OtherAssessmentData.forEach(item => {
+            response.arrRes[findFbIndex].AssesmentParams.forEach(aitem => {
               if (item.OtherAssementScaleName === aitem.ParamName) {
                 item.value = aitem.ParamValue;
               }

@@ -244,7 +244,7 @@ class SPOCCreation extends React.Component {
   }
 
   render() {
-    const { formIsValid, formValues, spocListVal, showAddSpocModal, showToast, toastMessage } = this.state;
+    const { formIsValid, formValues, spocListVal, showAddSpocModal } = this.state;
     const { classes } = this.props;
     return (
       <div className="spoc_container">

@@ -174,7 +174,7 @@ class SignUp extends React.Component {
       FPDetails
     };
     this.props.signUpDetails(reqObj).then((response) => {
-      if(response==undefined){
+      if(response === undefined){
         this.setState({showToast:true,toastMsg:'server is disconnected'})
       }
       else if (response.errCode === 200) {
@@ -185,7 +185,6 @@ class SignUp extends React.Component {
         this.setState({
           signUpDetails: { ...resetRegSignUp },
           showToast: true,
-          toastMsg: response.message,
           sapID: "",
           passcode: "",
           c_password: "",
@@ -297,7 +296,7 @@ class SignUp extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { checked,isAnsValid,isQuesValid,showQuestionModal, ansVals, questionVals, formIsValid, signUpDetails, showPasswordEye, showCPasswordEye, IsPwdValid, showToast, toastMsg } = this.state;
+    const { checked,isAnsValid,isQuesValid,showQuestionModal, ansVals, formIsValid, signUpDetails, showPasswordEye, showCPasswordEye, IsPwdValid, showToast, toastMsg } = this.state;
 
     return (
 

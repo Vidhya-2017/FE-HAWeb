@@ -134,8 +134,7 @@ class ForgotPassword extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { showToast, toastMsg, ansCheck, emailId, showQuesModal, questionVals, ansVals, isAnsValid, isQuesValid, showPassUpdateModal, password, confrm_pwd, showPasswordEye, showCPasswordEye, securityQues } = this.state;
+    const { showToast, toastMsg, ansCheck, emailId, showQuesModal, ansVals, isAnsValid, showPassUpdateModal, password, confrm_pwd, showPasswordEye, showCPasswordEye, securityQues } = this.state;
     const disablePwdBtn = password === confrm_pwd && password !== null && password !== undefined && password !== '' && password.length >= 6;
     const pattern = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -335,7 +334,7 @@ class ForgotPassword extends React.Component {
                   }
 
                   {
-                    ((this.state.password != '' && this.state.confrm_pwd != '') && (this.state.password === this.state.confrm_pwd)) &&
+                    ((this.state.password !== '' && this.state.confrm_pwd !== '') && (this.state.password === this.state.confrm_pwd)) &&
                     <FormHelperText id="standard-confirmPassword-helper-text" style={{ color: 'green' }}>Password is match successfully</FormHelperText>
                   }
 

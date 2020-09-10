@@ -66,7 +66,6 @@ export class Login extends React.Component {
   }
 
   SendTP1CandidatePrimarySkillId = (res) => {
-    const { panelList } = this.state;
     let primariSkillId = {
       "skill_id": res
     }
@@ -188,7 +187,7 @@ export class Login extends React.Component {
     })
   }
   render() {
-    const { showToast, toastMsg } = this.state
+    const { showToast } = this.state
     const { classes, deleteCandidate } = this.props
     //const { statements } = this.state.tableData
 

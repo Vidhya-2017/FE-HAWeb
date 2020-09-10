@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Select from 'react-select';
-import { Modal, FormControl, InputGroup, Row, Col, ListGroup, Form, Toast, Button } from 'react-bootstrap';
+import { Row, Col, Form, Toast, Button } from 'react-bootstrap';
 import moment from 'moment';
 import '../scss/CreateCandidate.scss';
 
@@ -232,7 +232,7 @@ class CreateCandidate extends React.Component {
     }
 
     render() {
-        const { showToast, toastMsg, selectedOption, isHanRankerTest } = this.state;
+        const { showToast, toastMsg, isHanRankerTest } = this.state;
         return (
             <section className="container-fluid candidate-wrapper">
                 <h5>Create Candidate</h5>

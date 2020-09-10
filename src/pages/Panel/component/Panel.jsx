@@ -379,7 +379,6 @@ class Panel extends React.Component {
         }
         else
           return false;
-        break;
       case "sapid":
         const sapidPattern = RegExp(/^\d{7}|\d{8}$/);
         if (sapidPattern.test(data.sap_id)) {
@@ -387,7 +386,6 @@ class Panel extends React.Component {
         }
         else
           return false;
-        break;
       case "email":
         const emailPattern = RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
         if (emailPattern.test(data.email_id)) {
@@ -395,14 +393,12 @@ class Panel extends React.Component {
         }
         else
           return false;
-        break;
       case "skill":
         if (data.skill_name !== null) {
           return true;
         }
         else
           return false;
-        break;
       default:
         return false;
     }

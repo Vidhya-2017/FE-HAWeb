@@ -17,8 +17,8 @@ export default function SimpleTable(props) {
                 <div style={{ display: 'flex', alignItems: 'center' }} >
                     <div>{children} </div>
                     {
-                        sort && <div style={{ alignItems: 'center' }} onClick={() => { handleSort(name, cellType, sortType == 'asc' ? 'desc' : 'asc') }}>
-                            <TableSortLabel active={true} direction={sortField == name ? sortType : 'desc'}></TableSortLabel>
+                        sort && <div style={{ alignItems: 'center' }} onClick={() => { handleSort(name, cellType, sortType === 'asc' ? 'desc' : 'asc') }}>
+                            <TableSortLabel active={true} direction={sortField === name ? sortType : 'desc'}></TableSortLabel>
                         </div>
                     }
                 </div>

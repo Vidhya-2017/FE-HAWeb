@@ -38,7 +38,7 @@ class EventList extends React.Component {
   render() {
     const headerSortingStyle = { backgroundColor: '#c8e6c9' };
     const { eventList, showToast, toastMsg } = this.state;
-    const sizePerPageRenderer = ({ }) => (
+    const sizePerPageRenderer = () => (
       <div className="btn-group recordPerPage" role="group">
       </div>
     );

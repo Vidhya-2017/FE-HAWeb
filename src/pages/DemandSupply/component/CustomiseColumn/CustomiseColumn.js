@@ -1,15 +1,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-// import InboxIcon from '@material-ui/icons/MoveToInbox';
-// import DraftsIcon from '@material-ui/icons/Drafts';
-// import SendIcon from '@material-ui/icons/Send';
 
 const StyledMenu = withStyles({
     paper: {
@@ -31,22 +26,11 @@ const StyledMenu = withStyles({
     />
 ));
 
-const StyledMenuItem = withStyles((theme) => ({
-    root: {
-        '&:focus': {
-            backgroundColor: theme.palette.primary.main,
-            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                color: theme.palette.common.white,
-            },
-        },
-    },
-}))(MenuItem);
-
 export default function CustomizedMenus(props) {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [columns, setColumns] = React.useState(props.columns.map((data) => { return { title: data.title,name : data.name } }));
-    const { classes, buttonName, status, disabled } = props
+    const [columns, setColumns] = React.useState(props.columns.map((data) => { return { title: data.title, name: data.name } }));
+    const { classes, buttonName, disabled } = props
    // console.log(columns)
 
     const handleClick = (event) => {
@@ -86,22 +70,24 @@ export default function CustomizedMenus(props) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {
-                    columns.map((item, i) => {
-                        return (
-                            <FormControlLabel
-                                control={<Checkbox checked={item.checked} onChange={() => {
-                                   
-                                    columns[i].checked = !item.checked
-                                    setColumns(columns)
-                                  
-                                }}
-                                    name={item.name} />}
-                                label={item.title}
-                            />
-                        )
-                    })
-                }
+                <Grid container style={{ padding: '15px' }}>
+                    {
+                        columns.map((item, i) => {
+                            return (
+                                <Grid item xs={2}>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={item.checked} onChange={() => {
+                                            columns[i].checked = !item.checked
+                                            setColumns(columns)
+                                        }}
+                                            name={item.name} />}
+                                        label={item.title}
+                                    />
+                                </Grid>
+                            )
+                        })
+                    }
+                </Grid>
                 <div></div>
                 <Button
                     variant="contained"
@@ -111,6 +97,15 @@ export default function CustomizedMenus(props) {
                     onClick={handleListItemClick}
                 >
                     Apply
+               </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    className={classes.button}
+                    onClick={handleClose}
+                >
+                    Cancel
                </Button>
             </StyledMenu>
 

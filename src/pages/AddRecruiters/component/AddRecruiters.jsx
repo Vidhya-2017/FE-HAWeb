@@ -247,7 +247,7 @@ class AddRecruiters extends React.Component {
   }
 
   render() {
-    const { formIsValid, formValues, recruiterListVal, showAddRecruiterModal, showToast, toastMessage } = this.state;
+    const { formIsValid, formValues, recruiterListVal, showAddRecruiterModal } = this.state;
     const { classes } = this.props;
     return (
       <div className="recruiter_container">
