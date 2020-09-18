@@ -7,108 +7,121 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Menu from '@material-ui/core/Menu';
 
 const StyledMenu = withStyles({
-    paper: {
-        border: '1px solid #d3d4d5',
-    },
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
 })((props) => (
-    <Menu
-        elevation={0}
-        getContentAnchorEl={null}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-        }}
-        {...props}
-    />
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'left',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'left',
+    }}
+    {...props}
+  />
 ));
 
-export default function CustomizedMenus(props) {
+// const StyledMenu = withStyles({
+//   paper: {
+//       border: '1px solid #d3d4d5',
+//   },
+// })((props) => (
+//   <Menu
+//       elevation={0}
+//       getContentAnchorEl={null}
+//       anchorOrigin={{
+//           vertical: 'bottom',
+//           horizontal: 'center',
+//       }}
+//       transformOrigin={{
+//           vertical: 'top',
+//           horizontal: 'center',
+//       }}
+//       {...props}
+//   />
+// ));
+const CustomiseColumn = (props) => {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [columns, setColumns] = React.useState(props.columns.map((data) => { return { title: data.title, name: data.name } }));
-    const { classes, buttonName, disabled } = props
-   // console.log(columns)
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [columns, setColumns] = React.useState(props.columns);
+  const { classes, buttonName, disabled } = props
+  // console.log(columns)
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-    const handleListItemClick = (e, item) => {
-        const { setViewType } = props
-        setViewType(columns)
-        handleClose()
-    }
-
-
-    return (
-        <React.Fragment>
-            <Button
-                aria-controls="customized-menu"
-                aria-haspopup="true"
-                variant="contained"
-                color="primary"
-                onClick={handleClick}
-                size='small'
-                className={classes.button}
-                disabled={disabled}
-            >
-                {buttonName}
-            </Button>
-            <StyledMenu
-                id="customized-menu"
-
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                <Grid container style={{ padding: '15px' }}>
-                    {
-                        columns.map((item, i) => {
-                            return (
-                                <Grid item xs={2}>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={item.checked} onChange={() => {
-                                            columns[i].checked = !item.checked
-                                            setColumns(columns)
-                                        }}
-                                            name={item.name} />}
-                                        label={item.title}
-                                    />
-                                </Grid>
-                            )
-                        })
-                    }
-                </Grid>
-                <div></div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    className={classes.button}
-                    onClick={handleListItemClick}
-                >
-                    Apply
+  const handleListItemClick = (e, item) => {
+    const { setViewType } = props
+    setViewType(columns)
+    handleClose()
+  }
+  return (
+    <React.Fragment>
+      <Button
+        aria-controls="customized-menu"
+        aria-haspopup="true"
+        variant="contained"
+        color="primary"
+        onClick={handleClick}
+        size='small'
+        className={classes.button}
+        disabled={disabled}
+      >
+        {buttonName}
+      </Button>
+      <StyledMenu
+        id="customized-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <Grid container style={{ padding: '15px' }}>
+          {columns.map((item, i) =>
+            <Grid key={item.name} item xs={4} sm={3} md={2}>
+              <FormControlLabel
+                control={<Checkbox checked={item.checked} onChange={() => {
+                  columns[i].checked = !item.checked
+                  setColumns(columns)
+                }} name={item.name} />}
+                label={item.title}
+              />
+            </Grid>
+          )}
+        </Grid>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.button}
+          onClick={handleListItemClick}
+        >
+          Apply
                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    className={classes.button}
-                    onClick={handleClose}
-                >
-                    Cancel
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.button}
+          onClick={handleClose}
+        >
+          Cancel
                </Button>
-            </StyledMenu>
+      </StyledMenu>
 
-        </React.Fragment>
-    );
+    </React.Fragment>
+  );
 }
+
+
+export default React.memo(CustomiseColumn);

@@ -65,8 +65,8 @@ class SideNavBar extends React.Component {
       value: 'more',
       id: ''
     }, {
-      pathname: '/demandDashboard',
-      value: 'demandDashboard',
+      pathname: '/demand',
+      value: 'demand',
       id: ''
     }, {
       pathname: '/addSPOC',
@@ -219,8 +219,8 @@ class SideNavBar extends React.Component {
                     </Accordion.Collapse>
                   </Fragment>
                 </Accordion>
-                <Button className={`${activeNav === "demandDashboard"} nav-link`} onClick={() => this.pageRedirect('/demandDashboard', 'demandDashboard')}>
-                  <div className={`sb-nav-link-icon ${activeNav === "demandDashboard"}`}><i className="fa fa-tachometer"></i></div>
+                <Button className={`${activeNav === "demand"} nav-link`} onClick={() => this.pageRedirect('/demand', 'demand')}>
+                  <div className={`sb-nav-link-icon ${activeNav === "demand"}`}><i className="fa fa-tachometer"></i></div>
                   Demand Supply
                 </Button>
                 <Button className={`${activeNav === "addSPOC"} nav-link`} onClick={() => this.pageRedirect('/addSPOC', 'addSPOC')}>

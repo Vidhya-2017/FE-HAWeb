@@ -3,11 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-// import InboxIcon from '@material-ui/icons/MoveToInbox';
-// import DraftsIcon from '@material-ui/icons/Drafts';
-// import SendIcon from '@material-ui/icons/Send';
 
 const StyledMenu = withStyles({
     paper: {
@@ -40,7 +36,7 @@ const StyledMenuItem = withStyles((theme) => ({
     },
 }))(MenuItem);
 
-export default function CustomizedMenus(props) {
+const CustomisedMenu = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const { classes, buttonName, status, disabled, onSendPress, changeCandidateInterviewStatus } = props
@@ -55,7 +51,6 @@ export default function CustomizedMenus(props) {
 
     const handleListItemClick = (e, item) => {
         setAnchorEl(null);
-        console.log(buttonName, '---', item);
         if (item) {
             onSendPress(item);
         }
@@ -88,8 +83,8 @@ export default function CustomizedMenus(props) {
                 {
                     status.map((item, i) => {
                         return (
-                            <StyledMenuItem key={i}>
-                                <ListItemText primary={item.title} onClick={(event) => handleListItemClick(event, item)} />
+                            <StyledMenuItem  onClick={(event) => handleListItemClick(event, item)} key={i}>
+                                <ListItemText primary={item.title} />
                             </StyledMenuItem>
                         )
                     })
@@ -99,3 +94,5 @@ export default function CustomizedMenus(props) {
         </React.Fragment>
     );
 }
+
+export default React.memo(CustomisedMenu);

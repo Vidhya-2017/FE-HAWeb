@@ -1,7 +1,7 @@
 import clients from '../../../common/clients';
 
 export const DashboardActions = {
-    
+
     getCandidateReport: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/CandidateListing.php', data);
@@ -11,7 +11,7 @@ export const DashboardActions = {
             return (error.response);
         }
     },
-    getCandidatePrimarySkillId: async(data) => {
+    getCandidatePrimarySkillId: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/PanelListsBySkillId.php', data);
             return (response.data);
@@ -47,7 +47,7 @@ export const DashboardActions = {
             return (error.response);
         }
     },
-    deleteCandidate: async (data) =>{
+    deleteCandidate: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/CandidateDelete.php', data);
             return (response.data);
@@ -56,7 +56,7 @@ export const DashboardActions = {
             return (error.response);
         }
     },
-    changeCandidateInterviewStatus: async (data) =>{
+    changeCandidateInterviewStatus: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/CandidateLevelFeedback.php', data);
             return (response.data);
@@ -65,7 +65,7 @@ export const DashboardActions = {
             return (error.response);
         }
     },
-    editCandidate: async (data) =>{
+    editCandidate: async (data) => {
         try {
             const response = await clients.DSaxiosAPI.post('/CandidateEdit.php', data);
             return (response.data);
@@ -73,5 +73,16 @@ export const DashboardActions = {
         catch (error) {
             return (error.response);
         }
+    },
+    candidateDetails: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateListById.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
     }
+
+
 }

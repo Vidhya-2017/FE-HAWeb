@@ -18,6 +18,7 @@ const mapDispatchToProps = (dispatch) => {
     getListRecruiter: CreateCandidateActions.getListRecruiter,
     getListSource: CreateCandidateActions.getListSource,
     getListSpoc: CreateCandidateActions.getListSpoc,
+    candidateDetails: DashboardActions.candidateDetails,
     getCompanyLists: CreateCandidateActions.getCompanyLists,
   };
 };

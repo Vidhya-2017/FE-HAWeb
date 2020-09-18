@@ -160,7 +160,6 @@ export class Login extends React.Component {
           tableData: filterData
         })
       }
-
     })
   }
   componentDidMount() {
@@ -216,6 +215,7 @@ export class Login extends React.Component {
                SendStatus ={ this.SendStatus}
               tp1StatusUpdate={this.tp1StatusUpdate}
               tp2StatusUpdate={this.tp2StatusUpdate}
+              candidateDetails={this.props.candidateDetails}
             />
           </div>
         </Container>

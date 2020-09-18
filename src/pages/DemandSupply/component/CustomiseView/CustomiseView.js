@@ -3,11 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-// import InboxIcon from '@material-ui/icons/MoveToInbox';
-// import DraftsIcon from '@material-ui/icons/Drafts';
-// import SendIcon from '@material-ui/icons/Send';
 
 const StyledMenu = withStyles({
     paper: {
@@ -40,10 +36,10 @@ const StyledMenuItem = withStyles((theme) => ({
     },
 }))(MenuItem);
 
-export default function CustomizedMenus(props) {
+const CustomiseView = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const { classes, buttonName, status, disabled } = props
+    const { classes, buttonName, status, setViewType } = props
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -54,7 +50,6 @@ export default function CustomizedMenus(props) {
     };
 
     const handleListItemClick = (e, item) => {
-        const { setViewType } = props
         setViewType(item)
         handleClose()
     }
@@ -70,7 +65,6 @@ export default function CustomizedMenus(props) {
                 onClick={handleClick}
                 size='small'
                 className={classes.button}
-                disabled={disabled}
             >
                 {buttonName}
             </Button>
@@ -85,8 +79,8 @@ export default function CustomizedMenus(props) {
                 {
                     status.map((item, i) => {
                         return (
-                            <StyledMenuItem key={i}>
-                                <ListItemText primary={item.title} onClick={(event) => handleListItemClick(event, item)} />
+                            <StyledMenuItem onClick={(event) => handleListItemClick(event, item)} key={i}>
+                                <ListItemText primary={item.title}  />
                             </StyledMenuItem>
                         )
                     })
@@ -96,3 +90,5 @@ export default function CustomizedMenus(props) {
         </React.Fragment>
     );
 }
+
+export default React.memo(CustomiseView);

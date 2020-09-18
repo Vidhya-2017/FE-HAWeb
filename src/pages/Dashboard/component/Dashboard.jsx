@@ -313,6 +313,13 @@ class Dashboard extends React.Component {
       },
       plotOptions: {
         series: {
+          point: {
+            events: {
+                click: () => {
+                    console.log('-----', this);
+                }
+            }
+        },
           states: {
             hover: {
               enabled: false

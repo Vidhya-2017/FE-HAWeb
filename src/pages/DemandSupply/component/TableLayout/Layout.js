@@ -3,6 +3,7 @@ import { withStyles, Typography, Button, TableRow, Dialog, DialogActions, Dialog
 import MaterialTable from "material-table";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import ColumnArr from './ColumnFields';
 import Cell from '../Table/Cell'
 import Search from '../Search/Search'
 import CustomisedMenu from '../StyledMenu/StyledMenu';
@@ -60,7 +61,9 @@ export class Layout extends Component {
       tp1Panels: [],
       panelListData: [],
       viewType: 1,
-      customColumns: []
+      customColumns: [],
+      columnFields: ColumnArr.FullViewFields,
+      candidateResult: ''
     }
     this.tp1Status = [
       { id: 1, title: 'TP1 Schedule' },
@@ -425,7 +428,27 @@ export class Layout extends Component {
   }
 
   navToCandidate = () => {
-    this.props.history.push('/createCandidate');
+    const { selectedRows, candidateResult } = this.state
+    let candidateIds = selectedRows.map((data, i) => {
+      return data.candidate_id
+    })
+    let reqObj = {
+      candidate_id: candidateIds.toString()
+    }
+
+    this.props.candidateDetails(reqObj).then((res) => {
+      if (res.errCode === 200) {
+        const candidateDetails = res.arrRes;
+        this.setState({
+          candidateResult: candidateDetails
+        }, () => { console.log(this.state.candidateResult, "candidate details") })
+
+        this.props.history.push({ pathname: '/createCandidate', data: candidateDetails })
+
+      }
+
+    })
+
   }
 
   renderTP1TableHeader = () => {
@@ -581,35 +604,49 @@ export class Layout extends Component {
 
 
   setViewType = (data) => {
-    //console.log(data)
+    console.log(data)
+    let columnView = [];
+    switch (data.id) {
+      case 1:
+        columnView = ColumnArr.HistoryViewFields;
+        break;
+      case 2:
+        columnView = ColumnArr.BasicViewFields;
+        break;
+      case 3:
+        columnView = ColumnArr.RecruiterViewFields;
+        break;
+      case 4:
+        columnView = ColumnArr.SPOCViewFields;
+        break;
+      default:
+        break;
+    }
     this.setState({
       viewType: data.id,
+      columnFields: columnView
     })
   }
 
   applyCustomColumn = (data) => {
-    const customColumnSelected = data.some(data => data.checked !== undefined && data.checked === true)
-    if (customColumnSelected) {
+    let customColumns = [];
+    data.forEach(item => {
+      if (item.checked !== undefined && item.checked === true) {
+        customColumns.push(item.name);
+      }
+    })
+    if (customColumns.length > 0) {
       this.setState({
         viewType: 0,
-        customColumns: data
+        customColumns: customColumns,
+        columnFields: ColumnArr.FullViewFields.filter(data => customColumns.includes(data.name))
       })
     }
   }
 
-  renderColumns = () => {
-    const { viewType, customColumns } = this.state;
-    if (viewType === 0) {
-      let columns = customColumns.filter((data) => data.checked !== undefined && data.checked).map(data => data.name)
-      return this.columnFields.filter(data => columns.includes(data.name))
-    }
-    let view = this.view.find(view => view.id === viewType)
-    return this.columnFields.filter(col => view.columns.includes(col.name));
-  }
-
   render() {
     const { classes, getCandidateData } = this.props
-    const { actualData, enableDeleteIcon, showModal1, showModal2 } = this.state
+    const { actualData, columnFields, enableEditIcon, enableDeleteIcon, showModal1, showModal2 } = this.state
     return (
       <React.Fragment>
         <Typography variant='h4'>Candidate List</Typography>
@@ -620,11 +657,14 @@ export class Layout extends Component {
           variant="contained"
           color="primary"
           size="small"
+          disabled={!enableEditIcon}
           className={classes.button}
           onClick={this.navToCandidate}
+          candidateResult={this.state.candidateResult}
         >
           Add
         </Button>
+
 
         {/* <Button
           variant="contained"
@@ -665,13 +705,11 @@ export class Layout extends Component {
         <CustomisedMenu buttonName='Fitment Status'
           status={this.fitmentStatus}
           classes={classes}
-          // changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
           onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
         <CustomisedMenu buttonName='Offer Status'
           status={this.offerStatus}
-          // changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
           onSendPress={this.getCandiddateStatus}
           classes={classes}
           disabled={!enableDeleteIcon}
@@ -690,7 +728,7 @@ export class Layout extends Component {
           setViewType={this.setViewType}
         />
         <CustomiseColumn buttonName='Customise Columns'
-          columns={this.columnFields}
+          columns={ColumnArr.FullViewFields}
           status={this.view}
           classes={classes}
           setViewType={this.applyCustomColumn}
@@ -698,7 +736,7 @@ export class Layout extends Component {
 
         <MaterialTable
           // title="Candidate List"
-          columns={this.renderColumns()}
+          columns={columnFields}
           data={actualData}
           style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
           options={{
@@ -709,6 +747,8 @@ export class Layout extends Component {
             pageSize: 10,
             // maxBodyHeight : '2', 
             pageSizeOptions: [10, 20],
+            draggable: false,
+            // maxBodyHeight:500,
             selectionProps: {
               color: 'primary',
             },

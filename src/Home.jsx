@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Spinner } from 'react-bootstrap';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 import SideNavBar from './components/SideNavBar/SideNavBar';
 import LoginContainer from './pages/Login/container/LoginContainer';
 import DashboardContainer from './pages/Dashboard/container/DashboardContainer';
@@ -27,8 +30,16 @@ import Footer from './components/Footer/Footer';
 import EventListContainer from './pages/EventList/container/EventListContainer';
 import SignUpContainer from './pages/SignUp/container/SignUpContainer';
 import ForgotPasswordContainer from './pages/ForgotPassword/container/ForgotPasswordContainer';
+import DemandDBContainer from './pages/DemandDashboard/container/DemandDBContainer';
 import './App.scss';
 
+const outerTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#1b91e5',
+    },
+  },
+});
 class Home extends React.Component {
 
   constructor(props) {
@@ -82,7 +93,7 @@ class Home extends React.Component {
       }
     }
     return (
-      <Fragment>
+      <ThemeProvider theme={outerTheme}>
         <div className='spinnerWrapper hide'>
           <Spinner className='spinner' animation="grow" variant="primary" />
         </div>
@@ -99,7 +110,7 @@ class Home extends React.Component {
               <Route path="/eventRegister" component={EventRegistrationContainer} />
               <Route path="/eventFeedback" component={EventFeedbackContainer} />
               <Route path="/eventStatus" component={EventStatusContainer} />
-              <Route path="/demandDashboard" component={DemandDashboardContainer} />
+              <Route path="/demand" component={DemandDashboardContainer} />
               <Route path="/addSPOC" component={SPOCCreationContainer} />
               <Route path="/previousEmpolyer" component={PreviousEmployerContainer} />
               <Route path="/addRecruiter" component={AddRecruitersContainer} />
@@ -113,11 +124,12 @@ class Home extends React.Component {
               <Route path="/eventList" component={EventListContainer} />
               <Route path="/signUp" component={SignUpContainer} />
               <Route path="/forgotPassword" component={ForgotPasswordContainer} />
+              <Route path="/demandDashboard" render={(props) =>  <MuiPickersUtilsProvider utils={MomentUtils}><DemandDBContainer {...props}/></MuiPickersUtilsProvider>} />
             </Switch>
             <Footer />
           </div>
         </div>
-      </Fragment>
+      </ThemeProvider>
     );
   }
 }
