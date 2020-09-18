@@ -25,6 +25,7 @@ class DemandDashboard extends React.Component {
       tp2: [],
       fitment: [],
       offer: [],
+      others: [],
       individualReport: [],
       tableRowData: [],
       tableTitle: 'TP1 Completed'
@@ -32,7 +33,11 @@ class DemandDashboard extends React.Component {
     this.demandReport = [];
   }
   chartValue = (value) => {
+    if(value.label === 'Others') {
+    this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.label });
+    } else {
     this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.name });
+    }
   }
 
   componentDidMount() {
@@ -62,29 +67,21 @@ class DemandDashboard extends React.Component {
     let tp2 = [];
     let fitment = [];
     let offer = [];
-    let tp1Count = [0, 0, 0];
-    let tp2Count = [0, 0, 0];
-    let fitmentCount = [0, 0, 0];
-    let offerCount = [0, 0, 0];
     switch (category.label) {
       case 'Selected':
         if (this.demandReport.SelectCandidates) {
           categoryReport = this.demandReport.SelectCandidates;
           this.demandReport.SelectCandidates.forEach(candidate => {
             if (candidate.status_id === "3") {
-              tp1Count[0] = tp1Count[0] + 1;
               tp1.push(candidate);
             }
             if (candidate.status_id === "7") {
-              tp2Count[0] = tp2Count[0] + 1;
               tp2.push(candidate);
             }
             if (candidate.status_id === "21") {
-              fitmentCount[0] = fitmentCount[0] + 1;
               fitment.push(candidate);
             }
             if (candidate.status_id === "15") {
-              offerCount[0] = offerCount[0] + 1;
               offer.push(candidate);
             }
           })
@@ -95,19 +92,15 @@ class DemandDashboard extends React.Component {
           categoryReport = this.demandReport.RejectCandidates;
           this.demandReport.RejectCandidates.forEach(candidate => {
             if (candidate.status_id === "4") {
-              tp1Count[1] = tp1Count[1] + 1;
               tp1.push(candidate);
             }
             if (candidate.status_id === "8") {
-              tp2Count[1] = tp2Count[1] + 1;
               tp2.push(candidate);
             }
             if (candidate.status_id === "10") {
-              fitmentCount[1] = fitmentCount[1] + 1;
               fitment.push(candidate);
             }
             if (candidate.status_id === "16") {
-              offerCount[1] = offerCount[1] + 1;
               offer.push(candidate);
             }
           })
@@ -118,19 +111,15 @@ class DemandDashboard extends React.Component {
           categoryReport = this.demandReport.InprocessCandidates;
           this.demandReport.InprocessCandidates.forEach(candidate => {
             if (candidate.status_id === "1" || candidate.status_id === "2") {
-              tp1Count[2] = tp1Count[2] + 1;
               tp1.push(candidate);
             }
             if (candidate.status_id === "5" || candidate.status_id === "6") {
-              tp2Count[2] = tp2Count[2] + 1;
               tp2.push(candidate);
             }
             if (candidate.status_id === "11") {
-              fitmentCount[2] = fitmentCount[2] + 1;
               fitment.push(candidate);
             }
             if (candidate.status_id === "21") {
-              offerCount[2] = offerCount[2] + 1;
               offer.push(candidate);
             }
           })
@@ -158,24 +147,21 @@ class DemandDashboard extends React.Component {
       default:
         break;
     }
+    
     const individualReport = [
       { label: "TP1", arrLen: tp1.length },
       { label: "TP2", arrLen: tp2.length },
       { label: "Fitment", arrLen: fitment.length },
-      {
-        label: "Offer", arrLen: offer.length
-      }];
-
-    console.log('-tp1Count--', tp1Count);
-    console.log('-tp2Count--', tp2Count);
-    console.log('-fitmentCount--', fitmentCount);
-    console.log('-offerCount--', offerCount);
+      {label: "Offer", arrLen: offer.length},
+      {label: "Others", arrLen: this.demandReport.others.length}
+    ];
     this.setState({
       category,
       tp1,
       tp2,
       fitment,
       offer,
+      others: [...this.demandReport.others],
       tableTitle: `${individualReport[0].label} ${category.label}`,
       individualReport, tableRowData: tp1
     });

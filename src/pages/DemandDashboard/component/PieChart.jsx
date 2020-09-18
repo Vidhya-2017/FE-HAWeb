@@ -26,6 +26,9 @@ class PieChart extends React.PureComponent {
         text: `${moment(nextProps.currentDate).format("DD/MM/YYYY")} - ${nextProps.categoryLabel}`
       },
       plotOptions: {
+        pie: {
+          colors: ['#64B5F6', '#ea9c9c', '#F9A825', '#D4E157'],
+        },
         series: {
           pointPlacement: 'on'
         }

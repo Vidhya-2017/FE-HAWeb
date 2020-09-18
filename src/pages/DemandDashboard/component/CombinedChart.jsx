@@ -66,15 +66,15 @@ class CombinedChart extends React.Component {
         data: [{
           name: 'Selected',
           y: selectedVal,
-          color: Highcharts.getOptions().colors[0]
+          color: '#8BC34A'
         }, {
           name: 'Rejected',
           y: rejectedVal,
-          color: Highcharts.getOptions().colors[1]
+          color: '#FF7043'
         }, {
           name: 'In-Progress',
           y: inProgressVal,
-          color: Highcharts.getOptions().colors[2]
+          color: '#FFA726'
         }],
         center: [50, 10],
         size: 100,
@@ -103,6 +103,7 @@ class CombinedChart extends React.Component {
       xAxis: {
         categories: ['TP1', 'TP2', 'Fitment', 'Offer']
       },
+      colors: ['#8BC34A', '#FF7043', '#FFA726'],
       plotOptions: {
         series: {
           states: {
@@ -147,19 +148,7 @@ class CombinedChart extends React.Component {
       }, {
         type: 'pie',
         name: 'Count',
-        data: [{
-          name: 'Selected',
-          y: 13,
-          color: Highcharts.getOptions().colors[0]
-        }, {
-          name: 'Rejected',
-          y: 23,
-          color: Highcharts.getOptions().colors[1]
-        }, {
-          name: 'In-Progress',
-          y: 19,
-          color: Highcharts.getOptions().colors[2]
-        }],
+        data: [],
         center: [50, 10],
         size: 100,
         showInLegend: false,

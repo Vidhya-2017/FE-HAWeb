@@ -15,12 +15,12 @@ const CardView = ({classes, individualReport, category, chartValue}) => {
         <div className="">
           <Grid container style={{ margin: 0 }}>
             {individualReport.map(item =>
-              <Grid item xs={6} sm={3} key={item.label} style={{ padding: 10 }}>
+              <Grid item xs={6} sm={4} md={4} lg={3} key={item.label} style={{ padding: 10 }}>
                 <Paper className={classes.paper}>
                   <Card className={classes.root} variant="outlined">
                     <CardContent>
                       <Box display="flex" justifyContent="space-between">
-                        <Typography> {item.label} {category.label} </Typography>
+                        <Typography> {item.label} {item.label !== 'Others' && category.label} </Typography>
                         <Chip label={item.arrLen} color="primary" />
                       </Box>
                     </CardContent>
@@ -31,6 +31,7 @@ const CardView = ({classes, individualReport, category, chartValue}) => {
                         onClick={() => {
                             viewDetails(category.label, item.label)
                         }}
+                        // disabled={item.label === 'Others'}
                       >View Details <ArrowForwardIosIcon style={{ position: "relative", bottom: 2, fontSize: 14 }} /></Link>
                     </CardActions>
                   </Card>
