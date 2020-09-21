@@ -63,8 +63,10 @@ export class Layout extends Component {
       viewType: 1,
       customColumns: [],
       columnFields: ColumnArr.FullViewFields,
-      candidateResult: ''
-    }
+      candidateResult: '',
+      showToast: false,
+      toastMsg: null,
+      }
     this.tp1Status = [
       { id: 1, title: 'TP1 Schedule' },
       { id: 2, title: 'TP1 Incomplete' },
@@ -258,12 +260,12 @@ export class Layout extends Component {
         selectedRows: []
       })
     }
-    const tp1Panels = nextProps.panels;
-    this.setState({ tp1Panels })
+     const tp1Panels = nextProps.panels;
+     this.setState({ tp1Panels })
   }
 
   getCandiddateStatus = (status) => {
-    const { selectedRows } = this.state
+    const { selectedRows,tp1Panels , statusId} = this.state
     let filteredDataone = selectedRows.map((data, i) => {
       return data
     });
@@ -274,11 +276,14 @@ export class Layout extends Component {
       let primarySkillId = filteredDataoneList.map(a => a.primary_skill_id);
       let CandidatePrimarySkillId = primarySkillId.toString();
       this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
-
       this.setState({
-        showModal1: true,
-        tp1data: filteredDataone
-      })
+        showModal1: false,
+        tp1data: filteredDataone,
+        })
+      this.props.history.push({
+        pathname: '/TpSchedule',
+        state: { tp1data: filteredDataone , tp2data: [], showModal1: true, showModal2: false, statusId1: status.id, tp1Panels1: tp1Panels,tp1skillID: CandidatePrimarySkillId }
+       }) 
     } else if (status.id && status.id !== '') {
       let CandidateId = filteredDataone.map(a => a.candidate_id);
       let CandidateIdUniqueId = CandidateId.toString();
@@ -311,9 +316,13 @@ export class Layout extends Component {
       this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
 
       this.setState({
-        showModal2: true,
+        showModal2: false,
         tp2data: filtertp2Data
       })
+       this.props.history.push({
+        pathname: '/TpSchedule',
+        state: { tp1data: [], tp2data: filtertp2Data, showModal1: false, showModal2: true, statusId1: status.id, tp1skillID: CandidatePrimarySkillId }
+      }) 
     } else if (status.id === 7 || 22 || 6 || 8) {
       let CandidateId = filtertp2DataList.map(a => a.candidate_id);
       let CandidateIdUniqueId = CandidateId.toString();

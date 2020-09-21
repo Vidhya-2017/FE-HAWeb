@@ -26,6 +26,7 @@ import SquadFormationContainer from './pages/SquadFormation/container/SquadForma
 import CandidateSelectionContainer from './pages/CandidateSelection/container/CandidateSelectionContainer';
 import EventCoordinatorContainer from './pages/EventCoordinator/container/EventCoordinatorContainer';
 import Header from './components/Header/Header';
+import TpSchedule from './pages/TpSchedule/container/TpScheduleContainer';
 import Footer from './components/Footer/Footer';
 import EventListContainer from './pages/EventList/container/EventListContainer';
 import SignUpContainer from './pages/SignUp/container/SignUpContainer';
@@ -124,7 +125,8 @@ class Home extends React.Component {
               <Route path="/eventList" component={EventListContainer} />
               <Route path="/signUp" component={SignUpContainer} />
               <Route path="/forgotPassword" component={ForgotPasswordContainer} />
-              <Route path="/demandDashboard" render={(props) =>  <MuiPickersUtilsProvider utils={MomentUtils}><DemandDBContainer {...props}/></MuiPickersUtilsProvider>} />
+              <Route path="/TpSchedule" component={TpSchedule} />
+              <Route path="/demandDashboard" render={(props) => <MuiPickersUtilsProvider utils={MomentUtils}><DemandDBContainer {...props} /></MuiPickersUtilsProvider>} />
             </Switch>
             <Footer />
           </div>
