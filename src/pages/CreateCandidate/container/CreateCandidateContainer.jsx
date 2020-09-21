@@ -4,7 +4,8 @@ import { CreateCandidateActions } from '../modules/CreateCandidateActions';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createCandidateForm: CreateCandidateActions.createCandidateForm,    
+    createCandidateForm: CreateCandidateActions.createCandidateForm, 
+    updateCandidateForm: CreateCandidateActions.updateCandidateForm,   
     getPrimarySkillsReport: CreateCandidateActions.getPrimarySkillsReport,
     getListLocation: CreateCandidateActions.getListLocation,
     getListRecruiter: CreateCandidateActions.getListRecruiter,

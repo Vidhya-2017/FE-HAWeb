@@ -33,10 +33,10 @@ class DemandDashboard extends React.Component {
     this.demandReport = [];
   }
   chartValue = (value) => {
-    if(value.label === 'Others') {
-    this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.label });
+    if (value.label === 'Others') {
+      this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.label });
     } else {
-    this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.name });
+      this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.name });
     }
   }
 
@@ -147,13 +147,13 @@ class DemandDashboard extends React.Component {
       default:
         break;
     }
-    
+
     const individualReport = [
       { label: "TP1", arrLen: tp1.length },
       { label: "TP2", arrLen: tp2.length },
       { label: "Fitment", arrLen: fitment.length },
-      {label: "Offer", arrLen: offer.length},
-      {label: "Others", arrLen: this.demandReport.others.length}
+      { label: "Offer", arrLen: offer.length },
+      { label: "Others", arrLen: this.demandReport.others.length }
     ];
     this.setState({
       category,
@@ -174,6 +174,17 @@ class DemandDashboard extends React.Component {
   handleDateChange = (date) => {
     const currentDate = moment(date).format('YYYY-MM-DD');
     this.getDemandReport(currentDate);
+  }
+
+  showAllData = (showAll) => {
+    const { tp1, tp2, fitment, offer } = this.state;
+    if (showAll) {
+      this.setState({
+        tableRowData: [...tp1, ...tp2, ...fitment, ...offer]
+      })
+    } else {
+      this.setState({ tableRowData: this.state[this.state.tableTitle.split(' ')[0].toLowerCase()] });
+    }
   }
 
   render() {
@@ -218,16 +229,16 @@ class DemandDashboard extends React.Component {
               individualReport={individualReport} />}
           </Grid>
           <Grid item xs={12} sm={6} style={{ padding: 10 }}>
-            {this.demandReport.counts && <CombinedChart 
-            selectedCounts={this.demandReport.counts.selected}
-            rejectedCounts={this.demandReport.counts.rejected}
-            inProgressCounts={this.demandReport.counts.inProgress}
+            {this.demandReport.counts && <CombinedChart
+              selectedCounts={this.demandReport.counts.selected}
+              rejectedCounts={this.demandReport.counts.rejected}
+              inProgressCounts={this.demandReport.counts.inProgress}
             />}
           </Grid>
         </Grid>
         {tableRowData.length > 0 &&
           <Fragment>
-            <CandidateStatusTable rowData={tableRowData} tableTitle={tableTitle} />
+            <CandidateStatusTable showAllData={this.showAllData} rowData={tableRowData} tableTitle={tableTitle} />
           </Fragment>}
       </Paper>
     )

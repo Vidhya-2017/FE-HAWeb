@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Table, TableBody, IconButton, Toolbar, Typography, TableRow, TableCell, TableSortLabel, TableContainer, TableHead, TablePagination } from '@material-ui/core';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { Paper, Table, TableBody, FormControlLabel, Toolbar, IconButton, Typography, TableRow, TableCell, Switch, TableContainer, TableHead, TablePagination } from '@material-ui/core';
 import ViewColumns from './ViewColumns';
 import EnhancedTableHead from './EnhancedTableHead';
 import CandidateStatusCoulmn from './CandidateStatusCoulmn';
@@ -42,6 +45,11 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flex: '1 1 100%',
   },
+  showAll: {
+    padding: '0 10px',
+    margin: 0,
+    width: 250
+  },
   paper: {
     width: '100%',
     border: '1px solid #BDBDBD',
@@ -72,6 +80,7 @@ const CandidateStatusTable = (props) => {
   const [rowData, setRowData] = useState(props.rowData);
   const [columnData, setColumnData] = useState(CandidateStatusCoulmn);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [showAll, setShowAll] = useState(false);
 
   const globalRowData = props.rowData;
 
@@ -114,6 +123,24 @@ const CandidateStatusTable = (props) => {
     updateColData[updateCol].hide = currentIndex >= 0;
     setColumnData(updateColData);
   }
+
+  const toggleChecked = () => {
+    setShowAll(showAll => !showAll);
+    props.showAllData(!showAll);
+  }
+
+  const downloadPdf = () => {
+    const doc = new jsPDF('l', 'pt');
+    doc.autoTable({
+      html: '#candidateTable',
+      bodyStyles: { fontSize: 8 },
+      headStyles: { fillColor: [33, 150, 243], fontSize: 8 },
+      styles: { lineColor: [44, 62, 80], lineWidth: 0.5 },
+      theme: 'grid',
+    })
+    doc.save('table.pdf')
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -121,13 +148,26 @@ const CandidateStatusTable = (props) => {
           <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
             {props.tableTitle}
           </Typography>
+
+          <FormControlLabel
+            className={classes.showAll}
+            control={<Switch checked={showAll} onChange={toggleChecked} />}
+            label="Show All"
+          />
           <SearchCandidate value={query} onInputChange={onInputChange} />
           <ViewColumns columnData={columnData} showHideColumn={showHideColumn} />
+          <IconButton
+            onClick={downloadPdf}
+            className={classes.filterIcon}
+          >
+            <SaveAltIcon />
+          </IconButton>
         </Toolbar>
         <TableContainer>
           <Table
             className={classes.table}
             size={'medium'}
+            id="candidateTable"
           >
             <EnhancedTableHead
               classes={classes}
@@ -145,7 +185,7 @@ const CandidateStatusTable = (props) => {
                     <TableRow key={row.email_id}>
                       {CandidateStatusCoulmn.map(col =>
                         <Fragment key={row[col.id]}>
-                          {!col.hide && <TableCell key={row[col.id]}>{row[col.id]}</TableCell>}
+                          {!col.hide && <TableCell key={row[col.id]}>{col.id === 'preferred_location' ? row[col.id].split(',').join(', ') : row[col.id]}</TableCell>}
                         </Fragment>
                       )}
                     </TableRow>

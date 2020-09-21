@@ -40,6 +40,8 @@ class PieChart extends React.PureComponent {
         name: 'Count',
         colorByPoint: true,
         data: [{
+          sliced: true,
+          selected: true,
           name: `TP1 ${nextProps.categoryLabel}`,
           label: nextProps.individualReport[0].label,
           y: nextProps.individualReport[0].arrLen,

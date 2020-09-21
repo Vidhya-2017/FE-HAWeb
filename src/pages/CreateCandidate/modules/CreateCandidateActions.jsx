@@ -64,4 +64,13 @@ export const CreateCandidateActions = {
             return (error.response);
         }
     },
+    updateCandidateForm: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateEdit.php',data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
 }

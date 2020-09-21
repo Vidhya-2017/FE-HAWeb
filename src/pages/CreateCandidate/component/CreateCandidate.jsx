@@ -47,6 +47,7 @@ class CreateCandidate extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeValue = this.onChangeValue.bind(this);
         this.state = {
+            userId: "",
             username: "",
             contact: "",
             email: "",
@@ -58,6 +59,8 @@ class CreateCandidate extends React.Component {
             te: "",
             re: "",
             listCompany: [],
+            secSkills: [],
+            priSkills: [],
             addskills: "",
             showToast: false,
             toastMsg: null,
@@ -74,6 +77,7 @@ class CreateCandidate extends React.Component {
             hraRemarks: "",
             testRecieved: "",
             isHanRankerTest: false,
+            hrtestValue: "",
             selectedCompanyId: "",
             selectedNPId: "",
             selectedPriority: "",
@@ -90,65 +94,45 @@ class CreateCandidate extends React.Component {
             { 'label': 'Can join immediately', 'value': '15' }
         ];
         this.priorityList = [
-            { label: "High", 'value': '1' },
-            { label: "Low", 'value': '2' },
-            { label: "Critical", 'value': '3' }
-        ]
+            { label: "High", 'id': '1' },
+            { label: "Low", 'id': '2' },
+            { label: "Critical", 'id': '3' }
+        ];
+        // this.baseState = this.state 
     }
     componentWillMount() {
         if (this.props.location.data && this.props.location.data != '') {
+
             const primary_skill = this.props.location.data.primary_skills.map(d => ({
                 "value": d.id,
                 "label": d.name
 
             }))
-            let PrimaryskillId = primary_skill.map((data, i) => {
-                return data.value
-            });
-            let PrimarySkillIds = PrimaryskillId.toString();
-            this.setState({
-                selectedSkillId: PrimarySkillIds
-            });
-
-
+            this.setState({ selectedSkillId: primary_skill[0] });
 
             const secondary_skill = this.props.location.data.secondary_skills.map(d => ({
                 "value": d.id,
                 "label": d.name
 
             }))
-            let SecondarykillId = secondary_skill.map((data, i) => {
+
+            const SecondarykillId = secondary_skill.map((data, i) => {
                 return data.value
             });
-            let SecondarykillIds = SecondarykillId.toString();
-            this.setState({
-                selectedAddSkillId: SecondarykillIds
-            });
+
+            const SecondarykillIds = SecondarykillId.toString();
+            this.setState({ selectedAddSkillId: SecondarykillIds });
 
             const currentCompany = this.props.location.data.current_company.map(d => ({
                 "value": d.id,
                 "label": d.name
 
             }))
-            let CurrentCompanyId = currentCompany.map((data, i) => {
-                return data.value
-            });
-            let CurrentCompanyIds = CurrentCompanyId.toString();
-            this.setState({
-                selectedCompanyId: CurrentCompanyIds
-            });
 
             const currentLocation = this.props.location.data.current_location.map(d => ({
                 "value": d.id,
                 "label": d.name
             }))
-            let CurrentLocationId = currentLocation.map((data, i) => {
-                return data.value
-            });
-            let CurrentLocationIds = CurrentLocationId.toString();
-            this.setState({
-                selectedLocationId: CurrentLocationIds
-            });
 
             const preferredLocation = this.props.location.data.preferred_location.map(d => ({
                 "value": d.id,
@@ -166,26 +150,11 @@ class CreateCandidate extends React.Component {
                 "value": d.id,
                 "label": d.name
             }))
-            let CandidateSourceId = candidateSource.map((data, i) => {
-                return data.value
-            });
-            let CandidateSourceIds = CandidateSourceId.toString();
-            this.setState({
-                selectedSourceId: CandidateSourceIds
-            });
 
             const candidateRecruiter = this.props.location.data.recruiter.map(d => ({
                 "value": d.id,
                 "label": d.name
             }))
-            let recruiterId = candidateRecruiter.map((data, i) => {
-                return data.value
-            });
-            let recruiterIds = recruiterId.toString();
-            this.setState({
-                selectedrecruiter: recruiterIds
-            });
-
 
             const Dna_spoc = this.props.location.data.spoc.map(d => ({
                 "value": d.id,
@@ -193,17 +162,9 @@ class CreateCandidate extends React.Component {
 
             }))
 
+            this.props.location.data.hr_test_taken === '0' ? this.setState({ isHanRankerTest: true, hratest: "0", hrtestValue: "Yes" }) : this.setState({ isHanRankerTest: false, hratest: "0", hrtestValue: "No" })
 
-            let spocId = Dna_spoc.map((data, i) => {
-                return data.value
-            });
-            let spocIds = spocId.toString();
-            this.setState({
-                selectedSpocId: spocIds
-            });
-
-            this.props.location.data.hr_test_taken === '0' ? this.setState({ isHanRankerTest: true, hratest: "0" }) : this.setState({ isHanRankerTest: false, hratest: "0" })
-
+            const candidateId = this.props.location.data.candidate_id;
             const candidateName = this.props.location.data.candidate_name;
             const candidateContact = this.props.location.data.contact;
             const candidateEmail = this.props.location.data.email_id;
@@ -213,44 +174,39 @@ class CreateCandidate extends React.Component {
             const testCompleteddt = this.props.location.data.test_completed_dt;
             const testShareddt = this.props.location.data.testlink_received_dt;
             const candidatehrScore = this.props.location.data.hr_score;
-            const candidatehrRemarks = this.props.location.data.hr_remarks
-
+            const candidatehrRemarks = this.props.location.data.hr_remarks;
             const shareddate = moment(testCompleteddt).format("YYYY-MM-DD");
             const completedDate = moment(testCompleteddt).format("YYYY-MM-DD");
-            const noticePeriod = [{ 'value': '', 'label': this.props.location.data.notice_period + "days" }]
-            const candidatePriority = [{ 'value': '', 'label': this.props.location.data.priority }]
-            const PriorityName = candidatePriority.map((data, i) => {
-                return data.label
-            });
-            const CandidatePriority = PriorityName.toString();
-            this.setState({
-                selectedPriority: CandidatePriority
-            });
+            const noticePeriod = [{ 'value': '', 'label': this.props.location.data.notice_period + " days" }];
+            const candidatePriority = [{ 'id': '', 'label': this.props.location.data.priority }];
 
             this.setState({
+                userId: candidateId,
                 username: candidateName,
                 contact: candidateContact,
                 email: candidateEmail,
                 te: totalExperience,
                 re: relevantExperience,
-                skills: primary_skill,
-                listCompany: currentCompany,
-                location: currentLocation,
+                priSkills: primary_skill,
+                secSkills: secondary_skill,
+                selectedCompanyId: currentCompany[0],
+                selectedLocationId: currentLocation[0],
                 location: preferredLocation,
                 testCompletedDate: completedDate,
                 testRecieved: shareddate,
                 hrScore: candidatehrScore,
                 hraRemarks: candidatehrRemarks,
-                source: candidateSource,
-                spoc: Dna_spoc,
-                recruiter: candidateRecruiter,
-                noticePeriod: noticePeriod,
-                priorityData: candidatePriority,
+                selectedSourceId: candidateSource[0],
+                selectedSpocId: Dna_spoc[0],
+                selectedrecruiter: candidateRecruiter[0],
+                selectedNPId: noticePeriod[0],
+                selectedPriority: candidatePriority[0],
                 remarks: candidateRemarks,
 
             })
         }
     }
+
 
     candidateName = e => {
         this.setState({ username: e.target.value })
@@ -274,7 +230,7 @@ class CreateCandidate extends React.Component {
         this.setState({ email: e.target.value })
     }
     onChangeValue(event) {
-        event.target.value === 'Yes' ? this.setState({ isHanRankerTest: true, hratest: "0" }) : this.setState({ isHanRankerTest: false, hratest: "1" })
+        event.target.value === '0' ? this.setState({ isHanRankerTest: true, hratest: "0" }) : this.setState({ isHanRankerTest: false, hratest: "1" })
     }
     handleOptionChange = (changeEvent) => {
         this.setState({
@@ -337,6 +293,7 @@ class CreateCandidate extends React.Component {
                 this.setState({
                     recruiter: options
                 })
+
             }
         })
     }
@@ -371,12 +328,13 @@ class CreateCandidate extends React.Component {
     }
 
     selectSecondarySkill = (e, values) => {
+
         let skillIds = values.map((data, i) => {
             return data.value
         });
         let SecondarySkillIds = skillIds.toString();
         this.setState({
-            selectedAddSkillId: SecondarySkillIds
+            selectedAddSkillId: values
         });
     }
     totalExperience = e => {
@@ -387,20 +345,17 @@ class CreateCandidate extends React.Component {
         this.setState({ re: e.target.value })
     }
 
-    selectNP = (e, values) => {
-
-        this.setState({ noticePeriod: values.value })
+    selectNP = (e, value) => {
+        this.setState({ selectedNPId: value })
     }
-    selectCompany = (e, values) => {
-        console.log(values.value, "checking comapny details");
-
-        this.setState({ selectedCompanyId: values.value })
+    selectCompany = (e, value) => {
+        this.setState({ selectedCompanyId: value })
     }
-    selectSkill = (e, values) => {
-        this.setState({ selectedSkillId: values.value })
+    selectSkill = (e, value) => {
+        this.setState({ selectedSkillId: value })
     }
-    selectLocation = (e, values) => {
-        this.setState({ selectedLocationId: values.value })
+    selectLocation = (e, value) => {
+        this.setState({ selectedLocationId: value })
     }
     selectPrefLocation = (e, values) => {
         let selectPreferredLocation = values.map((data, i) => {
@@ -409,23 +364,20 @@ class CreateCandidate extends React.Component {
         let preferredLocation = selectPreferredLocation.toString();
         this.setState({ selectedPrefLocationId: preferredLocation })
     }
-    selectRecruiter = (e) => {
-        this.setState({ selectedrecruiter: e.target.value })
+    selectRecruiter = (e, value) => {
+        this.setState({ selectedrecruiter: value })
     }
-    selectSource = (e, values) => {
-        this.setState({ selectedSourceId: values.value })
+    selectSource = (e, value) => {
+        this.setState({ selectedSourceId: value })
     }
-
-    selectSpoc = (e, values) => {
-        this.setState({ selectedSpocId: values.value })
+    selectSpoc = (e, value) => {
+        this.setState({ selectedSpocId: value })
     }
-    selectPriority = (e, values) => {
-        this.setState({ priorityData: values.label })
+    selectPriority = (e, value) => {
+        this.setState({ selectedPriority: value })
     }
-
     selectRemarks = e => {
         this.setState({ remarks: e.target.value })
-        console.log(e.target.value, "step 1");
     }
 
     handleSubmit(event) {
@@ -436,28 +388,51 @@ class CreateCandidate extends React.Component {
         let CandidatetestRecieved = new Date(this.state.testCompletedDate);
         let selectTestRecievedDate = moment(CandidatetestRecieved).format("YYYY-MM-DD HH:mm:ss");
 
+
+        let priorName = this.state.selectedPriority;
+        let priorValue = priorName.label.toString();
+
+        let recruitersId = this.state.selectedrecruiter;
+        let selectedRecruiterId = recruitersId.value.toString();
+
+        let sourceId = this.state.selectedSourceId;
+        let CandidateSelectedsrec = sourceId.value.toString();
+
+        let SelectedspocId = this.state.selectedSpocId;
+        let candidateSpocId = SelectedspocId.value.toString();
+
+        let SelectedNoticePeriod = this.state.selectedNPId;
+        let candidateNoticePeriod = SelectedNoticePeriod.label.toString();
+
+        let candidateCompanyId = this.state.selectedCompanyId;
+        let candidateCompany = candidateCompanyId.value.toString();
+
+        let candidateCurrentLocation = this.state.selectedLocationId;
+        let candidateCL = candidateCurrentLocation.value.toString();
+
+        let candidatePrimarySkill = this.state.selectedSkillId;
+        let candidatePrimarySkillId = candidatePrimarySkill.value.toString();
+
         const reqObj = {
             "candidate_name": this.state.username,
             "contact": this.state.contact,
             "email_id": this.state.email,
-            "priority": this.state.priorityData,
+            "priority": priorValue,
             "total_experience": this.state.te,
             "relevant_experience": this.state.re,
-            "current_company": this.state.selectedCompanyId,
-            "notice_period": this.state.selectedNPId,
-            "current_location": this.state.selectedLocationId,
+            "current_company": candidateCompany,
+            "notice_period": candidateNoticePeriod,
+            "current_location": candidateCL,
             "preferred_location": this.state.selectedPrefLocationId,
-
             "hr_test_taken": this.state.hratest,
-
             "testlink_received_dt": selectTestRecievedDate,
             "test_completed_dt": selectTestCompletedDate,
             "hr_score": this.state.hrScore,
             "hr_remarks": this.state.hraRemarks,
-            "source": this.state.selectedSourceId,
-            "spoc": this.state.selectedSpocId,
-            "recruiter": this.state.selectedrecruiter,
-            "primary_skill": this.state.selectedSkillId,
+            "source": CandidateSelectedsrec,
+            "spoc": candidateSpocId,
+            "recruiter": selectedRecruiterId,
+            "primary_skill": candidatePrimarySkillId,
             "secondary_skill": this.state.selectedAddSkillId,
             "remarks": this.state.remarks,
             "created_by": "1",
@@ -467,16 +442,55 @@ class CreateCandidate extends React.Component {
 
         }
 
-        this.props.createCandidateForm(reqObj).then((res) => {
-            if (res && res.errCode === 201) {
-                this.setState({ showToast: true, toastMsg: 'Candidate Successfully Added!' });
-            } else if (res && res.errCode === 404) {
-                alert(res.status)
-                this.setState({ showToast: true, toastMsg: res.status });
+        const prepopulatedData = {
+            "id": this.state.userId,
+            "candidate_name": this.state.username,
+            "contact": this.state.contact,
+            "email_id": this.state.email,
+            "priority": priorValue,
+            "total_experience": this.state.te,
+            "relevant_experience": this.state.re,
+            "current_company": candidateCompany,
+            "notice_period": candidateNoticePeriod,
+            "current_location": candidateCL,
+            "preferred_location": this.state.selectedPrefLocationId,
+            "hr_test_taken": this.state.hratest,
+            "testlink_received_dt": selectTestRecievedDate,
+            "test_completed_dt": selectTestCompletedDate,
+            "hr_score": this.state.hrScore,
+            "hr_remarks": this.state.hraRemarks,
+            "source": CandidateSelectedsrec,
+            "spoc": candidateSpocId,
+            "recruiter": selectedRecruiterId,
+            "primary_skill": candidatePrimarySkillId,
+            "secondary_skill": this.state.selectedAddSkillId,
+            "remarks": this.state.remarks,
+            "created_by": "1",
+            "created_date": "",
+            "updated_by": "1",
+            "updated_date": "",
+            // ...reqObj
+        }
 
-            }
-
-        })
+        if (this.props.location.data && this.props.location.data != '') {
+            this.props.updateCandidateForm(prepopulatedData).then((res) => {
+                if (res && res.errCode === 201) {
+                    this.setState({ showToast: true, toastMsg: 'Candidate Successfully Updated!' });
+                } else if (res && res.errCode === 404) {
+                    alert(res.status)
+                    this.setState({ showToast: true, toastMsg: res.status });
+                }
+            })
+        } else {
+            this.props.createCandidateForm(reqObj).then((res) => {
+                if (res && res.errCode === 201) {
+                    this.setState({ showToast: true, toastMsg: 'Candidate Successfully Added!' });
+                } else if (res && res.errCode === 404) {
+                    alert(res.status)
+                    this.setState({ showToast: true, toastMsg: res.status });
+                }
+            })
+        }
     }
 
     componentDidMount() {
@@ -492,9 +506,6 @@ class CreateCandidate extends React.Component {
     render() {
         const { classes, candidateDetails } = this.props;
         const { data } = this.props.location;
-        console.log(data, "inside create candidate");
-        console.log(this.state.testCompletedDate, "inside render");
-
 
         const {
             showToast,
@@ -515,7 +526,7 @@ class CreateCandidate extends React.Component {
             <div className={classes.root}>
 
                 <h5 className={classes.heading}>Create Candidate</h5>
-                <hr className={classes.headingDivide}></hr>
+                <hr className={classes.headingDivide} ref={form => this.form = form}></hr>
                 <form
                     className={classes.container}
                     onSubmit={this.handleSubmit.bind(this)}
@@ -530,11 +541,12 @@ class CreateCandidate extends React.Component {
                                 variant="outlined"
                                 margin="dense"
                                 label="Candidate Name"
-                                style={{ margin: 8 }}
+                                // style={{ margin: 8 }}
                                 placeholder="Candidate Name"
                                 fullWidth
                                 margin="normal"
                                 InputLabelProps={{ shrink: true }}
+                                inputProps={{ style: { height: 5 } }}
                                 defaultValue={this.state.username}
                                 onChange={this.candidateName}
                             />
@@ -548,11 +560,12 @@ class CreateCandidate extends React.Component {
                                 variant="outlined"
                                 margin="dense"
                                 label="Contact"
-                                style={{ margin: 8 }}
+                                // style={{ margin: 8 }}
                                 placeholder="Contact"
                                 margin="normal"
                                 fullWidth
                                 InputLabelProps={{ shrink: true }}
+                                inputProps={{ style: { height: 5 } }}
                                 defaultValue={this.state.contact}
                                 onChange={this.candidateContact}
                                 required
@@ -570,35 +583,33 @@ class CreateCandidate extends React.Component {
                                 margin="normal"
                                 fullWidth
                                 InputLabelProps={{ shrink: true }}
+                                inputProps={{ style: { height: 5 } }}
                                 defaultValue={this.state.email}
                                 onChange={this.candidateEmail}
                                 required
                             />
                         </Grid>
                         <Grid item xs={6} className={classes.gridAlign}>
-                            <div>
-                                <Autocomplete
-                                    options={skills}
-                                    getOptionLabel={option => option.label}
-                                    defaultValue={this.state.skills[0]}
+                            <Autocomplete
+                                options={skills}
+                                getOptionLabel={option => option.label}
+                                defaultValue={this.state.priSkills[0]}
 
-                                    onChange={this.selectSkill}
-                                    renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            variant="standard"
-                                            label={"Primary Skills"}
-                                            placeholder="Select"
-                                            margin="normal"
-                                            fullWidth
-                                            fullWidth
-                                            margin="dense"
-                                            variant="outlined"
-                                            required
-                                        />
-                                    )}
-                                />
-                            </div>
+                                onChange={this.selectSkill}
+                                renderInput={params => (
+                                    <TextField
+                                        {...params}
+                                        variant="standard"
+                                        label={"Primary Skills"}
+                                        placeholder="Select"
+                                        margin="dense"
+                                        fullWidth
+                                        margin="dense"
+                                        variant="outlined"
+                                        required
+                                    />
+                                )}
+                            />
                         </Grid>
                         <Grid item xs={6} className={classes.gridAlign}>
                             <div>
@@ -606,7 +617,7 @@ class CreateCandidate extends React.Component {
                                     multiple
                                     options={skills}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.skills}
+                                    defaultValue={this.state.secSkills}
                                     onChange={this.selectSecondarySkill}
                                     renderInput={params => (
                                         <TextField
@@ -630,11 +641,12 @@ class CreateCandidate extends React.Component {
                                 variant="outlined"
                                 margin="dense"
                                 label="Total Experience"
-                                style={{ margin: 8 }}
+                                // style={{ margin: 8 }}
                                 placeholder="Total Experience"
                                 margin="normal"
                                 fullWidth
                                 InputLabelProps={{ shrink: true }}
+                                inputProps={{ style: { height: 5 } }}
                                 defaultValue={this.state.te}
                                 onChange={this.totalExperience}
                                 required
@@ -651,6 +663,7 @@ class CreateCandidate extends React.Component {
                                 margin="normal"
                                 fullWidth
                                 InputLabelProps={{ shrink: true }}
+                                inputProps={{ style: { height: 5 } }}
                                 defaultValue={this.state.re}
                                 onChange={this.relevantExperience}
                                 required
@@ -661,7 +674,7 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={listCompany}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.listCompany[0]}
+                                    defaultValue={this.state.selectedCompanyId}
                                     onChange={this.selectCompany}
                                     renderInput={params => (
                                         <TextField
@@ -670,7 +683,6 @@ class CreateCandidate extends React.Component {
                                             label="Current Company"
                                             placeholder="Select"
                                             margin="normal"
-                                            fullWidth
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -685,7 +697,7 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={location}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.location[0]}
+                                    defaultValue={this.state.selectedLocationId}
                                     onChange={this.selectLocation}
                                     renderInput={params => (
                                         <TextField
@@ -731,7 +743,7 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={this.np}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.noticePeriod[0]}
+                                    defaultValue={this.state.selectedNPId}
 
                                     onChange={this.selectNP}
                                     renderInput={params => (
@@ -753,17 +765,17 @@ class CreateCandidate extends React.Component {
                         </Grid>
                         <Grid item xs={6} className={classes.gridAlign}>
                             <FormLabel component="legend" >Hacker rank test taken
-                                <RadioGroup row aria-label="position" name="position" onChange={this.onChangeValue}>
+                                <RadioGroup row aria-label="position" name="position" onChange={this.onChangeValue} defaultValue={this.state.hratest}>
                                     <FormControlLabel
-                                        defaultValue={this.state.isHanRankerTest}
-                                        value="Yes"
+                                        // defaultValue={this.state.isHanRankerTest}
+                                        value="0"
                                         control={<Radio color="primary" />}
                                         label="Yes"
                                         labelPlacement="Yes"
                                     />
                                     <FormControlLabel
                                         defaultValue={this.state.isHanRankerTest}
-                                        value="No"
+                                        value="1"
                                         control={<Radio color="primary" />}
                                         label="No"
                                         labelPlacement="No"
@@ -776,7 +788,7 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={source}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.source[0]}
+                                    defaultValue={this.state.selectedSourceId}
                                     onChange={this.selectSource}
                                     renderInput={params => (
                                         <TextField
@@ -829,6 +841,7 @@ class CreateCandidate extends React.Component {
                                             fullWidth
                                             margin="normal"
                                             InputLabelProps={{ shrink: true }}
+                                            inputProps={{ style: { height: 5 } }}
                                             defaultValue={this.state.hrScore}
                                             onChange={this.HackerRankScore}
                                             required={true}
@@ -847,6 +860,7 @@ class CreateCandidate extends React.Component {
                                             fullWidth
                                             margin="normal"
                                             InputLabelProps={{ shrink: true }}
+                                            inputProps={{ style: { height: 5 } }}
                                             defaultValue={this.state.hraRemarks}
                                             onChange={this.hrRemarks}
                                             required={true}
@@ -879,7 +893,7 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={spoc}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.spoc[0]}
+                                    defaultValue={this.state.selectedSpocId}
                                     onChange={this.selectSpoc}
                                     renderInput={params => (
                                         <TextField
@@ -902,7 +916,27 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={recruiter}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.recruiter[0]}
+                                    defaultValue={this.state.selectedrecruiter}
+
+                                    onChange={this.selectRecruiter}
+                                    renderInput={params => (
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            label={"Recruiter"}
+                                            placeholder="Select"
+                                            margin="dense"
+                                            fullWidth
+                                            margin="dense"
+                                            variant="outlined"
+                                            required
+                                        />
+                                    )}
+                                />
+                                {/* <Autocomplete
+                                    options={recruiter}
+                                    getOptionLabel={option => option.label}
+                                    defaultValue={recruiter[0]}
                                     onChange={this.selectRecruiter}
                                     renderInput={params => (
                                         <TextField
@@ -918,7 +952,7 @@ class CreateCandidate extends React.Component {
                                             required
                                         />
                                     )}
-                                />
+                                /> */}
                             </div>
                         </Grid>
                         <Grid item xs={6} className={classes.gridAlign}>
@@ -926,7 +960,7 @@ class CreateCandidate extends React.Component {
                                 <Autocomplete
                                     options={this.priorityList}
                                     getOptionLabel={option => option.label}
-                                    defaultValue={this.state.priorityData[0]}
+                                    defaultValue={this.state.selectedPriority}
                                     onChange={this.selectPriority}
                                     renderInput={params => (
                                         <TextField
@@ -955,6 +989,7 @@ class CreateCandidate extends React.Component {
                                 fullWidth
                                 margin="normal"
                                 InputLabelProps={{ shrink: true }}
+                                inputProps={{ style: { height: 5 } }}
                                 defaultValue={this.state.remarks}
                                 candidateRemarks
                                 onChange={this.selectRemarks}

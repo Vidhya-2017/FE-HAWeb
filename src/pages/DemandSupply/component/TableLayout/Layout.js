@@ -258,8 +258,8 @@ export class Layout extends Component {
         selectedRows: []
       })
     }
-    // const tp1Panels = nextProps.panels;
-    // this.setState({ tp1Panels })
+    const tp1Panels = nextProps.panels;
+    this.setState({ tp1Panels })
   }
 
   getCandiddateStatus = (status) => {
@@ -427,6 +427,9 @@ export class Layout extends Component {
     })
   }
 
+  addCandidate = () => {
+    this.props.history.push('/createCandidate')
+  }
   navToCandidate = () => {
     const { selectedRows, candidateResult } = this.state
     let candidateIds = selectedRows.map((data, i) => {
@@ -657,25 +660,25 @@ export class Layout extends Component {
           variant="contained"
           color="primary"
           size="small"
-          disabled={!enableEditIcon}
-          className={classes.button}
-          onClick={this.navToCandidate}
-          candidateResult={this.state.candidateResult}
+          onClick={this.addCandidate}
+          className={classes.button}  
         >
           Add
         </Button>
 
 
-        {/* <Button
+        <Button
           variant="contained"
           color="primary"
           disabled={!enableEditIcon}
           size="small"
           className={classes.button}
           endIcon={<EditIcon />}
+          candidateResult={this.state.candidateResult}
+          onClick={this.navToCandidate}
         >
           Edit
-        </Button> */}
+        </Button>
         <Button
           variant="contained"
           color="secondary"
