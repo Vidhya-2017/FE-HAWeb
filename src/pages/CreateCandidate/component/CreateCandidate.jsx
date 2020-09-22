@@ -1,21 +1,13 @@
 import React from 'react';
-
-//import Select from 'react-select';
-// import { Modal, FormControl, InputGroup, Row, Col, ListGroup, Form, Toast, Button } from 'react-bootstrap';
 import moment from 'moment';
 import '../scss/CreateCandidate.scss';
-import { Paper, Grid, withStyles, Typography, Dialog, DialogTitle, TextField, DialogActions, DialogContent, Button, Select } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import MenuItem from "@material-ui/core/MenuItem";
+import {  Grid, withStyles,  TextField, Button } from '@material-ui/core';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
-import Input from "@material-ui/core/Input";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Modal, Toast } from 'react-bootstrap';
-
-
+import { Toast } from 'react-bootstrap';
 
 const styles = (theme) => ({
     root: {
@@ -101,7 +93,7 @@ class CreateCandidate extends React.Component {
         // this.baseState = this.state 
     }
     componentWillMount() {
-        if (this.props.location.data && this.props.location.data != '') {
+        if (this.props.location.data && this.props.location.data !== '') {
 
             const primary_skill = this.props.location.data.primary_skills.map(d => ({
                 "value": d.id,
@@ -172,7 +164,6 @@ class CreateCandidate extends React.Component {
             const totalExperience = this.props.location.data.total_experience;
             const relevantExperience = this.props.location.data.relevant_experience;
             const testCompleteddt = this.props.location.data.test_completed_dt;
-            const testShareddt = this.props.location.data.testlink_received_dt;
             const candidatehrScore = this.props.location.data.hr_score;
             const candidatehrRemarks = this.props.location.data.hr_remarks;
             const shareddate = moment(testCompleteddt).format("YYYY-MM-DD");
@@ -328,11 +319,6 @@ class CreateCandidate extends React.Component {
     }
 
     selectSecondarySkill = (e, values) => {
-
-        let skillIds = values.map((data, i) => {
-            return data.value
-        });
-        let SecondarySkillIds = skillIds.toString();
         this.setState({
             selectedAddSkillId: values
         });
@@ -472,7 +458,7 @@ class CreateCandidate extends React.Component {
             // ...reqObj
         }
 
-        if (this.props.location.data && this.props.location.data != '') {
+        if (this.props.location.data && this.props.location.data !== '') {
             this.props.updateCandidateForm(prepopulatedData).then((res) => {
                 if (res && res.errCode === 201) {
                     this.setState({ showToast: true, toastMsg: 'Candidate Successfully Updated!' });
@@ -504,22 +490,17 @@ class CreateCandidate extends React.Component {
     }
 
     render() {
-        const { classes, candidateDetails } = this.props;
-        const { data } = this.props.location;
-
+        const { classes } = this.props;
         const {
             showToast,
             toastMsg,
-            selectedOption,
             isHanRankerTest,
             skills,
             listCompany,
             location,
-            np,
             source,
             spoc,
             recruiter,
-            priority
         } = this.state;
 
         return (
@@ -539,9 +520,7 @@ class CreateCandidate extends React.Component {
                                 name="username"
                                 required
                                 variant="outlined"
-                                margin="dense"
                                 label="Candidate Name"
-                                // style={{ margin: 8 }}
                                 placeholder="Candidate Name"
                                 fullWidth
                                 margin="normal"
@@ -558,7 +537,6 @@ class CreateCandidate extends React.Component {
                                 type="number"
                                 name="contact"
                                 variant="outlined"
-                                margin="dense"
                                 label="Contact"
                                 // style={{ margin: 8 }}
                                 placeholder="Contact"
@@ -576,7 +554,6 @@ class CreateCandidate extends React.Component {
                                 type="email"
                                 name="email"
                                 variant="outlined"
-                                margin="dense"
                                 id="formHorizontalEmail"
                                 label="Email"
                                 placeholder="Email"
@@ -599,12 +576,10 @@ class CreateCandidate extends React.Component {
                                 renderInput={params => (
                                     <TextField
                                         {...params}
-                                        variant="standard"
                                         label={"Primary Skills"}
                                         placeholder="Select"
                                         margin="dense"
                                         fullWidth
-                                        margin="dense"
                                         variant="outlined"
                                         required
                                     />
@@ -622,12 +597,10 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label={"Secondary Skills"}
                                             placeholder="Select"
-                                            margin="normal"
-                                            fullWidth
                                             margin="dense"
+                                            fullWidth
                                             variant="outlined"
                                         />
                                     )}
@@ -639,9 +612,7 @@ class CreateCandidate extends React.Component {
                                 type="number"
                                 name="te"
                                 variant="outlined"
-                                margin="dense"
                                 label="Total Experience"
-                                // style={{ margin: 8 }}
                                 placeholder="Total Experience"
                                 margin="normal"
                                 fullWidth
@@ -657,7 +628,6 @@ class CreateCandidate extends React.Component {
                                 type="number"
                                 name="re"
                                 variant="outlined"
-                                margin="dense"
                                 label="Relevant Experience"
                                 placeholder="Relevant Experience"
                                 margin="normal"
@@ -679,12 +649,10 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label="Current Company"
                                             placeholder="Select"
-                                            margin="normal"
-                                            fullWidth
                                             margin="dense"
+                                            fullWidth
                                             variant="outlined"
                                             required
                                         />
@@ -702,10 +670,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label="Current Location"
                                             placeholder="Select"
-                                            margin="normal"
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -726,10 +692,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label="Preferred Location"
                                             placeholder="Select"
-                                            margin="normal"
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -749,11 +713,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label={"Notice period"}
                                             placeholder="Select"
-                                            margin="normal"
-                                            fullWidth
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -793,10 +754,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label="Source"
                                             placeholder="Select"
-                                            margin="normal"
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -834,7 +793,6 @@ class CreateCandidate extends React.Component {
                                         <TextField
                                             type="text"
                                             variant="outlined"
-                                            margin="dense"
                                             label="Hacker Rank Score"
                                             style={{ margin: 8 }}
                                             placeholder="Hacker Rank Score"
@@ -853,7 +811,6 @@ class CreateCandidate extends React.Component {
                                         <TextField
                                             type="text"
                                             variant="outlined"
-                                            margin="dense"
                                             label="Hacker Rank Remarks"
                                             style={{ margin: 8 }}
                                             placeholder="Hacker Rank Remarks"
@@ -898,10 +855,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label="D&A Spoc"
                                             placeholder="Select"
-                                            margin="normal"
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -922,10 +877,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label={"Recruiter"}
                                             placeholder="Select"
-                                            margin="dense"
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -933,26 +886,6 @@ class CreateCandidate extends React.Component {
                                         />
                                     )}
                                 />
-                                {/* <Autocomplete
-                                    options={recruiter}
-                                    getOptionLabel={option => option.label}
-                                    defaultValue={recruiter[0]}
-                                    onChange={this.selectRecruiter}
-                                    renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Recruiter"
-                                            placeholder="Select"
-                                            margin="normal"
-                                            fullWidth
-                                            fullWidth
-                                            margin="dense"
-                                            variant="outlined"
-                                            required
-                                        />
-                                    )}
-                                /> */}
                             </div>
                         </Grid>
                         <Grid item xs={6} className={classes.gridAlign}>
@@ -965,10 +898,8 @@ class CreateCandidate extends React.Component {
                                     renderInput={params => (
                                         <TextField
                                             {...params}
-                                            variant="standard"
                                             label="Priority"
                                             placeholder="Select"
-                                            margin="normal"
                                             fullWidth
                                             margin="dense"
                                             variant="outlined"
@@ -983,7 +914,6 @@ class CreateCandidate extends React.Component {
                                 type="text"
                                 name="remarks"
                                 variant="outlined"
-                                margin="dense"
                                 label="Remarks"
                                 placeholder="Enter Remarks"
                                 fullWidth

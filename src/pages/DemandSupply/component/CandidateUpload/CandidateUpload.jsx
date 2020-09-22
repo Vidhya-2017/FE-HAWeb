@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import {  Alert, Modal, Toast } from 'react-bootstrap';
+import { Toast } from 'react-bootstrap';
 import XLSX from 'xlsx';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Select from 'react-select';
-// import SelectStyles from '../../../../common/SelectStyles';
 import SelectStyles from '../../../../common/SelectStyles';
 import ArrowDown from '../../../../common/icons/ArrowDown';
 import ArrowUp from '../../../../common/icons/ArrowUp';
 import MaterialTable from "material-table";
-import { withStyles, Button, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogTitle, TablePagination } from '@material-ui/core';
+import { withStyles, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 
 // import '../../scss/CandidateUpload.scss';
 const styles = (theme) => ({

@@ -1,7 +1,6 @@
 import React from 'react';
 import Highcharts from 'highcharts';
 import { withStyles } from "@material-ui/core";
-import moment from 'moment';
 import DemandDashoardStyles from './DemandDashoardStyles';
 
 class CombinedChart extends React.Component {

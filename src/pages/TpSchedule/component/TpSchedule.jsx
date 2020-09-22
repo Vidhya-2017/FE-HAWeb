@@ -243,8 +243,6 @@ export class TpSchedule extends Component {
 
   renderTP1TableHeader = () => {
     const { sortField, sortType } = this.state
-
-
     return (
       <TableRow style={{ backgroundColor: '#E0E0E0', color: '#000000', padding: '15px 15px' }} >
         <Cell cellType='text' sortField={sortField} sortType={sortType} handleSort={this._handleSort} sort={false} name='panelName' >Panel Name</Cell>

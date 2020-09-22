@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { Paper, Table, TableBody, FormControlLabel, Toolbar, IconButton, Typography, TableRow, TableCell, Switch, TableContainer, TableHead, TablePagination } from '@material-ui/core';
+import { Paper, Table, TableBody, FormControlLabel, Toolbar, IconButton, Typography, TableRow, TableCell, Switch, TableContainer, TablePagination } from '@material-ui/core';
 import ViewColumns from './ViewColumns';
 import EnhancedTableHead from './EnhancedTableHead';
 import CandidateStatusCoulmn from './CandidateStatusCoulmn';

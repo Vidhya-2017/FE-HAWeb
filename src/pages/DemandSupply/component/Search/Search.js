@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, withStyles, Container, MenuItem, FormControl, IconButton, InputBase, Select, InputLabel } from '@material-ui/core';
+import { Paper, withStyles, MenuItem, FormControl, IconButton, InputBase, Select, InputLabel } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 // import CandidateUpload from '../CandidateUpload/CandidateUpload'
 import CandidateUpload from '../CandidateUpload/CandidateUpload'

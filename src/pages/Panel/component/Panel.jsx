@@ -196,9 +196,9 @@ class Panel extends React.Component {
         field: "panel_category",
         editComponent: props => {
           console.log(props.rowData.panel_category)
-          const defaultValueSelect= (props.rowData.panel_category.value)?props.rowData.panel_category.value:props.rowData.panel_category;
+          const defaultValueSelect = (props.rowData.panel_category.value) ? props.rowData.panel_category.value : props.rowData.panel_category;
           console.log(defaultValueSelect)
-           const defaultValuePanelCat = panelCategoryOptions.filter(panel => defaultValueSelect.includes(panel.value))
+          const defaultValuePanelCat = panelCategoryOptions.filter(panel => defaultValueSelect.includes(panel.value))
           console.log(defaultValuePanelCat)
           return (
             <Select
@@ -326,8 +326,8 @@ class Panel extends React.Component {
       until_date: newData.until_date,
       recurrence_pattern: newData.recurrence_pattern,
       recurrence_days: newData.recurrence_days,
-      panel_category:(newData.panel_category.value)?newData.panel_category.value:newData.panel_category,
-      
+      panel_category: (newData.panel_category.value) ? newData.panel_category.value : newData.panel_category,
+
     }
     this.props.editPanel(reqObj).then(response => {
       if (response && response.errCode === 201) {
@@ -370,7 +370,7 @@ class Panel extends React.Component {
   handleModalSubmit = () => {
     const { formValues, startTime, endTime, duration, recurrencePattern, panelCat, untilDate, recurrenceDays } = this.state;
     const skillIds = this.state.skills.map(skill => skill.skillId);
-    const recurrenceDaysArr = this.state.recurrenceDays.map(item => item.value)
+    const recurrenceDaysArr = recurrenceDays.map(item => item.value)
     const reqObj = {
       panel_name: formValues.name.value,
       sap_id: formValues.sapid.value,
