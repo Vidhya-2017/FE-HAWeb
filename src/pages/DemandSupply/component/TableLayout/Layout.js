@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles, Typography, Button } from '@material-ui/core';
-import MaterialTable from "material-table";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ColumnArr from './ColumnFields';
@@ -8,6 +7,7 @@ import Search from '../Search/Search'
 import CustomisedMenu from '../StyledMenu/StyledMenu';
 import CustomiseView from '../CustomiseView/CustomiseView';
 import CustomiseColumn from '../CustomiseColumn/CustomiseColumn';
+import CandidateList from './CandidateList';
 
 const styles = theme => ({
   root: {
@@ -426,9 +426,17 @@ export class Layout extends Component {
     }
   }
 
-  render() {
-    const { classes, getCandidateData } = this.props
-    const { actualData, columnFields, enableEditIcon, enableDeleteIcon } = this.state
+  selectCandidate = (rows) => {
+    console.log('---rows--', rows);
+    this.setState({
+      enableEditIcon: rows.length === 1,
+      enableDeleteIcon: rows.length > 0,
+      selectedRows: rows,
+    })
+  }
+   render() {
+    const { classes, getCandidateData } = this.props;
+    const { actualData, columnFields, enableEditIcon, enableDeleteIcon } = this.state;
     return (
       <React.Fragment>
         <Typography variant='h4'>Candidate List</Typography>
@@ -515,48 +523,7 @@ export class Layout extends Component {
           classes={classes}
           setViewType={this.applyCustomColumn}
         />
-
-        <MaterialTable
-          // title="Candidate List"
-          columns={columnFields}
-          data={actualData}
-          style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
-          options={{
-            search: false,
-            toolbar: false,
-            selection: true,
-            actionsColumnIndex: -1,
-            pageSize: 10,
-            // maxBodyHeight : '2', 
-            pageSizeOptions: [10, 20],
-            draggable: false,
-            // maxBodyHeight:500,
-            selectionProps: {
-              color: 'primary',
-            },
-            sorting: true,
-            headerStyle: {
-              backgroundColor: '#E0E0E0',
-              color: '#000',
-              padding: '5px 10px 5px 5px',
-              minWidth: 100,
-            },
-            cellStyle: {
-              padding: '5px 10px 5px 5px',
-            },
-            rowStyle: {
-              fontSize: 14,
-              height: 20
-            }
-          }}
-          onSelectionChange={(rows) => {
-            this.setState({
-              enableEditIcon: rows.length === 1,
-              enableDeleteIcon: rows.length > 0,
-              selectedRows: rows,
-            })
-          }}
-        />
+        <CandidateList selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData}/>
       </React.Fragment>
     );
   }
