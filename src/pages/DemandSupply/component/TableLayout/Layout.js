@@ -351,10 +351,8 @@ export class Layout extends Component {
         const candidateDetails = res.arrRes;
         this.setState({
           candidateResult: candidateDetails
-        }, () => { console.log(this.state.candidateResult, "candidate details") })
-
+        })
         this.props.history.push({ pathname: '/createCandidate', data: candidateDetails })
-
       }
 
     })
@@ -386,7 +384,6 @@ export class Layout extends Component {
 
 
   setViewType = (data) => {
-    console.log(data)
     let columnView = [];
     switch (data.id) {
       case 1:
@@ -427,13 +424,13 @@ export class Layout extends Component {
   }
 
   selectCandidate = (rows) => {
-    console.log('---rows--', rows);
     this.setState({
       enableEditIcon: rows.length === 1,
       enableDeleteIcon: rows.length > 0,
       selectedRows: rows,
     })
   }
+
    render() {
     const { classes, getCandidateData } = this.props;
     const { actualData, columnFields, enableEditIcon, enableDeleteIcon } = this.state;

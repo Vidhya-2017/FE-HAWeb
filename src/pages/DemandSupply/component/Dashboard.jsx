@@ -75,7 +75,7 @@ export class Login extends React.Component {
 
         this.setState({
           panelList: users
-        }, () => { console.log(this.state.panelList, " -- panels List ") })
+        })
 
       }
     })
@@ -86,8 +86,6 @@ export class Login extends React.Component {
       if (res && res.errCode === 201) {
         this.setState({
           showToast: true, toastMsg: 'Status Updated Successfully!'
-        }, () => {
-          console.log(this.state.toastMsg, "Status Updated succesfully");
         });
       } else if (res && res.errCode === 400 ) {
         this.setState({
@@ -102,8 +100,6 @@ export class Login extends React.Component {
       if (res && res.errCode === 201) {
         this.setState({
           showToast: true, toastMsg: 'Status Updated Successfully!'
-        }, () => {
-          console.log(this.state.toastMsg, " status Updated succesfully");
         });
         
       } else if (res && res.errCode === 400 ) {
@@ -119,8 +115,6 @@ export class Login extends React.Component {
       if (res && res.errCode === 201) {
         this.setState({
           showToast: true, toastMsg: 'TP1 Status Scheduled Successfully!'
-        }, () => {
-          console.log(this.state.toastMsg, "tp1 status added succesfully");
         });
       } else if (res && res.errCode === 404 && res.errCode === 400) {
         this.setState({

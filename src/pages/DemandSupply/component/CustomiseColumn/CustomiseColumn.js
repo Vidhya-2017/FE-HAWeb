@@ -26,32 +26,10 @@ const StyledMenu = withStyles({
   />
 ));
 
-// const StyledMenu = withStyles({
-//   paper: {
-//       border: '1px solid #d3d4d5',
-//   },
-// })((props) => (
-//   <Menu
-//       elevation={0}
-//       getContentAnchorEl={null}
-//       anchorOrigin={{
-//           vertical: 'bottom',
-//           horizontal: 'center',
-//       }}
-//       transformOrigin={{
-//           vertical: 'top',
-//           horizontal: 'center',
-//       }}
-//       {...props}
-//   />
-// ));
 const CustomiseColumn = (props) => {
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [columns, setColumns] = React.useState(props.columns);
   const { classes, buttonName, disabled } = props
-  // console.log(columns)
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };

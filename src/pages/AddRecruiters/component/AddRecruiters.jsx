@@ -79,7 +79,6 @@ class AddRecruiters extends React.Component {
 
   componentDidMount() {
     this.props.getRecruiter().then((response) => {
-      console.log(response)
       if (response && response.errCode === 200) {
         this.setState({
           recruiterListVal: response.arrRes,
@@ -129,7 +128,6 @@ class AddRecruiters extends React.Component {
     }
     this.props.editRecruiter(reqObj).then(response => {
       if (response && response.errCode === 201) {
-        console.log("responseedit", response)
         const data = [...this.state.recruiterListVal];
         data[data.indexOf(oldData)] = updatedScale;
         this.setState(prevState => ({

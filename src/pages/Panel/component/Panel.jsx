@@ -195,11 +195,8 @@ class Panel extends React.Component {
         title: "Panel Category",
         field: "panel_category",
         editComponent: props => {
-          console.log(props.rowData.panel_category)
           const defaultValueSelect = (props.rowData.panel_category.value) ? props.rowData.panel_category.value : props.rowData.panel_category;
-          console.log(defaultValueSelect)
           const defaultValuePanelCat = panelCategoryOptions.filter(panel => defaultValueSelect.includes(panel.value))
-          console.log(defaultValuePanelCat)
           return (
             <Select
               placeholder="Panel Category"

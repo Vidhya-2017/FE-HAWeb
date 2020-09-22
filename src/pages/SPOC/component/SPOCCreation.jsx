@@ -79,7 +79,6 @@ class SPOCCreation extends React.Component {
 
   componentDidMount() {
     this.props.getSPOC().then((response) => {
-      console.log(response)
       if (response && response.arrRes) {
         this.setState({
           spocListVal: response.arrRes,

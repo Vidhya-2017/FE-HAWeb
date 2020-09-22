@@ -60,7 +60,6 @@ class SquadFormation extends React.Component {
     const reqObj = { eventID: id };
     this.props.getSquadList(reqObj).then((response) => {
       if (response && response.arrRes) {
-        console.log(response.arrRes);
         const squadList = response.arrRes.map(list => {
           return {
             value: list.ID,
@@ -180,8 +179,6 @@ class SquadFormation extends React.Component {
       CreatedBy: this.props.userDetails.user_id,
       UpdatedBy: this.props.userDetails.user_id
     }
-
-    console.log(this.CandidateIDs, 'reqObj---', reqObj);
     this.props.squadCandidatesInsert(reqObj).then(response => {
       if (response && response.errCode === 200) {
         this.setState({

@@ -513,7 +513,7 @@ class CreateCandidate extends React.Component {
                     onSubmit={this.handleSubmit.bind(this)}
                     autoComplete="off"
                 >
-                    <Grid container spacing={3}>
+                    <Grid container spacing={0}>
                         <Grid item xs={12} className={classes.gridAlign} >
                             <TextField
                                 type="CandidateName"
@@ -531,7 +531,7 @@ class CreateCandidate extends React.Component {
                             />
                         </Grid>
                     </Grid>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={0}>
                         <Grid item xs={6} className={classes.gridAlign}>
                             <TextField
                                 type="number"
@@ -768,7 +768,7 @@ class CreateCandidate extends React.Component {
 
 
                         {isHanRankerTest &&
-                            <Grid container spacing={3}>
+                            <Grid container spacing={0}>
                                 <Grid item xs={6} className={classes.gridAlign}>
                                     <div>
                                         <TextField
