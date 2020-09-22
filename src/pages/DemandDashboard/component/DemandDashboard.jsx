@@ -11,9 +11,6 @@ import CombinedChart from './CombinedChart';
 import SelectStyles from '../../../common/SelectStyles';
 
 const categoryList = [{ value: 0, label: 'Completed' }, { value: 1, label: 'Selected' }, { value: 2, label: 'Rejected' }, { value: 3, label: 'InProgress' }]
-const selectedIDs = ["3", "7", "21", "15"];
-const rejectedIDs = ["4", "8", "10", "16"];
-const inProgressIDs = ["1", "2", "5", "6", "11", "21"];
 
 class DemandDashboard extends React.Component {
   constructor(props) {
@@ -31,8 +28,13 @@ class DemandDashboard extends React.Component {
       tableTitle: 'TP1 Completed'
     }
     this.demandReport = [];
+    this.candidateTable = React.createRef();
   }
   chartValue = (value) => {
+    this.candidateTable.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    });
     if (value.label === 'Others') {
       this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.label });
     } else {
@@ -237,9 +239,9 @@ class DemandDashboard extends React.Component {
           </Grid>
         </Grid>
         {tableRowData.length > 0 &&
-          <Fragment>
+          <div ref={this.candidateTable}>
             <CandidateStatusTable showAllData={this.showAllData} rowData={tableRowData} tableTitle={tableTitle} />
-          </Fragment>}
+          </div>}
       </Paper>
     )
   }

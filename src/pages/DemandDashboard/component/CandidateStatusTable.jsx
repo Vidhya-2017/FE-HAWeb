@@ -88,6 +88,12 @@ const CandidateStatusTable = (props) => {
     setRowData(props.rowData)
   }, [props.rowData]);
 
+  useEffect(() => {
+    if(showAll) {
+      setShowAll(showAll => !showAll);
+    }
+  }, [props.tableTitle]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -183,9 +189,9 @@ const CandidateStatusTable = (props) => {
                 .map((row, index) => {
                   return (
                     <TableRow key={row.email_id}>
-                      {CandidateStatusCoulmn.map(col =>
-                        <Fragment key={row[col.id]}>
-                          {!col.hide && <TableCell key={row[col.id]}>{col.id === 'preferred_location' ? row[col.id].split(',').join(', ') : row[col.id]}</TableCell>}
+                      {CandidateStatusCoulmn.map((col, index) =>
+                        <Fragment key={`${row[col.id]}${index}`}>
+                          {!col.hide && <TableCell>{col.id === 'preferred_location' ? row[col.id].split(',').join(', ') : row[col.id]}</TableCell>}
                         </Fragment>
                       )}
                     </TableRow>
