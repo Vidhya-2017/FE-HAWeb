@@ -73,31 +73,55 @@ class CandidateUpload extends Component {
   }
 
   submitSheet =async () => {
-      let Candidates = this.state.data
-      const reqobj = Candidates.map( list => 
+      let Candidates = this.state.data;
+      const reqobjData = Candidates.map( list => 
         {
             return {
-                candidate_name:list.candidate_name,
-                email_id:list.email_id,
-                contact :list.contact,
+                candidate_name:list.candidate_name || "",
+                email_id:list.email_id || "",
+                contact :list.contact || "",
+                total_experience:list.total_experience || "",
+                relevant_experience:list.relevant_experience || "",
+                current_company:list.current_company || "",
+                notice_period:list.notice_period || "",
+                current_location:list.current_location || "",
+                preferred_location:list.preferred_location || "",
+                hr_test_taken:list.hr_test_taken || "",    
+                testlink_received_dt:list.testlink_received_dt || "",
+                test_completed_dt:list.test_completed_dt || "",
+                hr_score:list.hr_score || "",
+                hr_remarks: list.hr_remarks || "",
+                source:list.source ||  "",
+                spoc:list.spoc ||  "",
+                recruiter:list.recruiter ||  "",
+                primary_skill:list.primary_skill ||  "",
+                secondary_skill:list.secondary_skill ||  "",
+                created_by:1,
+
                 feedback :[
                     {
-                        contact :list.contact, 
+                        interview_level: list.interview_level || "",
+                        status_name: list.status_name|| "",
+                        interview_schedule_dt: list.interview_schedule_dt || "",
+                        created_by: 1
                     }
                 ]
             }
         }
  
         )
-        // await this.props.sendCandidateList(reqobj);
+        const reqobj = {json_lists : reqobjData}
+        await this.props.sendCandidateList(reqobj);
+        this.setState({ data: [], columnFields: [], file: {}, sheetOptions: []})
         
   }
 
-  handleClose = () => this.setState({ showModal: false, selectedEvent: null, selectedEventData: {} });
+  handleClose = () => this.setState({ showModal: false, selectedEvent: null, selectedEventData: {} , Candidates: ''});
 
   handleChange = selectedSheet => {
     const { file } = this.state;
     this.setState({ selectedSheet: selectedSheet, data: [], cols: [] });
+    this.columnFields = [];
     const reader = new FileReader();
     const rABS = !!reader.readAsBinaryString;
     reader.onload = (e) => {
@@ -111,62 +135,37 @@ class CandidateUpload extends Component {
         defval: '',
         blankrows: false
       });
-      const customHeaderColumns = ['EmailId', 'ContactNo', 'EmpName'];
-      const customColText = [
-        {
-          value: 'EmpName',
-          text: 'Emp. Name'
-        },
-        {
-          value: 'EmailId',
-          text: 'Email Id'
-        },
-        {
-          value: 'ContactNo',
-          text: 'Contact No'
-        },
-        {
-          value: 'RelevantExperience',
-          text: 'Rel Exp.'
-        },
-        {
-          value: 'AdditionalSkill',
-          text: 'Additional Skill'
-        }
-      ];
-
-      const getColText = (value) => {
-        const customisedCol = customColText.find(col => col.value === value);
-        if (!customisedCol) {
-          return value;
-        } else {
-          return customisedCol.text;
-        }
-      }
-
-      const hiddenColumns = ['candidate_status', 'notice_period', 'current_location', 'preferred_location']
       if (sheetData.length > 0) {
-        sheetData[0].forEach(col => {
-          if (hiddenColumns.indexOf(col) === -1) {
-            columns.push({
-                field: col.toString(),
-              text: getColText(col),
-              sort: true,
-              filter: false,
-              headerClasses: customHeaderColumns.indexOf(col) >= 0 ? 'customColHeader' : 'colHeader',
-              sortCaret: (order, column) => {
-                if (!order) return (<span className='arrowDesign'><ArrowUp /><ArrowDown /></span>);
-                else if (order === 'asc') return (<span className='arrowDesign'><ArrowUp /></span>);
-                else if (order === 'desc') return (<span className='arrowDesign'><ArrowDown /></span>);
-                return null;
-              }
-            });
+        columns = sheetData[0].map(col => {  
+          return {
+            dataField: col.toString().trim(),
+            text: col,
+            sort: true,
+            filter: false,
+            sortCaret: (order, column) => {
+              if (!order) return (<span><ArrowUp /><ArrowDown /></span>);
+              else if (order === 'asc') return (<span><ArrowUp /></span>);
+              else if (order === 'desc') return (<span><ArrowDown /></span>);
+              return null;
+            }  
           }
         });
       }
       const data = XLSX.utils.sheet_to_json(ws, { raw: false });
+      console.log(data);
+      /* Object.keys(data[0]).forEach((key, index) => { */
+        sheetData[0].forEach((key, index) => {
+        if (key ) {
+          this.columnFields.push(
+            {
+              title: key,
+              field: key, 
+            },
+          )
+        }
+      });
+
       this.setState({ data: data, cols: columns });
-      
     };
     if (rABS) {
       reader.readAsBinaryString(file);
@@ -192,11 +191,18 @@ class CandidateUpload extends Component {
         }))
 
       }
+      handleDelete = (updatedScale,oldData) => {
+        const data = [...this.state.data];
+        data[ data.splice(oldData, 1)] = updatedScale
+        this.setState(prevState => ({
+          ...prevState, data: data,
+        }))
+      }
 
   render() {
     const { classes } = this.props;
-    const { file, data, cols, selectedSheet, sheetOptions, showSuccessMessage,
-      showModal, eventList, selectedEvent, selectedEventData, toastMessage, openCandidateUploadModal } = this.state;
+    const { file, data, selectedSheet, sheetOptions, showSuccessMessage,
+       toastMessage, openCandidateUploadModal } = this.state;
       
     const recordPerPageVal = Math.ceil(data.length / 10) * 10;
     const recordPerPageOptions = [
@@ -324,8 +330,8 @@ class CandidateUpload extends Component {
           <div className='candidateListTable'>
        
             <MaterialTable
-            //  keyField='id'
-            columns={cols}
+             //keyField='id'
+            columns={this.columnFields}
             key={data.id}
             data={data}
             headerClasses="listHeader"
@@ -350,10 +356,10 @@ class CandidateUpload extends Component {
                       this.editSubmit(newData, oldData);
                     }
                   }),
-                onRowDelete: (oldData) =>
+                onRowDelete: (newData,oldData) =>
                   new Promise((resolve) => {
                     resolve();
-                    this.handleDelete(oldData);
+                    this.handleDelete(newData,oldData);
                   })
               }}
             />

@@ -109,7 +109,19 @@ export class Login extends React.Component {
       }
     })
   }
-
+  CandidatesbulkUpload = (res) => {
+    this.props.CandidatesbulkUpload(res).then((res) => {
+      if (res && res.errCode === 201) {
+        this.setState({
+          showToast: true, toastMsg: ' Uploaded Successfully!'
+        }) 
+      } else if (res && res.errCode === 400 && res.errCode === 404 ) {
+        this.setState({
+          showToast: true, toastMsg: 'Failed to upload !'
+        });
+      }
+    })
+  }
   tp1scheduleUpdate = (res) => {
     this.props.updatTp1ScheduleDetails(res).then((res) => {
       if (res && res.errCode === 201) {
@@ -210,6 +222,7 @@ export class Login extends React.Component {
               tp1StatusUpdate={this.tp1StatusUpdate}
               tp2StatusUpdate={this.tp2StatusUpdate}
               candidateDetails={this.props.candidateDetails}
+              CandidatesbulkUpload={this.CandidatesbulkUpload}
             />
           </div>
         </Container>

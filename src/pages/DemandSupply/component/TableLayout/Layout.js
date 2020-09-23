@@ -37,7 +37,7 @@ export class Layout extends Component {
       viewType: 1,
       customColumns: [],
       columnFields: ColumnArr.FullViewFields,
-      candidateResult: '',
+      candidateResult: ''
     }
     this.tp1Status = [
       { id: 1, title: 'TP1 Schedule' },
@@ -431,7 +431,11 @@ export class Layout extends Component {
     })
   }
 
-   render() {
+  getCandidateDetails = (reqObj) => {
+    this.props.CandidatesbulkUpload(reqObj)
+  }
+
+  render() {
     const { classes, getCandidateData } = this.props;
     const { actualData, columnFields, enableEditIcon, enableDeleteIcon } = this.state;
     return (
@@ -439,6 +443,7 @@ export class Layout extends Component {
         <Typography variant='h4'>Candidate List</Typography>
         <Search getCandidateData={getCandidateData}
           getSearchResult={this.getSearchResult}
+          getCandidateDetails={this.getCandidateDetails}
         />
         <Button
           variant="contained"

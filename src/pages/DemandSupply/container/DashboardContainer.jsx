@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch) => {
     getListSpoc: CreateCandidateActions.getListSpoc,
     candidateDetails: DashboardActions.candidateDetails,
     getCompanyLists: CreateCandidateActions.getCompanyLists,
+    CandidatesbulkUpload: DashboardActions.CandidatesbulkUpload
   };
 };
 

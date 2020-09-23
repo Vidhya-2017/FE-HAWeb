@@ -65,6 +65,9 @@ export class Search extends React.Component {
     }
     this.props.getSearchResult(reqObj);
   }
+  sendCandidatesList =(value) => {
+    this.props.getCandidateDetails(value);
+  }
   render() {
     const { classes } = this.props;
     return (
@@ -116,7 +119,7 @@ export class Search extends React.Component {
               <SearchIcon />
             </IconButton>
           </Paper>
-          <CandidateUpload sendCandidateList={this.sendCandidateList}/>
+          <CandidateUpload sendCandidateList={this.sendCandidatesList}/>
           </div>
       </React.Fragment>
     );

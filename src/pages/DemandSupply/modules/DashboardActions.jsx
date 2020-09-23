@@ -82,7 +82,14 @@ export const DashboardActions = {
         catch (error) {
             return (error.response);
         }
+    },
+    CandidatesbulkUpload: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/ImportSupplyApi.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
     }
-
-
 }
