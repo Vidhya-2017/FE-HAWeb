@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Paper, Checkbox } from '@material-ui/core';
-
+import { Table, IconButton, TableBody, TableCell, Toolbar, Typography, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Paper, Checkbox } from '@material-ui/core';
+import ViewColumns from './ViewColumns';
+import ColumnArr from './ColumnFields';
+import CustomiseView from '../CustomiseView/CustomiseView';
+import RefreshIcon from '@material-ui/icons/Refresh';
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -32,44 +35,52 @@ function stableSort(array, comparator) {
 
 const EnhancedTableHead = (props) => {
   const { classes, columns, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+
+  const [columnHeader, setColumnHeader] = React.useState(columns);
+  useEffect(() => {
+    setColumnHeader(columns);
+  }, [columns]);
+
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
   return (
     <TableHead>
-      <TableRow style={{ background: '#eee'}}>
-        <TableCell size="small" padding="checkbox">
+      <TableRow style={{ background: '#eee' }}>
+        <TableCell padding="checkbox" className={classes.stickyColumnHeader}>
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             color="primary"
+
           />
         </TableCell>
-        {columns.map((headCell) => {
-          return (
-            <TableCell
-            size="small" 
+        {columnHeader.map((headCell) => (
+          <Fragment key={headCell.name}>
+            {!headCell.hide && <TableCell
+              className={headCell.field === 'candidate_name' ? classes.stickyColumnHeaderName : ''}
               key={headCell.name}
               align="left"
-              style={{minWidth: headCell.field === 'preferred_location' ? '200px' : '100px'}}
-              sortDirection={orderBy === headCell.name ? order : false}
+              style={{ minWidth: (headCell.field === 'preferred_location' || headCell.name === 'interviewStatus') ? '170px' : '100px', padding: 8 }}
+              sortDirection={orderBy === headCell.field ? order : false}
             >
               <TableSortLabel
-                active={orderBy === headCell.name}
-                direction={orderBy === headCell.name ? order : 'asc'}
-                onClick={createSortHandler(headCell.name)}
+                active={orderBy === headCell.field}
+                direction={orderBy === headCell.field ? order : 'asc'}
+                onClick={createSortHandler(headCell.field)}
               >
                 {headCell.title}
-                {orderBy === headCell.name ? (
+                {orderBy === headCell.field ? (
                   <span className={classes.visuallyHidden}>
                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                   </span>
                 ) : null}
               </TableSortLabel>
-            </TableCell>
-          )
-        })}
+            </TableCell>}
+          </Fragment>
+        )
+        )}
       </TableRow>
     </TableHead>
   );
@@ -91,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: '100%',
+    border: '1px solid #BDBDBD',
     marginBottom: theme.spacing(2),
   },
   table: {
@@ -107,21 +119,63 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  tableTitle: {
+    flex: '1 1 100%',
+  },
+resetIcon: {
+    marginLeft: 10
+  },
+  stickyColumnHeader: { position: 'sticky', left: 0, zIndex: 1, background: '#eee' },
+  stickyColumnHeaderName: { position: 'sticky', left: 46, zIndex: 1, background: '#eee' },
+  stickyColumnCell: { position: 'sticky', left: 0, zIndex: 1, background: '#fff' },
+  stickyColumnCellName: { position: 'sticky', left: 46, zIndex: 1, background: '#fff' }
 }));
 
+const view = [
+  
+  { id: 1, title: 'Standard View' },
+  { id: 2, title: 'Historical View'},
+  { id: 3, title: 'Creator View' }
+]
 const CandidateList = (props) => {
   const classes = useStyles();
+  const { rowData, selectCandidate } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
+  const [columnData, setColumnData] = React.useState(ColumnArr.FullViewFields);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { rowData, columns, selectCandidate } = props;
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
+
+  useEffect(() => {
+    setColumnData(props.columns)
+  }, [props.columns]);
+
+  const setViewType = (data) => {
+    let columnView = [];
+    switch (data.id) {
+      case 1:
+        columnView = ColumnArr.FullViewFields;
+        break;
+      case 2:
+        columnView = ColumnArr.HistoryViewFields;
+        break;
+      case 3:
+        columnView = ColumnArr.RecruiterViewFields;
+        break;
+      case 4:
+        columnView = ColumnArr.SPOCViewFields;
+        break;
+      default:
+        break;
+    }
+    setColumnData(columnView);
+  }
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -157,6 +211,13 @@ const CandidateList = (props) => {
     setPage(newPage);
   };
 
+  const showHideColumn = (value, currentIndex) => {
+      const updateColData = [...columnData];
+      const updateCol = updateColData.findIndex(list => list.name === value);
+      updateColData[updateCol].hide = currentIndex >= 0;
+      setColumnData(updateColData);
+  }
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -166,9 +227,27 @@ const CandidateList = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowData.length - page * rowsPerPage);
 
+  const resetColHeader = () => {setColumnData(ColumnArr.FullViewFields)}
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
+        <Toolbar>
+          <Typography variant="h6" id="table1Title" component="div" className={classes.tableTitle}>Candidate List</Typography>
+          <CustomiseView 
+          buttonName='View Type'
+          status={view}
+          setViewType={setViewType}
+        />
+          <IconButton
+          onClick={resetColHeader}
+          aria-haspopup="true"
+          className={classes.resetIcon}
+        >
+          <RefreshIcon />
+        </IconButton>
+          <ViewColumns showHideColumn={showHideColumn} columnData={columnData} />
+        </Toolbar>
         <TableContainer>
           <Table
             className={classes.table}
@@ -178,7 +257,7 @@ const CandidateList = (props) => {
           >
             <EnhancedTableHead
               classes={classes}
-              columns={columns}
+              columns={columnData}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -193,32 +272,37 @@ const CandidateList = (props) => {
                   const isItemSelected = isSelected(row.candidate_id);
                   return (
                     <TableRow
-                      hover
                       onClick={(event) => handleClick(event, row.candidate_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.candidate_id}
+                      key={`${index}${row.candidate_id}`}
                     >
-                      <TableCell size="small" padding="checkbox">
+                      <TableCell className={classes.stickyColumnCell} padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
                           color="primary"
                         />
                       </TableCell>
-                      {columns.map((col, index) => {
+                      {columnData.map((col, colIndex) => {
                         if (col.field === 'feedback' && col.name === 'interviewStatus') {
                           let display = row.feedback !== null && row.feedback.length > 0 ?
                             row.feedback[row.feedback.length - 1].status_name : '-'
                           return (
-                              <TableCell size="small">{display}</TableCell>
+                            <Fragment key={colIndex}>
+                              {!col.hide &&
+                                <TableCell key={colIndex} style={{ padding: 8 }}>{display}</TableCell>}
+                            </Fragment>
                           )
                         }
                         if (col.field === 'feedback' && col.name === 'interviewPanel') {
                           let display = row.feedback !== null && row.feedback.length > 0 ?
                             row.feedback[row.feedback.length - 1].interview_level : '-'
                           return (
-                            <TableCell size="small">{display}</TableCell>
+                            <Fragment  key={colIndex}>
+                              {!col.hide &&
+                                <TableCell key={colIndex} style={{ padding: 8 }} >{display}</TableCell>}
+                            </Fragment>
                           )
                         }
 
@@ -226,11 +310,15 @@ const CandidateList = (props) => {
                           let display = row.feedback !== null && row.feedback.length > 0 ?
                             row.feedback[row.feedback.length - 1].interview_schedule_dt : '-'
                           return (
-                              <TableCell size="small">{display.split(' ')[0]}</TableCell>
+                            <Fragment  key={colIndex}>
+                              {!col.hide && <TableCell key={colIndex} style={{ padding: 8 }}>{display.split(' ')[0]}</TableCell>}
+                            </Fragment>
                           )
                         }
                         return (
-                        <TableCell size="small">{col.field === 'preferred_location' ? row[col.field].split(',').join(', ') : row[col.field]}</TableCell>
+                          <Fragment  key={colIndex}>
+                            {!col.hide && <TableCell key={colIndex} className={col.field === 'candidate_name' ? classes.stickyColumnCellName : ''} style={{ padding: 8 }}>{col.field === 'preferred_location' ? row[col.field].split(',').join(', ') : row[col.field]}</TableCell>}
+                          </Fragment>
                         )
                       }
                       )}

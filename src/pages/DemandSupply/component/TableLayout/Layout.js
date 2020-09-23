@@ -5,8 +5,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import ColumnArr from './ColumnFields';
 import Search from '../Search/Search'
 import CustomisedMenu from '../StyledMenu/StyledMenu';
-import CustomiseView from '../CustomiseView/CustomiseView';
-import CustomiseColumn from '../CustomiseColumn/CustomiseColumn';
 import CandidateList from './CandidateList';
 
 const styles = theme => ({
@@ -34,7 +32,6 @@ export class Layout extends Component {
       actualData: [],
       tp1Panels: [],
       panelListData: [],
-      viewType: 1,
       customColumns: [],
       columnFields: ColumnArr.FullViewFields,
       candidateResult: ''
@@ -76,113 +73,6 @@ export class Layout extends Component {
       { id: 4, title: 'SPOC View', columns: ['name', 'spoc', 'interviewStatus', 'interviewPanel', 'interviewDate'] },
     ]
 
-    this.columnFields = [
-      {
-        title: "Name",
-        name: 'name',
-        field: "candidate_name",
-      },
-      {
-        title: "Email",
-        name: 'email',
-        field: "email_id",
-      },
-      {
-        title: "Contact",
-        name: 'contact',
-        field: "contact",
-      },
-      {
-        title: "Total Experience",
-        name: 'totalExperience',
-        field: "total_experience",
-      },
-      {
-        title: "Relavent Experience",
-        name: 'relevantExperience',
-        field: "relevant_experience",
-      },
-      {
-        title: "Last Interview Status",
-        name: 'interviewStatus',
-        field: "feedback",
-        render: (rowData) => {
-          let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
-            rowData.feedback[rowData.feedback.length - 1].status_name : '-'
-          return <div>{display}</div>
-        },
-      },
-      {
-        title: "Last Interview Panel",
-        name: 'interviewPanel',
-        field: "feedback",
-        render: (rowData) => {
-          let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
-            rowData.feedback[rowData.feedback.length - 1].interview_level : '-'
-          return <div>{display}</div>
-        },
-      },
-      {
-        title: "Last Interview  Date",
-        name: 'interviewDate',
-        field: "feedback",
-        render: (rowData) => {
-          let display = rowData.feedback !== null && rowData.feedback.length > 0 ?
-            rowData.feedback[rowData.feedback.length - 1].interview_schedule_dt : '-'
-          return <div>{display.split(' ')[0]}</div>
-        },
-      },
-      {
-        title: "Current Company",
-        field: "current_company",
-        name: 'currentCompany',
-      },
-      {
-        title: "Notice Period",
-        field: "notice_period",
-        name: 'noticePeriod',
-      },
-      {
-        title: "Current Location",
-        field: "current_location",
-        name: 'currentLocation',
-      },
-      {
-        title: "Prefered Location",
-        field: "preferred_location",
-        name: 'preferredLocation',
-      },
-      {
-        title: "HackerRank Score",
-        field: "hr_score",
-        name: 'hrScore',
-      },
-      {
-        title: "HackerRank Remarks",
-        name: 'hrRemarks',
-        field: "hr_remarks",
-      },
-      {
-        title: "SPOC",
-        field: "spoc_name",
-        name: 'spoc',
-      },
-      {
-        title: "Recruiter",
-        field: "recruiter",
-        name: 'recuiter',
-      },
-      {
-        title: "Primary Skill",
-        field: "primary_skill",
-        name: 'primarySkill',
-      },
-      {
-        title: "Secondary Skill",
-        field: "secondary_skill",
-        name: 'secondarySkill',
-      },
-    ]
   }
 
   editCandidate = async (newData, oldData) => {
@@ -382,47 +272,6 @@ export class Layout extends Component {
     })
   }
 
-
-  setViewType = (data) => {
-    let columnView = [];
-    switch (data.id) {
-      case 1:
-        columnView = ColumnArr.HistoryViewFields;
-        break;
-      case 2:
-        columnView = ColumnArr.BasicViewFields;
-        break;
-      case 3:
-        columnView = ColumnArr.RecruiterViewFields;
-        break;
-      case 4:
-        columnView = ColumnArr.SPOCViewFields;
-        break;
-      default:
-        break;
-    }
-    this.setState({
-      viewType: data.id,
-      columnFields: columnView
-    })
-  }
-
-  applyCustomColumn = (data) => {
-    let customColumns = [];
-    data.forEach(item => {
-      if (item.checked !== undefined && item.checked === true) {
-        customColumns.push(item.name);
-      }
-    })
-    if (customColumns.length > 0) {
-      this.setState({
-        viewType: 0,
-        customColumns: customColumns,
-        columnFields: ColumnArr.FullViewFields.filter(data => customColumns.includes(data.name))
-      })
-    }
-  }
-
   selectCandidate = (rows) => {
     this.setState({
       enableEditIcon: rows.length === 1,
@@ -434,6 +283,7 @@ export class Layout extends Component {
   getCandidateDetails = (reqObj) => {
     this.props.CandidatesbulkUpload(reqObj)
   }
+
 
   render() {
     const { classes, getCandidateData } = this.props;
@@ -454,8 +304,6 @@ export class Layout extends Component {
         >
           Add
         </Button>
-
-
         <Button
           variant="contained"
           color="primary"
@@ -463,7 +311,6 @@ export class Layout extends Component {
           size="small"
           className={classes.button}
           endIcon={<EditIcon />}
-          candidateResult={this.state.candidateResult}
           onClick={this.navToCandidate}
         >
           Edit
@@ -511,19 +358,6 @@ export class Layout extends Component {
           classes={classes}
           onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
-        />
-
-        <div></div>
-        <CustomiseView buttonName='View Type'
-          status={this.view}
-          classes={classes}
-          setViewType={this.setViewType}
-        />
-        <CustomiseColumn buttonName='Customise Columns'
-          columns={ColumnArr.FullViewFields}
-          status={this.view}
-          classes={classes}
-          setViewType={this.applyCustomColumn}
         />
         <CandidateList selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData}/>
       </React.Fragment>

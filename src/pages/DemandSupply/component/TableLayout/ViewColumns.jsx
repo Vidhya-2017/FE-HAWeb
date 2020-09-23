@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { List, Popper, Paper, Grow, ClickAwayListener, Typography, Toolbar, Checkbox, IconButton, ListItemText, ListItemIcon, ListItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import FilterListIcon from '@material-ui/icons/FilterList';
-
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex"
@@ -15,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 1 100%"
   },
   popperRoot: {
-    zIndex:1,
+    zIndex: 10,
   },
   toolbarRoot: {
     paddingLeft: 15
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     backgroundColor: theme.palette.background.paper
   },
-  listItemRoot:{
+  listItemRoot: {
     height: 40
   },
   filterIcon: {
@@ -42,6 +41,27 @@ export default function ViewColumns(props) {
   const anchorRef = React.useRef(null);
   const [checked, setChecked] = React.useState([]);
 
+  const prevOpen = React.useRef(open);
+
+  React.useEffect(() => {
+    const selectedColumn = [];
+    columnData.forEach(column => {
+      if (!column.hide) {
+        selectedColumn.push(column.name)
+      }
+      setChecked(selectedColumn);
+    })
+  }, []);
+
+
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+    prevOpen.current = open;
+  }, [open]);
+
+
   const handleListToggle = (value) => () => {
     const currentIndex = checked.indexOf(value.name);
     const newChecked = [...checked];
@@ -51,7 +71,7 @@ export default function ViewColumns(props) {
       newChecked.splice(currentIndex, 1);
     }
     setChecked(newChecked);
-    // showHideColumn(value.name, currentIndex);
+    showHideColumn(value.name, currentIndex);
   };
 
   const handleToggle = () => {
@@ -65,24 +85,6 @@ export default function ViewColumns(props) {
     setOpen(false);
   };
 
-  const prevOpen = React.useRef(open);
-
-  React.useEffect(() => {
-    const selectedColumn = [];
-    columnData.forEach(column => {
-      if(!column.hide){
-        selectedColumn.push(column.name)
-      }
-      setChecked(selectedColumn);
-    })
-  }, []);
-
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-    prevOpen.current = open;
-  }, [open]);
   return (
     <div className={classes.root}>
       <div>
@@ -93,39 +95,39 @@ export default function ViewColumns(props) {
           aria-haspopup="true"
           className={classes.filterIcon}
         >
-          <FilterListIcon />
+          <ViewColumnIcon />
         </IconButton>
         <ClickAwayListener onClickAway={handleClose}>
-        <Popper
-          open={open}
-          anchorEl={anchorRef.current}
-          role={undefined}
-          transition
-          placement="bottom-end"
-          disablePortal
-          className={classes.popperRoot}
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
-              }}
-            >
-              <Paper>
+          <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            role={undefined}
+            transition
+            placement="bottom-end"
+            disablePortal
+            className={classes.popperRoot}
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin:
+                    placement === "bottom" ? "center top" : "center bottom"
+                }}
+              >
+                <Paper>
                   <Fragment>
-                      <Toolbar disableGutters className={classes.toolbarRoot} variant="dense">
-                        <Typography
-                          className={classes.columnTitle}
-                          component="div"
-                        >
-                          Columns
+                    <Toolbar disableGutters className={classes.toolbarRoot} variant="dense">
+                      <Typography
+                        className={classes.columnTitle}
+                        component="div"
+                      >
+                        Columns
                       </Typography>
-                        <IconButton onClick={handleClose}>
-                          <CloseIcon />
-                        </IconButton>
-                      </Toolbar>
+                      <IconButton onClick={handleClose}>
+                        <CloseIcon />
+                      </IconButton>
+                    </Toolbar>
                     <List className={classes.listroot}>
                       {columnData.map((value) => {
                         return (
@@ -152,10 +154,10 @@ export default function ViewColumns(props) {
                       })}
                     </List>
                   </Fragment>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
         </ClickAwayListener>
       </div>
     </div>

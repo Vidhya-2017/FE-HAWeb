@@ -1,13 +1,12 @@
 import React from 'react';
 import { withStyles } from "@material-ui/core/styles";
-import Container from '@material-ui/core/Container';
 import TableLayout from './TableLayout/Layout';
 import { Toast } from 'react-bootstrap';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: '50px'
+    padding: 20
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -36,12 +35,6 @@ const styles = theme => ({
         }
       }
     },
-    // '& tbody >tr:nth-child(even)': {
-    //   backgroundColor: '#dddddd'
-    // },
-    // '& tbody >tr:nth-child(odd)': {
-    //   backgroundColor: 'white'
-    // }
   },
   button: {
     margin: theme.spacing(1.5),
@@ -198,8 +191,6 @@ export class Login extends React.Component {
 
     return (
       <React.Fragment>
-
-        <Container >
           <div className={classes.root}>
             <TableLayout classes={classes} statements={this.state.tableData}
               history={this.props.history}
@@ -225,7 +216,6 @@ export class Login extends React.Component {
               CandidatesbulkUpload={this.CandidatesbulkUpload}
             />
           </div>
-        </Container>
         {showToast &&
           <Toast
             style={{

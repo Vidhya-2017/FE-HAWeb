@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 1 100%"
   },
   popperRoot: {
-    zIndex:1,
+    zIndex:10,
   },
   toolbarRoot: {
     paddingLeft: 15
@@ -95,6 +95,7 @@ export default function ViewColumns(props) {
         >
           <FilterListIcon />
         </IconButton>
+        <ClickAwayListener onClickAway={handleClose}>
         <Popper
           open={open}
           anchorEl={anchorRef.current}
@@ -113,7 +114,6 @@ export default function ViewColumns(props) {
               }}
             >
               <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
                   <Fragment>
                       <Toolbar disableGutters className={classes.toolbarRoot} variant="dense">
                         <Typography
@@ -152,11 +152,11 @@ export default function ViewColumns(props) {
                       })}
                     </List>
                   </Fragment>
-                </ClickAwayListener>
               </Paper>
             </Grow>
           )}
         </Popper>
+        </ClickAwayListener>
       </div>
     </div>
   );
