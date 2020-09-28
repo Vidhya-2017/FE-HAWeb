@@ -7,45 +7,10 @@ const styles = theme => ({
   root: {
     width: '100%',
     padding: 20
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
-  paper: {
-    //marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-
-    // [theme.breakpoints.up('lg')]: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '30px'
-    //},
-
-  },
-  table: {
-    minWidth: 300,
-    '& thead': {
-      backgroundColor: '#2196f3',
-      '& tr ': {
-        '& th ': {
-          color: 'white !important'
-        }
-      }
-    },
-  },
-  button: {
-    margin: theme.spacing(1.5),
-  },
-
+  }
 });
 
-
-
-
-export class Login extends React.Component {
+export class Dashboard extends React.Component {
 
   constructor(props) {
     super(props)
@@ -80,7 +45,7 @@ export class Login extends React.Component {
         this.setState({
           showToast: true, toastMsg: 'Status Updated Successfully!'
         });
-      } else if (res && res.errCode === 400 ) {
+      } else if (res && res.errCode === 400) {
         this.setState({
           showToast: true, toastMsg: 'Failed to update !'
         });
@@ -94,8 +59,8 @@ export class Login extends React.Component {
         this.setState({
           showToast: true, toastMsg: 'Status Updated Successfully!'
         });
-        
-      } else if (res && res.errCode === 400 ) {
+
+      } else if (res && res.errCode === 400) {
         this.setState({
           showToast: true, toastMsg: 'Failed to update !'
         });
@@ -107,8 +72,8 @@ export class Login extends React.Component {
       if (res && res.errCode === 201) {
         this.setState({
           showToast: true, toastMsg: ' Uploaded Successfully!'
-        }) 
-      } else if (res && res.errCode === 400 && res.errCode === 404 ) {
+        })
+      } else if (res && res.errCode === 400 && res.errCode === 404) {
         this.setState({
           showToast: true, toastMsg: 'Failed to upload !'
         });
@@ -185,37 +150,36 @@ export class Login extends React.Component {
     })
   }
   render() {
-    const { showToast } = this.state
+    const { showToast, tableData } = this.state
     const { classes, deleteCandidate } = this.props
-    //const { statements } = this.state.tableData
-
     return (
       <React.Fragment>
-          <div className={classes.root}>
-            <TableLayout classes={classes} statements={this.state.tableData}
-              history={this.props.history}
-              getCandidateData={this.getCandidateData}
-              getSearchResult={this.props.getSearchResult}
-              deleteCandidate={deleteCandidate}
-              changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
-              tp1scheduleUpdate={this.tp1scheduleUpdate}
-              tp2scheduleUpdate={this.tp2scheduleUpdate}
-              SendTP1CandidatePrimarySkillId={this.SendTP1CandidatePrimarySkillId}
-              panels={this.state.panelList}
-              editCandidate={this.props.editCandidate}
-              getPrimarySkillsReport={this.props.getPrimarySkillsReport}
-              getListLocation={this.props.getListLocation}
-              getListRecruiter={this.props.getListRecruiter}
-              getListSource={this.props.getListSource}
-              getListSpoc={this.props.getListSpoc}
-              getCompanyLists={this.props.getCompanyLists}
-               SendStatus ={ this.SendStatus}
-              tp1StatusUpdate={this.tp1StatusUpdate}
-              tp2StatusUpdate={this.tp2StatusUpdate}
-              candidateDetails={this.props.candidateDetails}
-              CandidatesbulkUpload={this.CandidatesbulkUpload}
-            />
-          </div>
+        <div className={classes.root}>
+          <TableLayout
+            statements={tableData}
+            history={this.props.history}
+            getCandidateData={this.getCandidateData}
+            getSearchResult={this.props.getSearchResult}
+            deleteCandidate={deleteCandidate}
+            changeCandidateInterviewStatus={this.changeCandidateInterviewStatus}
+            tp1scheduleUpdate={this.tp1scheduleUpdate}
+            tp2scheduleUpdate={this.tp2scheduleUpdate}
+            SendTP1CandidatePrimarySkillId={this.SendTP1CandidatePrimarySkillId}
+            panels={this.state.panelList}
+            editCandidate={this.props.editCandidate}
+            getPrimarySkillsReport={this.props.getPrimarySkillsReport}
+            getListLocation={this.props.getListLocation}
+            getListRecruiter={this.props.getListRecruiter}
+            getListSource={this.props.getListSource}
+            getListSpoc={this.props.getListSpoc}
+            getCompanyLists={this.props.getCompanyLists}
+            SendStatus={this.SendStatus}
+            tp1StatusUpdate={this.tp1StatusUpdate}
+            tp2StatusUpdate={this.tp2StatusUpdate}
+            candidateDetails={this.props.candidateDetails}
+            CandidatesbulkUpload={this.CandidatesbulkUpload}
+          />
+        </div>
         {showToast &&
           <Toast
             style={{
@@ -243,4 +207,4 @@ export class Login extends React.Component {
 }
 
 
-export default withStyles(styles, { withTheme: true })(Login);
+export default withStyles(styles, { withTheme: true })(Dashboard);

@@ -8,14 +8,33 @@ import CustomisedMenu from '../StyledMenu/StyledMenu';
 import CandidateList from './CandidateList';
 
 const styles = theme => ({
-  root: {
-    width: '100%',
-  },
+
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
   },
-
+  paper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '30px'
+  },
+  table: {
+    minWidth: 300,
+    '& thead': {
+      backgroundColor: '#2196f3',
+      '& tr ': {
+        '& th ': {
+          color: 'white !important'
+        }
+      }
+    },
+  },
+  button: {
+    margin: theme.spacing(1.5),
+  }
 });
 
 export class Layout extends Component {
@@ -309,8 +328,8 @@ export class Layout extends Component {
           color="primary"
           disabled={!enableEditIcon}
           size="small"
-          className={classes.button}
           endIcon={<EditIcon />}
+          className={classes.button}
           onClick={this.navToCandidate}
         >
           Edit
@@ -320,8 +339,8 @@ export class Layout extends Component {
           color="secondary"
           disabled={!enableDeleteIcon}
           size="small"
-          className={classes.button}
           startIcon={<DeleteIcon />}
+          className={classes.button}
           onClick={this._handleDelete}
         >
           Delete

@@ -1,10 +1,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import {IconButton} from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
-
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
 const StyledMenu = withStyles({
   paper: {
     border: '1px solid #d3d4d5',
@@ -49,17 +49,9 @@ const CustomiseView = (props) => {
 
   return (
     <React.Fragment>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="outlined"
-        // color="primary"
-        style={{minWidth: 120}}
-        onClick={handleClick}
-        size='small'
-      >
-        {buttonName}
-      </Button>
+      <IconButton onClick={handleClick} >
+        <ViewModuleIcon/>
+      </IconButton>
       <StyledMenu
         id="customized-menu"
         anchorEl={anchorEl}

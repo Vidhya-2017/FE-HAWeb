@@ -1,11 +1,14 @@
 import React, { useEffect, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Table, IconButton, TableBody, TableCell, Toolbar, Typography, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Paper, Checkbox } from '@material-ui/core';
+import { Table, TableBody, TableCell, Toolbar, Typography, TableContainer, TablePagination, TableRow, Paper, Checkbox, InputBase } from '@material-ui/core';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import ViewColumns from './ViewColumns';
+import EnhancedTableHead from './EnhancedTableHead';
 import ColumnArr from './ColumnFields';
 import CustomiseView from '../CustomiseView/CustomiseView';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import SearchIcon from '@material-ui/icons/Search';
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -33,69 +36,6 @@ function stableSort(array, comparator) {
 }
 
 
-const EnhancedTableHead = (props) => {
-  const { classes, columns, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-
-  const [columnHeader, setColumnHeader] = React.useState(columns);
-  useEffect(() => {
-    setColumnHeader(columns);
-  }, [columns]);
-
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-  return (
-    <TableHead>
-      <TableRow style={{ background: '#eee' }}>
-        <TableCell padding="checkbox" className={classes.stickyColumnHeader}>
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            color="primary"
-
-          />
-        </TableCell>
-        {columnHeader.map((headCell) => (
-          <Fragment key={headCell.name}>
-            {!headCell.hide && <TableCell
-              className={headCell.field === 'candidate_name' ? classes.stickyColumnHeaderName : ''}
-              key={headCell.name}
-              align="left"
-              style={{ minWidth: (headCell.field === 'preferred_location' || headCell.name === 'interviewStatus') ? '170px' : '100px', padding: 8 }}
-              sortDirection={orderBy === headCell.field ? order : false}
-            >
-              <TableSortLabel
-                active={orderBy === headCell.field}
-                direction={orderBy === headCell.field ? order : 'asc'}
-                onClick={createSortHandler(headCell.field)}
-              >
-                {headCell.title}
-                {orderBy === headCell.field ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>}
-          </Fragment>
-        )
-        )}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -119,12 +59,41 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  inputPaperRoot: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 200,
+  },
+  searchInput: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
   tableTitle: {
     flex: '1 1 100%',
   },
-resetIcon: {
+  resetIcon: {
     marginLeft: 10
   },
+  searchBtn: {
+    border: 'none',
+    borderRadius: '50%',
+    outline: 'none',
+    margin: '0 10px',
+    "&:focus": {
+      outline: 'none',
+    },
+    "&$searchBtnSelected": {
+      color: 'rgb(255 255 255)',
+      backgroundColor: 'rgb(0 161 255)',
+      outline: 'none',
+      "&:hover": {
+        color: 'rgb(255 255 255)',
+        backgroundColor: 'rgb(0 161 255)',
+      }
+    }
+  },
+  searchBtnSelected: {},
   stickyColumnHeader: { position: 'sticky', left: 0, zIndex: 1, background: '#eee' },
   stickyColumnHeaderName: { position: 'sticky', left: 46, zIndex: 1, background: '#eee' },
   stickyColumnCell: { position: 'sticky', left: 0, zIndex: 1, background: '#fff' },
@@ -132,20 +101,31 @@ resetIcon: {
 }));
 
 const view = [
-  
   { id: 1, title: 'Standard View' },
-  { id: 2, title: 'Historical View'},
+  { id: 2, title: 'Historical View' },
   { id: 3, title: 'Creator View' }
 ]
+
 const CandidateList = (props) => {
   const classes = useStyles();
-  const { rowData, selectCandidate } = props;
+  const { selectCandidate } = props;
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('candidate_name');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [columnData, setColumnData] = React.useState(ColumnArr.FullViewFields);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [search, setSearch] = React.useState(false);
+  const [query, setQuery] = React.useState('');
+  const [rowData, setRowData] = React.useState(props.rowData);
+
+  let globalRowData = [...props.rowData];
+
+  useEffect(() => {
+    // globalRowData = props.rowData;
+    setRowData(props.rowData)
+  }, [props.rowData]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -212,10 +192,10 @@ const CandidateList = (props) => {
   };
 
   const showHideColumn = (value, currentIndex) => {
-      const updateColData = [...columnData];
-      const updateCol = updateColData.findIndex(list => list.name === value);
-      updateColData[updateCol].hide = currentIndex >= 0;
-      setColumnData(updateColData);
+    const updateColData = [...columnData];
+    const updateCol = updateColData.findIndex(list => list.name === value);
+    updateColData[updateCol].hide = currentIndex >= 0;
+    setColumnData(updateColData);
   }
 
   const handleChangeRowsPerPage = (event) => {
@@ -227,25 +207,77 @@ const CandidateList = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowData.length - page * rowsPerPage);
 
-  const resetColHeader = () => {setColumnData(ColumnArr.FullViewFields)}
+  const resetColHeader = () => { setColumnData(ColumnArr.FullViewFields) }
+
+  const onInputChange = (e) => {
+    const inputQuery = e.target.value;
+    const lowerCaseQuery = inputQuery.toLowerCase();
+
+    const searchedData = (inputQuery
+      ? globalRowData.filter((list) =>
+        columnData.find(item => {
+          if (item.field !== 'feedback') {
+            return list[item.field].toLowerCase().includes(lowerCaseQuery)
+          } else if(item.field === 'feedback' && list.feedback.length > 0) {
+            if (item.name === 'interviewStatus') {
+              let display = list.feedback[list.feedback.length - 1].status_name;
+              return display.toLowerCase().includes(lowerCaseQuery)
+            }
+            if (item.name === 'interviewPanel') {
+              let display = list.feedback[list.feedback.length - 1].interview_level;
+              return display.toLowerCase().includes(lowerCaseQuery)
+            }
+            if (item.name === 'interviewDate') {
+              let display = list.feedback[list.feedback.length - 1].interview_schedule_dt;
+              return display.toLowerCase().includes(lowerCaseQuery)
+            }
+          }
+          return false;
+        })
+      ): globalRowData);
+    setQuery(inputQuery);
+    setRowData(searchedData);
+  }
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <Toolbar>
           <Typography variant="h6" id="table1Title" component="div" className={classes.tableTitle}>Candidate List</Typography>
-          <CustomiseView 
-          buttonName='View Type'
-          status={view}
-          setViewType={setViewType}
-        />
-          <IconButton
-          onClick={resetColHeader}
-          aria-haspopup="true"
-          className={classes.resetIcon}
-        >
-          <RefreshIcon />
-        </IconButton>
+
+          {search && <div>
+            <Paper component="form" className={classes.inputPaperRoot}>
+              <InputBase
+                className={classes.searchInput}
+                placeholder="By Column Names"
+                onChange={onInputChange}
+                value={query}
+                autoFocus
+              />
+            </Paper>
+          </div>}
+          <ToggleButton
+            value="check"
+            selected={search}
+            classes={{ root: classes.searchBtn, selected: classes.searchBtnSelected }}
+            onChange={() => {
+              setSearch(!search);
+            }}
+          >
+            <SearchIcon />
+          </ToggleButton>
+          <CustomiseView
+            buttonName='View Type'
+            status={view}
+            setViewType={setViewType}
+          />
+          {/* <IconButton
+            onClick={resetColHeader}
+            aria-haspopup="true"
+            className={classes.resetIcon}
+          >
+            <RefreshIcon />
+          </IconButton> */}
           <ViewColumns showHideColumn={showHideColumn} columnData={columnData} />
         </Toolbar>
         <TableContainer>
@@ -299,24 +331,23 @@ const CandidateList = (props) => {
                           let display = row.feedback !== null && row.feedback.length > 0 ?
                             row.feedback[row.feedback.length - 1].interview_level : '-'
                           return (
-                            <Fragment  key={colIndex}>
+                            <Fragment key={colIndex}>
                               {!col.hide &&
                                 <TableCell key={colIndex} style={{ padding: 8 }} >{display}</TableCell>}
                             </Fragment>
                           )
                         }
-
                         if (col.field === 'feedback' && col.name === 'interviewDate') {
                           let display = row.feedback !== null && row.feedback.length > 0 ?
                             row.feedback[row.feedback.length - 1].interview_schedule_dt : '-'
                           return (
-                            <Fragment  key={colIndex}>
+                            <Fragment key={colIndex}>
                               {!col.hide && <TableCell key={colIndex} style={{ padding: 8 }}>{display.split(' ')[0]}</TableCell>}
                             </Fragment>
                           )
                         }
                         return (
-                          <Fragment  key={colIndex}>
+                          <Fragment key={colIndex}>
                             {!col.hide && <TableCell key={colIndex} className={col.field === 'candidate_name' ? classes.stickyColumnCellName : ''} style={{ padding: 8 }}>{col.field === 'preferred_location' ? row[col.field].split(',').join(', ') : row[col.field]}</TableCell>}
                           </Fragment>
                         )
