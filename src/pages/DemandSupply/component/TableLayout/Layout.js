@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { withStyles, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
+import { withStyles, Typography, AppBar, Toolbar, Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ColumnArr from './ColumnFields';
-import Search from '../Search/Search'
+import CandidateUpload from '../CandidateUpload/CandidateUpload';
+import Search from '../Search/Search';
 import CustomisedMenu from '../StyledMenu/StyledMenu';
 import CandidateList from './CandidateList';
 
@@ -149,15 +150,14 @@ export class Layout extends Component {
       let CandidatePrimarySkillId = primarySkillId.toString();
       this.props.SendTP1CandidatePrimarySkillId(CandidatePrimarySkillId);
       const orginalData = filteredDataone.filter(function (data) {
-        return data.last_updated_status_id === '2' || data.last_updated_status_id==='26';
+        return data.last_updated_status_id === '2' || data.last_updated_status_id === '26';
       })
-      if(orginalData.length > 0)
-      {
+      if (orginalData.length > 0) {
         this.props.history.push({
           pathname: '/TpSchedule',
           state: { tp1data: filteredDataone, tp2data: [], showModal1: true, showModal2: false, statusId1: status.id, tp1Panels1: tp1Panels, tp1skillID: CandidatePrimarySkillId }
         })
-      }else{
+      } else {
         this.setState({
           showModal1: true,
           errorMsg: " Please check selected candidate status"
@@ -174,34 +174,34 @@ export class Layout extends Component {
         interview_status: status.id,
         created_by: 1
       }
-     this.updatTp1ScheduleDetails(tp1Status,filteredDataone);
+      this.updatTp1ScheduleDetails(tp1Status, filteredDataone);
     }
   }
 
-  updatTp1ScheduleDetails = (reqObj,selectedCandidateData) => {
+  updatTp1ScheduleDetails = (reqObj, selectedCandidateData) => {
     this.props.updatTp1ScheduleDetails(reqObj).then((res) => {
       if (res && res.errCode === 201) {
-        let message = '';       
+        let message = '';
         let unUpdatedCandidate = null;
-       if(res.not_insert_arr.length > 0 ) {
+        if (res.not_insert_arr.length > 0) {
           unUpdatedCandidate = selectedCandidateData.filter(candidate => res.not_insert_arr.includes(candidate.candidate_id)).map(item => item.candidate_name).join(', ');
-          message = 'Some of the data have not been updated Kindly check the status: ' +`${unUpdatedCandidate}`;
+          message = 'Some of the data have not been updated Kindly check the status: ' + `${unUpdatedCandidate}`;
         }
-        if(res.not_insert_arr.length === 0 && res.insert_arr.length > 0){
-          message = ' Data Updated Successfully' ;
+        if (res.not_insert_arr.length === 0 && res.insert_arr.length > 0) {
+          message = ' Data Updated Successfully';
         }
-        if(res.not_insert_arr.length === 0 && res.insert_arr.length === 0){
-          message = 'Data have not been Updated' ;
+        if (res.not_insert_arr.length === 0 && res.insert_arr.length === 0) {
+          message = 'Data have not been Updated';
         }
         this.setState({
           showModal1: true, errorMsg: message
         });
-        } else if (res && res.errCode === 400 ) {
-          this.setState({
-            showModal1: true, errorMsg: 'Failed to update !'
-          });
-        }
-      })
+      } else if (res && res.errCode === 400) {
+        this.setState({
+          showModal1: true, errorMsg: 'Failed to update !'
+        });
+      }
+    })
   }
 
   getTp2StatusModal = (status) => {
@@ -217,21 +217,20 @@ export class Layout extends Component {
       const orginalt2Data = filtertp2Data.filter(function (data) {
         return data.last_updated_status_id === '3';
       })
-    if(orginalt2Data.length > 0) {
-      this.props.history.push({
-        pathname: '/TpSchedule',
-        state: { tp1data: [], tp2data: filtertp2Data, showModal1: false, showModal2: true, statusId1: status.id, tp1skillID: CandidatePrimarySkillId }
-      })
-    }else{
-      this.setState({
-        showModal1: true,
-        errorMsg: " Please check selected candidate status"
-      })
-    }
+      if (orginalt2Data.length > 0) {
+        this.props.history.push({
+          pathname: '/TpSchedule',
+          state: { tp1data: [], tp2data: filtertp2Data, showModal1: false, showModal2: true, statusId1: status.id, tp1skillID: CandidatePrimarySkillId }
+        })
+      } else {
+        this.setState({
+          showModal1: true,
+          errorMsg: " Please check selected candidate status"
+        })
+      }
     } else if (status.id === 7 || 22 || 6 || 8) {
       let CandidateId = filtertp2DataList.map(a => a.candidate_id);
       let CandidateIdUniqueId = CandidateId.toString();
-
       const tp2Status = {
         candidate_id: CandidateIdUniqueId,
         interview_level: "",
@@ -240,7 +239,7 @@ export class Layout extends Component {
         interview_status: status.id,
         created_by: 1
       }
-      this.updatTp1ScheduleDetails(tp2Status,filtertp2Data);
+      this.updatTp1ScheduleDetails(tp2Status, filtertp2Data);
     }
   }
 
@@ -273,14 +272,9 @@ export class Layout extends Component {
   };
 
   _handleDelete = () => {
-    const { selectedRows } = this.state
-
-    let candidateIds = selectedRows.map((data, i) => {
-      return data.candidate_id
-    })
-    let reqObj = {
-      candidate_id: candidateIds.toString()
-    }
+    const { selectedRows } = this.state;
+    let candidateIds = selectedRows.map((data) => data.candidate_id)
+    let reqObj = { candidate_id: candidateIds.toString() }
     this.props.deleteCandidate(reqObj).then((res) => {
       if (res.errCode === 201) {
         this.props.getCandidateData()
@@ -298,24 +292,15 @@ export class Layout extends Component {
   }
   navToCandidate = () => {
     const { selectedRows } = this.state
-    let candidateIds = selectedRows.map((data, i) => {
-      return data.candidate_id
-    })
-    let reqObj = {
-      candidate_id: candidateIds.toString()
-    }
-
+    let candidateIds = selectedRows.map((data) => data.candidate_id)
+    let reqObj = { candidate_id: candidateIds.toString() }
     this.props.candidateDetails(reqObj).then((res) => {
       if (res.errCode === 200) {
         const candidateDetails = res.arrRes;
-        this.setState({
-          candidateResult: candidateDetails
-        })
+        this.setState({ candidateResult: candidateDetails })
         this.props.history.push({ pathname: '/createCandidate', data: candidateDetails })
       }
-
     })
-
   }
 
   changeCandidateInterviewStatus = async (status) => {
@@ -330,13 +315,9 @@ export class Layout extends Component {
   getSearchResult = (reqObj) => {
     this.props.getSearchResult(reqObj).then((res) => {
       if (res && res.errCode === 200) {
-        this.setState({
-          actualData: res.arrRes
-        })
+        this.setState({ actualData: res.arrRes })
       } else if (res && res.errCode === 404) {
-        this.setState({
-          actualData: []
-        })
+        this.setState({ actualData: [] })
       }
     })
   }
@@ -359,11 +340,13 @@ export class Layout extends Component {
     const { actualData, columnFields, enableEditIcon, enableDeleteIcon, showModal1, errorMsg } = this.state;
     return (
       <React.Fragment>
-        <Typography variant='h4'>Candidate List</Typography>
-        <Search getCandidateData={getCandidateData}
+        <Toolbar>
+          <Typography variant="h4" style={{ flex: 1 }} > Candidate List </Typography>
+          <CandidateUpload sendCandidateList={this.getCandidateDetails} />
+        </Toolbar>
+        {/* <Search getCandidateData={getCandidateData}
           getSearchResult={this.getSearchResult}
-          getCandidateDetails={this.getCandidateDetails}
-        />
+        /> */}
         <Button
           variant="contained"
           color="primary"
@@ -428,24 +411,18 @@ export class Layout extends Component {
           onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
-        <CandidateList selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData}/>
-        <Dialog
-        open={showModal1}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        >
-        <DialogTitle id="alert-dialog-title">{"Alert"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-                {errorMsg}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.setState({ showModal1: false })} color="primary">
-            Close
+        <CandidateList selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData} />
+        <Dialog open={showModal1}>
+          <DialogTitle >{"Alert"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{errorMsg}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.setState({ showModal1: false })} color="primary">
+              Close
           </Button>
-         </DialogActions>
-       </Dialog> 
+          </DialogActions>
+        </Dialog>
       </React.Fragment>
     );
   }

@@ -2,7 +2,6 @@ import React from 'react';
 import { Paper, withStyles, MenuItem, FormControl, IconButton, InputBase, Select, InputLabel } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 // import CandidateUpload from '../CandidateUpload/CandidateUpload'
-import CandidateUpload from '../CandidateUpload/CandidateUpload'
 
 
 
@@ -65,9 +64,7 @@ export class Search extends React.Component {
     }
     this.props.getSearchResult(reqObj);
   }
-  sendCandidatesList =(value) => {
-    this.props.getCandidateDetails(value);
-  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -119,7 +116,6 @@ export class Search extends React.Component {
               <SearchIcon />
             </IconButton>
           </Paper>
-          <CandidateUpload sendCandidateList={this.sendCandidatesList}/>
           </div>
       </React.Fragment>
     );
