@@ -84,8 +84,14 @@ const CandidateStatusTable = (props) => {
   const globalRowData = props.rowData;
 
   useEffect(() => {
-    setRowData(props.rowData)
-  }, [props.rowData]);
+    const lowerCaseQuery = query.toLowerCase();
+    const searchedData = (query
+      ? props.rowData.filter((list) =>
+        CandidateStatusCoulmn.find(item => list[item.id].toLowerCase().includes(lowerCaseQuery))
+      )
+      : props.rowData);
+    setRowData(searchedData)
+  }, [props.rowData, query]);
 
   useEffect(() => {
     if(showAll) {

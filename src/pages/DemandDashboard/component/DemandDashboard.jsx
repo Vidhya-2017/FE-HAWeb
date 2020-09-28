@@ -31,10 +31,12 @@ class DemandDashboard extends React.Component {
     this.candidateTable = React.createRef();
   }
   chartValue = (value) => {
-    this.candidateTable.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-    });
+    if (this.candidateTable.current) {
+      this.candidateTable.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
     if (value.label === 'Others') {
       this.setState({ tableRowData: this.state[(value.label).toLowerCase()], tableTitle: value.label });
     } else {
