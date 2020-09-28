@@ -178,6 +178,7 @@ export class Dashboard extends React.Component {
             tp2StatusUpdate={this.tp2StatusUpdate}
             candidateDetails={this.props.candidateDetails}
             CandidatesbulkUpload={this.CandidatesbulkUpload}
+            updatTp1ScheduleDetails={this.props.updatTp1ScheduleDetails}
           />
         </div>
         {showToast &&
