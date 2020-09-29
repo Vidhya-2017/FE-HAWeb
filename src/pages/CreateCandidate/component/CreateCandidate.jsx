@@ -8,6 +8,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Toast } from 'react-bootstrap';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 const styles = (theme) => ({
     root: {
@@ -29,6 +31,9 @@ const styles = (theme) => ({
     },
     MuiOutlinedInputInput: {
         padding: "11.5px 14px !important"
+    },
+    inputHide: {
+        display: 'none !none'
     }
 });
 
@@ -78,6 +83,17 @@ class CreateCandidate extends React.Component {
             remarks: "",
             noticePeriod: [],
             hratest: "",
+            docFileName: "",
+            documentFile: "",
+            documentType: "",
+            imageFileName: "",
+            imageDocumentFile: "",
+            imageDocumentType: "",
+            doccheck: "",
+            candidateImgDoc: "",
+            candidateImgDocType: "",
+            candidatePdfDoc: "",
+            candidatePdfDocType: ""
         };
         this.np = [
             { 'label': '30 days', 'value': '30' },
@@ -90,7 +106,6 @@ class CreateCandidate extends React.Component {
             { label: "Low", 'id': '2' },
             { label: "Critical", 'id': '3' }
         ];
-        // this.baseState = this.state 
     }
     componentWillMount() {
         if (this.props.location.data && this.props.location.data !== '') {
@@ -170,7 +185,13 @@ class CreateCandidate extends React.Component {
             const completedDate = moment(testCompleteddt).format("YYYY-MM-DD");
             const noticePeriod = [{ 'value': '', 'label': this.props.location.data.notice_period + " days" }];
             const candidatePriority = [{ 'id': '', 'label': this.props.location.data.priority }];
-
+            const candidateDocuments =this.props.location.data.candidate_document;
+            const candidateDocType = this.props.location.data.document_mime_type;
+            const candidateDocfilePath = {'src':candidateDocuments, 'filename': "Resume.pdf"}
+            const Candidateimage = this.props.location.data.candidate_image;
+            const CandidateImageType = this.props.location.data.image_mime_type;
+            const ret = CandidateImageType.replace('image/','');
+            const imagefileNamePath = {'src':Candidateimage, 'filename': "Image."+ret}
             this.setState({
                 userId: candidateId,
                 username: candidateName,
@@ -193,11 +214,16 @@ class CreateCandidate extends React.Component {
                 selectedNPId: noticePeriod[0],
                 selectedPriority: candidatePriority[0],
                 remarks: candidateRemarks,
+                imageFileName: imagefileNamePath.filename,
+                docFileName: candidateDocfilePath.filename,
+                candidateImgDoc:imagefileNamePath.src,
+                candidateImgDocType:CandidateImageType,
+                candidatePdfDoc: candidateDocfilePath.src,
+                candidatePdfDocType: candidateDocType
 
             })
         }
     }
-
 
     candidateName = e => {
         this.setState({ username: e.target.value })
@@ -319,9 +345,11 @@ class CreateCandidate extends React.Component {
     }
 
     selectSecondarySkill = (e, values) => {
-        this.setState({
-            selectedAddSkillId: values
+        let selectSecondarySkills = values.map((data, i) => {
+            return data.value
         });
+        let secondarySkillsId = selectSecondarySkills.toString();
+        this.setState({ selectedAddSkillId: secondarySkillsId })
     }
     totalExperience = e => {
         this.setState({ te: e.target.value })
@@ -365,9 +393,29 @@ class CreateCandidate extends React.Component {
     selectRemarks = e => {
         this.setState({ remarks: e.target.value })
     }
-
+    encodeFile= (e) => {
+        var file = e.target.files[0];  
+        if (file ) {
+            this.setState({ documentType : file.type , docFileName: file.name})
+            var reader = new FileReader();
+        reader.onloadend = () => {
+            this.setState({ documentFile : reader.result})  
+        }
+        reader.readAsDataURL(file);
+        }
+      }
+    encodeImage = (e) => {
+        var file = e.target.files[0];
+        if (file ) {
+            this.setState({ imageDocumentType : file.type , imageFileName: file.name })
+            var reader = new FileReader();
+            reader.onloadend = () => {
+                this.setState({ imageDocumentFile : reader.result}) 
+            }
+            reader.readAsDataURL(file);
+        }
+      }
     handleSubmit(event) {
-
         event.preventDefault();
         let dateTime = new Date(this.state.testCompletedDate);
         let selectTestCompletedDate = moment(dateTime).format("YYYY-MM-DD HH:mm:ss");
@@ -399,6 +447,8 @@ class CreateCandidate extends React.Component {
         let candidatePrimarySkill = this.state.selectedSkillId;
         let candidatePrimarySkillId = candidatePrimarySkill.value.toString();
 
+        let candidateSecondarySkillId = this.state.selectedAddSkillId;
+
         const reqObj = {
             "candidate_name": this.state.username,
             "contact": this.state.contact,
@@ -411,21 +461,24 @@ class CreateCandidate extends React.Component {
             "current_location": candidateCL,
             "preferred_location": this.state.selectedPrefLocationId,
             "hr_test_taken": this.state.hratest,
-            "testlink_received_dt": selectTestRecievedDate,
-            "test_completed_dt": selectTestCompletedDate,
+            "testlink_received_dt": selectTestRecievedDate || "",
+            "test_completed_dt": selectTestCompletedDate || "",
             "hr_score": this.state.hrScore,
             "hr_remarks": this.state.hraRemarks,
             "source": CandidateSelectedsrec,
             "spoc": candidateSpocId,
             "recruiter": selectedRecruiterId,
             "primary_skill": candidatePrimarySkillId,
-            "secondary_skill": this.state.selectedAddSkillId,
+            "secondary_skill": candidateSecondarySkillId,
             "remarks": this.state.remarks,
             "created_by": "1",
             "created_date": "",
             "updated_by": "",
             "updated_date": "",
-
+            "candidate_document": this.state.documentFile,
+            "document_mime_type":this.state.documentType,
+            "candidate_image": this.state.imageDocumentFile,
+            "image_mime_type":this.state.imageDocumentType
         }
 
         const prepopulatedData = {
@@ -449,19 +502,23 @@ class CreateCandidate extends React.Component {
             "spoc": candidateSpocId,
             "recruiter": selectedRecruiterId,
             "primary_skill": candidatePrimarySkillId,
-            "secondary_skill": this.state.selectedAddSkillId,
+            "secondary_skill": candidateSecondarySkillId,
             "remarks": this.state.remarks,
             "created_by": "1",
             "created_date": "",
             "updated_by": "1",
             "updated_date": "",
+            "candidate_document": this.state.documentFile || this.state.candidatePdfDoc,
+            "document_mime_type":this.state.documentType || this.state.candidatePdfDocType,
+            "candidate_image": this.state.imageDocumentFile || this.state.candidateImgDoc,
+            "image_mime_type":this.state.imageDocumentType || this.state.candidateImgDocType
             // ...reqObj
         }
 
         if (this.props.location.data && this.props.location.data !== '') {
             this.props.updateCandidateForm(prepopulatedData).then((res) => {
                 if (res && res.errCode === 201) {
-                    this.setState({ showToast: true, toastMsg: 'Candidate Successfully Updated!' });
+                    this.setState({ showToast: true, toastMsg: 'Candidate Successfully Updated!', });
                 } else if (res && res.errCode === 404) {
                     alert(res.status)
                     this.setState({ showToast: true, toastMsg: res.status });
@@ -926,6 +983,55 @@ class CreateCandidate extends React.Component {
                                 required
                             />
                         </Grid>
+                        <Grid item xs={6} className={classes.gridAlign} >
+                        <div >
+                            <input
+                            style={{display: 'none' }}
+                                accept=".pdf,.doc,.docx"
+                                // className={classes.input}
+                                id="contained-button-file"
+                                type="file"
+                                onChange={this.encodeFile} 
+                            />
+                            <label htmlFor="contained-button-file">
+                                <Button variant="contained" color="default" 
+                                component="span"
+                                startIcon={<CloudUploadIcon />}
+                                >
+                                Resume Upload
+                                </Button>{"  "}
+                                {this.state.docFileName}
+                            </label>
+
+                        </div>
+                        </Grid>
+                        <Grid item xs={6} className={classes.gridAlign} >
+                        <div >
+                            <input
+                                style={{display: 'none' }}
+                                accept="image/*"
+                                id="contained-button-files"
+                                type="file"
+                                // value={this.state.che}
+                                onChange={this.encodeImage} 
+                                
+                            />
+                            <label htmlFor="contained-button-files">
+                                <Button variant="contained" color="default" 
+                                component="span"
+                                startIcon={<PhotoCamera />}
+                                >
+                                Upload
+                                </Button> {"  "}
+                                {this.state.imageFileName}
+                            </label>
+                            
+                        </div>
+                        {/* <input type="file" onChange={this.encodeFile} 
+                       accept=".pdf,.doc,.docx" 
+                        /> */}
+                        </Grid>
+                        
                     </Grid>
                     <Grid item xs={6} className={classes.gridAlign}>
                         <Button variant="contained" color="primary" type="submit" >
