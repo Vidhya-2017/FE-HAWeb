@@ -11,13 +11,13 @@ const styles = (theme) => ({
   },
   paperRoot: {
     [theme.breakpoints.down('sm')]: {
-      width: '80%',
+      width: '90%',
     },
     [theme.breakpoints.up('md')]: {
-      width: '55%',
+      width: '80%',
     },
     [theme.breakpoints.up('lg')]: {
-      width: '45%',
+      width: '70%',
     },
     margin: '20px auto',
     padding: '10px 20px'
@@ -74,8 +74,6 @@ class SPOCCreation extends React.Component {
       },
     ]
   }
-
-
 
   componentDidMount() {
     this.props.getSPOC().then((response) => {

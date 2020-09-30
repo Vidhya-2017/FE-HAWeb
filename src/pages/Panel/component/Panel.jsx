@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialTable from "material-table";
 import {
-  Paper, withStyles, InputLabel, Grid, Typography, Dialog, DialogTitle, TextField, DialogContent, Button
+  Paper, withStyles, Hidden, InputLabel, Grid, Typography, Dialog, DialogTitle, TextField, DialogContent, Button
 } from '@material-ui/core';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from 'react-select';
@@ -17,6 +17,10 @@ import moment from 'moment';
 const styles = (theme) => ({
   iconRoot: {
     color: '#6b6b6b'
+  },
+  dateTimePicker: {
+    height: 40,
+    width: '100%'
   },
   paperRoot: {
     width: '95%',
@@ -888,9 +892,8 @@ class Panel extends React.Component {
           <DialogTitle id="Panel-Name">Add Panel Details</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={2} >
-                <br />
-                <InputLabel htmlFor="panelCategory">Panel Name</InputLabel>
+              <Grid item xs={12} sm={2} >         
+                <InputLabel htmlFor="panelCategory" style={{ margin: 0, padding: '18px 0 0'}}>Panel Name</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <TextField
@@ -905,10 +908,9 @@ class Panel extends React.Component {
                   onChange={this.inputFieldChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={1} ></Grid>
+              <Hidden only={['xs']}><Grid item spacing={0} sm={1} ></Grid></Hidden>
               <Grid item xs={12} sm={2} >
-                <br />
-                <InputLabel htmlFor="sapid">Sap ID</InputLabel>
+                <InputLabel htmlFor="sapid" style={{ margin: 0, padding: '18px 0 0'}}>Sap ID</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <TextField
@@ -924,8 +926,7 @@ class Panel extends React.Component {
                 />
               </Grid>
               <Grid item xs={12} sm={2} >
-                <br />
-                <InputLabel htmlFor="email">Email ID</InputLabel>
+                <InputLabel htmlFor="email" style={{ margin: 0, padding: '18px 0 0'}}>Email ID</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <TextField
@@ -942,8 +943,7 @@ class Panel extends React.Component {
               </Grid>
               <Grid item xs={12} sm={1} ></Grid>
               <Grid item xs={12} sm={2} >
-                <br />
-                <InputLabel htmlFor="contact">Contact Number</InputLabel>
+                <InputLabel htmlFor="contact" style={{ margin: 0, padding: '18px 0 0'}}>Contact Number</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <TextField
@@ -960,8 +960,7 @@ class Panel extends React.Component {
                 />
               </Grid>
               <Grid item xs={12} sm={2} >
-                <br />
-                <InputLabel htmlFor="panelCategory">Panel Category</InputLabel>
+                <InputLabel htmlFor="panelCategory" style={{ margin: 0, padding: '18px 0 0'}}>Panel Category</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <Select
@@ -978,8 +977,7 @@ class Panel extends React.Component {
               </Grid>
               <Grid item xs={12} sm={1} ></Grid>
               <Grid item xs={12} sm={2} >
-                <br />
-                <InputLabel htmlFor="selectSkills">Select Skills</InputLabel>
+                <InputLabel htmlFor="selectSkills" style={{ margin: 0, padding: '18px 0 0'}}>Select Skills</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <Select
@@ -1005,48 +1003,37 @@ class Panel extends React.Component {
               {showappointments && <React.Fragment>
 
                 <Grid item xs={12} sm={2}>
-                  <br />
-                  <InputLabel htmlFor="startTime">Start Time</InputLabel>
+                  <InputLabel htmlFor="startTime" style={{ margin: 0, padding: '18px 0 0'}}>Start Time</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ padding: "11.5px 14px" }}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardTimePicker
                       margin="normal"
                       id="startTime"
+                      style={{ width: '100%'}}
+                      InputProps={{ className: classes.dateTimePicker }}
                       label="Start Time"
-                      className="w-100"
                       inputVariant="outlined"
-                      row={2}
-                      styles={SelectStyles()}
-                      // styles={{padding: "11.5px 14px;"}}
                       value={startTimeVal}
                       onChange={this.handleStartTimeChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item xs={12} sm={1} ></Grid>
+                <Grid item sm={1} ></Grid>
                 <Grid item xs={12} sm={2}>
-                  <br />
-                  <InputLabel htmlFor="endTime">End Time</InputLabel>
+                  <InputLabel htmlFor="endTime" style={{ margin: 0, padding: '18px 0 0'}}>End Time</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardTimePicker
                       margin="normal"
                       id="endTime"
+                      style={{ width: '100%'}}
+                      InputProps={{ className: classes.dateTimePicker }}
                       label="End Time"
                       inputVariant="outlined"
-                      style={{
-                        width: "102%",
-                      }}
                       onChange={this.handleEndTimeChange}
                       value={endTimeVal}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
                       helperText={startendtimeerror ? 'End time should be greater than start time' : ''}
                     />
 
@@ -1055,8 +1042,7 @@ class Panel extends React.Component {
 
 
                 <Grid item xs={12} sm={2} >
-                  <br />
-                  <InputLabel htmlFor="duration">Duration</InputLabel>
+                  <InputLabel htmlFor="duration" style={{ margin: 0, padding: '18px 0 0'}}>Duration</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3} >
                   <TextField
@@ -1074,8 +1060,7 @@ class Panel extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={1} ></Grid>
                 <Grid item xs={12} sm={2} >
-                  <br />
-                  <InputLabel htmlFor="until">Until</InputLabel>
+                  <InputLabel htmlFor="until" style={{ margin: 0, padding: '18px 0 0'}}>Until</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
 
@@ -1086,11 +1071,10 @@ class Panel extends React.Component {
                       label="Until Date"
                       format="MM/dd/yyyy"
                       inputVariant="outlined"
-                      style={{
-                        width: "102%",
-                      }}
                       value={untilDateVal}
                       onChange={this.handleDateChange}
+                      style={{ width: '100%'}}
+                      InputProps={{ className: classes.dateTimePicker }}
                       helperText={appointmentValidations.untilDatevalidation ? 'Please select the untill date' : ''}
                       KeyboardButtonProps={{
                         'aria-label': 'change date',
@@ -1100,8 +1084,7 @@ class Panel extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={2} >
-                  <br />
-                  <InputLabel htmlFor="selectSkills">Recurrence Days</InputLabel>
+                  <InputLabel htmlFor="selectSkills" style={{ margin: 0, padding: '18px 0 0'}}>Recurrence Days</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Select
@@ -1122,13 +1105,13 @@ class Panel extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={1} ></Grid>
                 <Grid item xs={12} sm={2} >
-                  <br />
-                  <InputLabel htmlFor="reccurence">Recurrence Pattern</InputLabel>
+                  <InputLabel htmlFor="reccurence" style={{ margin: 0, padding: '18px 0 0'}}>Recurrence Pattern</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3} >
                   <Select
                     className="w-100"
                     required={true}
+                    styles={SelectStyles()}
                     label="Recurrence Pattern"
                     id="recurrencePattern"
                     name="recurrencePattern"
@@ -1163,11 +1146,9 @@ class Panel extends React.Component {
                     </Grid>
                   </React.Fragment>
                 }
-                <br />
               </React.Fragment>
               }
             </Grid>
-            <br />
             {appointmentDetails.length > 0 &&
               <MaterialTable
                 title="Appointment Details"

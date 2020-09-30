@@ -87,14 +87,6 @@ export class Layout extends Component {
       { id: 24, title: 'Demand Dropped' },
       { id: 25, title: 'Dropped' }
     ];
-
-    this.view = [
-      { id: 1, title: 'History View', columns: ['name', 'email', 'contact', 'totalExperience', 'relevantExperience', 'currentCompany', 'noticePeriod', 'currentLocation', 'preferredLocation', 'primarySkill', 'secondarySkill'] },
-      { id: 2, title: 'Basic View', columns: ['name', 'email', 'contact', 'primarySkill', 'secondarySkill', 'interviewStatus'] },
-      { id: 3, title: 'Recruiter View', columns: ['name', 'recruiter', 'interviewStatus', 'interviewPanel', 'interviewDate', 'totalExperience', 'hrScore', 'hrRemarks'] },
-      { id: 4, title: 'SPOC View', columns: ['name', 'spoc', 'interviewStatus', 'interviewPanel', 'interviewDate'] },
-    ]
-
   }
 
   editCandidate = async (newData, oldData) => {
@@ -336,17 +328,14 @@ export class Layout extends Component {
 
 
   render() {
-    const { classes, getCandidateData } = this.props;
+    const { classes } = this.props;
     const { actualData, columnFields, enableEditIcon, enableDeleteIcon, showModal1, errorMsg } = this.state;
     return (
       <React.Fragment>
-        <Toolbar>
+        <Toolbar variant="dense" disableGutters>
           <Typography variant="h4" style={{ flex: 1 }} > Candidate List </Typography>
           <CandidateUpload sendCandidateList={this.getCandidateDetails} />
         </Toolbar>
-        {/* <Search getCandidateData={getCandidateData}
-          getSearchResult={this.getSearchResult}
-        /> */}
         <Button
           variant="contained"
           color="primary"
