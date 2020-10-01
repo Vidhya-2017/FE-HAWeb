@@ -134,9 +134,7 @@ export class Layout extends Component {
     let filteredDataone = selectedRows.map((data, i) => {
       return data
     });
-    let filteredDataoneList = filteredDataone.filter(function (data) {
-      return data.feedback === '' && !data.feedback;
-    })
+    let filteredDataoneList = filteredDataone.filter(data => data.last_updated_status_id === '26')
     if (status.id === 1) {
       let primarySkillId = filteredDataoneList.map(a => a.primary_skill_id);
       let CandidatePrimarySkillId = primarySkillId.toString();
@@ -170,19 +168,22 @@ export class Layout extends Component {
     }
   }
 
-  updatTp1ScheduleDetails = (reqObj, selectedCandidateData) => {
-    this.props.updatTp1ScheduleDetails(reqObj).then((res) => {
+  updatTp1ScheduleDetails  = async (reqObj, selectedCandidateData) => {
+    this.props.updatTp1ScheduleDetails(reqObj).then(async (res) => {
       if (res && res.errCode === 201) {
         let message = '';
         let unUpdatedCandidate = null;
         if (res.not_insert_arr.length > 0) {
           unUpdatedCandidate = selectedCandidateData.filter(candidate => res.not_insert_arr.includes(candidate.candidate_id)).map(item => item.candidate_name).join(', ');
+          await this.props.getCandidateData();
           message = 'Some of the data have not been updated Kindly check the status: ' + `${unUpdatedCandidate}`;
         }
         if (res.not_insert_arr.length === 0 && res.insert_arr.length > 0) {
+          await this.props.getCandidateData();
           message = ' Data Updated Successfully';
         }
         if (res.not_insert_arr.length === 0 && res.insert_arr.length === 0) {
+          await this.props.getCandidateData();
           message = 'Data have not been Updated';
         }
         this.setState({

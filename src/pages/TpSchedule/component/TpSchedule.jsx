@@ -96,8 +96,6 @@ export class TpSchedule extends Component {
     }
   }
 
-
-
   _handleSort = (name, cellType, sortType) => {
     const { actualData } = this.state
     let tableData = actualData.sort(sort_by(name, sortType === 'asc' ? false : true))
@@ -232,13 +230,9 @@ export class TpSchedule extends Component {
         this.setState({
           candidateResult: candidateDetails
         })
-
         this.props.history.push({ pathname: '/createCandidate', data: candidateDetails })
-
       }
-
     })
-
   }
 
   renderTP1TableHeader = () => {
@@ -266,12 +260,11 @@ export class TpSchedule extends Component {
         panelListData.push(obj.panel_name)
       })
     })
-
     return (
       <React.Fragment>
         {
           tableData.map((statement, i) => (
-            (!statement.feedback && !statement.feedback[0] ?
+            (statement.last_updated_status_id === "26" ?
               <TableRow key={statement.transactionId}>
                 <Cell sort={false} >
                   <select onChange={this.onTp1PanelSelect}>
