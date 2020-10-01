@@ -31,7 +31,7 @@ const EnhancedTableHead = (props) => {
               className={headCell.field === 'candidate_name' ? classes.stickyColumnHeaderName : ''}
               key={headCell.name}
               align="left"
-              style={{ minWidth: (headCell.field === 'preferred_location' || headCell.name === 'interviewStatus') ? '170px' : '100px', padding: 8 }}
+              style={{ minWidth: (headCell.field === 'secondary_skill' || headCell.field === 'preferred_location' || headCell.name === 'interviewStatus') ? '170px' : '100px', padding: 8 }}
               sortDirection={orderBy === headCell.field ? order : false}
             >
               <TableSortLabel

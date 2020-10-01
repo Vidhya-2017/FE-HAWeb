@@ -308,6 +308,7 @@ const CandidateList = (props) => {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
+                      hover
                       key={`${index}${row.candidate_id}`}
                     >
                       <TableCell className={classes.stickyColumnCell} padding="checkbox">
@@ -323,7 +324,7 @@ const CandidateList = (props) => {
                           return (
                             <Fragment key={colIndex}>
                               {!col.hide &&
-                                <TableCell key={colIndex} style={{ padding: 8 }}>{display}</TableCell>}
+                                <TableCell key={colIndex} style={{ padding: 5 }}>{display}</TableCell>}
                             </Fragment>
                           )
                         }
@@ -333,7 +334,7 @@ const CandidateList = (props) => {
                           return (
                             <Fragment key={colIndex}>
                               {!col.hide &&
-                                <TableCell key={colIndex} style={{ padding: 8 }} >{display}</TableCell>}
+                                <TableCell key={colIndex} style={{ padding: 5 }} >{display}</TableCell>}
                             </Fragment>
                           )
                         }
@@ -342,13 +343,13 @@ const CandidateList = (props) => {
                             row.feedback[row.feedback.length - 1].interview_schedule_dt : '-'
                           return (
                             <Fragment key={colIndex}>
-                              {!col.hide && <TableCell key={colIndex} style={{ padding: 8 }}>{display.split(' ')[0]}</TableCell>}
+                              {!col.hide && <TableCell key={colIndex} style={{ padding: 5 }}>{display.split(' ')[0]}</TableCell>}
                             </Fragment>
                           )
                         }
                         return (
                           <Fragment key={colIndex}>
-                            {!col.hide && <TableCell key={colIndex} className={col.field === 'candidate_name' ? classes.stickyColumnCellName : ''} style={{ padding: 8 }}>{col.field === 'preferred_location' ? row[col.field].split(',').join(', ') : row[col.field]}</TableCell>}
+                            {!col.hide && <TableCell key={colIndex} className={col.field === 'candidate_name' ? classes.stickyColumnCellName : ''} style={{ padding: 5 }}>{(col.field === 'preferred_location' || col.field === 'secondary_skill') ? row[col.field].split(',').join(', ') : row[col.field]}</TableCell>}
                           </Fragment>
                         )
                       }
