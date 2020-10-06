@@ -26,7 +26,7 @@ const FullViewFields = [
         hide: false
     },
     {
-        title: "Relavent Experience",
+        title: "Relevent Experience",
         name: 'relevantExperience',
         field: "relevant_experience",
         hide: false
@@ -83,7 +83,7 @@ const FullViewFields = [
         hide: false
     },
     {
-        title: "Prefered Location",
+        title: "Preferred Location",
         field: "preferred_location",
         name: 'preferredLocation',
         hide: false
@@ -113,16 +113,21 @@ const FullViewFields = [
         hide: false
     },
     {
-        title: "Primary Skill",
+        title: "Primary Skills",
         field: "primary_skill",
         name: 'primarySkill',
         hide: false
     },
     {
-        title: "Secondary Skill",
+        title: "Secondary Skills",
         field: "secondary_skill",
         name: 'secondarySkill',
         hide: false
+    },
+    {
+        title: "Resume",
+        field: "candidate_document",
+        name: 'Resume',
     },
 ];
 const HistoryViewFields = [
@@ -151,7 +156,7 @@ const HistoryViewFields = [
         hide: false
     },
     {
-        title: "Relavent Experience",
+        title: "Relevent Experience",
         name: 'relevantExperience',
         field: "relevant_experience",
         hide: false
@@ -175,19 +180,19 @@ const HistoryViewFields = [
         hide: false
     },
     {
-        title: "Prefered Location",
+        title: "Preferred Location",
         field: "preferred_location",
         name: 'preferredLocation',
         hide: false
     },
     {
-        title: "Primary Skill",
+        title: "Primary Skills",
         field: "primary_skill",
         name: 'primarySkill',
         hide: false
     },
     {
-        title: "Secondary Skill",
+        title: "Secondary Skills",
         field: "secondary_skill",
         name: 'secondarySkill',
         hide: false
@@ -225,13 +230,13 @@ const BasicViewFields = [
         },
     },
     {
-        title: "Primary Skill",
+        title: "Primary Skills",
         field: "primary_skill",
         name: 'primarySkill',
         hide: false
     },
     {
-        title: "Secondary Skill",
+        title: "Secondary Skills",
         field: "secondary_skill",
         name: 'secondarySkill',
         hide: false

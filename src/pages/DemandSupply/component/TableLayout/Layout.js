@@ -7,6 +7,7 @@ import CandidateUpload from '../CandidateUpload/CandidateUpload';
 import Search from '../Search/Search';
 import CustomisedMenu from '../StyledMenu/StyledMenu';
 import CandidateList from './CandidateList';
+import { Toast } from 'react-bootstrap';
 
 const styles = theme => ({
 
@@ -57,6 +58,9 @@ export class Layout extends Component {
       candidateResult: '',
       errorMsg: null,
       showModal1: false,
+      candidateCvDetails: [],
+      showToast: false,
+      toastMsg: null,
     }
     this.tp1Status = [
       { id: 1, title: 'TP1 Schedule' },
@@ -126,7 +130,8 @@ export class Layout extends Component {
       })
     }
     const tp1Panels = nextProps.panels;
-    this.setState({ tp1Panels })
+    const candidateCvDetails = nextProps.candidateCvDetails;   
+    this.setState({ tp1Panels, candidateCvDetails })
   }
 
   getCandiddateStatus = (status) => {
@@ -275,6 +280,8 @@ export class Layout extends Component {
           page: 0,
           enableEditIcon: false,
           enableDeleteIcon: false,
+          showToast: true,
+          toastMsg: 'Deleted Successfully!'
         })
       }
     })
@@ -327,14 +334,17 @@ export class Layout extends Component {
     this.props.CandidatesbulkUpload(reqObj)
   }
 
+  getcandidateDoc =(obj) =>{
+    this.props.getCandidateDocDetails(obj)
+  }
 
   render() {
     const { classes } = this.props;
-    const { actualData, columnFields, enableEditIcon, enableDeleteIcon, showModal1, errorMsg } = this.state;
+    const { actualData, columnFields, showToast, enableEditIcon, enableDeleteIcon, showModal1, errorMsg, candidateCvDetails } = this.state;
     return (
       <React.Fragment>
         <Toolbar variant="dense" disableGutters>
-          <Typography variant="h4" style={{ flex: 1 }} > Candidate List </Typography>
+          <Typography variant="h4" style={{ flex: 1 }} > Candidate Listings </Typography>
           <CandidateUpload sendCandidateList={this.getCandidateDetails} />
         </Toolbar>
         <Button
@@ -401,7 +411,7 @@ export class Layout extends Component {
           onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
-        <CandidateList selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData} />
+        <CandidateList getcandidateDoc ={this.getcandidateDoc} selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData} candidateCvDetails={candidateCvDetails}/>
         <Dialog open={showModal1}>
           <DialogTitle >{"Alert"}</DialogTitle>
           <DialogContent>
@@ -413,6 +423,28 @@ export class Layout extends Component {
           </Button>
           </DialogActions>
         </Dialog>
+        
+        {showToast &&
+          <Toast
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: '#deeddd',
+              border: '1px solid #28a745',
+              color: '#6c757d',
+              fontWeight: 500,
+              width: 400
+            }}
+
+            onClose={() => this.setState({ showToast: false })}
+            show={showToast}
+            delay={3000}
+            autohide
+          >
+            <Toast.Body>{this.state.toastMsg}</Toast.Body>
+          </Toast>
+        }
       </React.Fragment>
     );
   }

@@ -91,5 +91,14 @@ export const DashboardActions = {
         catch (error) {
             return (error.response);
         }
+    },
+    getCandidatecv: async (data) => {
+        try {
+            const response = await clients.DSaxiosAPI.post('/CandidateDocumentById.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
     }
 }

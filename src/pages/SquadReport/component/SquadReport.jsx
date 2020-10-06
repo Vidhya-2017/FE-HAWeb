@@ -65,17 +65,17 @@ class SquadReport extends React.Component {
     const { squadReport, colHeader, rowData, selectedSquad } = this.state;
     const doc = new jsPDF('l', 'pt');
     doc.setFontSize(14);
-    doc.setFontStyle('bold')
+    // doc.setFontStyle('bold')
     doc.text(`Squad Report`, 40, 40);
     doc.setFontSize(11);
-    doc.setFontStyle('normal')
+    // doc.setFontStyle('normal')
     doc.text(`Event Name: ${squadReport.Hackathon_Details[0].EventName}`, 40, 70);
     doc.text(`Squad Name: ${selectedSquad.label}`, 275, 70);
     doc.text(`Client Name: ${squadReport.Hackathon_Details[0].ClientName}`, 550, 70);
     doc.text(`Location: ${squadReport.Hackathon_Details[0].Location}`, 40, 90);
     doc.text(`Date: ${new Date(squadReport.Hackathon_Details[0].Date).toLocaleDateString()}`, 275, 90);
     doc.setFontSize(14);
-    doc.setFontStyle('bold')
+    // doc.setFontStyle('bold')
     doc.text('Candidate Feedback:', 40, 120);
     doc.autoTable({
       startY: 140,

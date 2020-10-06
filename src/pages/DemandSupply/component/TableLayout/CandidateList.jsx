@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Table, TableBody, TableCell, Toolbar, Typography, TableContainer, TablePagination, TableRow, Paper, Checkbox, InputBase } from '@material-ui/core';
+import { Table, TableBody, Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, TableCell, Toolbar, Typography, TableContainer, TablePagination, TableRow, Paper, Checkbox, InputBase } from '@material-ui/core';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ViewColumns from './ViewColumns';
 import EnhancedTableHead from './EnhancedTableHead';
@@ -8,6 +8,7 @@ import ColumnArr from './ColumnFields';
 import CustomiseView from '../CustomiseView/CustomiseView';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from '@material-ui/icons/Search';
+import SinglePagePDFViewer from "../PdfView/PdfView";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -108,7 +109,7 @@ const view = [
 
 const CandidateList = (props) => {
   const classes = useStyles();
-  const { selectCandidate } = props;
+  const { selectCandidate, candidateCvDetails } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('candidate_name');
   const [selected, setSelected] = React.useState([]);
@@ -116,10 +117,14 @@ const CandidateList = (props) => {
   const [columnData, setColumnData] = React.useState(ColumnArr.FullViewFields);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [search, setSearch] = React.useState(false);
+  const [show, setShow] = React.useState(false);
   const [query, setQuery] = React.useState('');
   const [rowData, setRowData] = React.useState(props.rowData);
 
   let globalRowData = [...props.rowData];
+
+  const handleClose = () => setShow(false);
+  const samplePDF = candidateCvDetails.candidate_document;
 
   useEffect(() => {
     // globalRowData = props.rowData;
@@ -218,7 +223,7 @@ const CandidateList = (props) => {
         columnData.find(item => {
           if (item.field !== 'feedback') {
             return list[item.field].toLowerCase().includes(lowerCaseQuery)
-          } else if(item.field === 'feedback' && list.feedback.length > 0) {
+          } else if (item.field === 'feedback' && list.feedback.length > 0) {
             if (item.name === 'interviewStatus') {
               let display = list.feedback[list.feedback.length - 1].status_name;
               return display.toLowerCase().includes(lowerCaseQuery)
@@ -234,16 +239,23 @@ const CandidateList = (props) => {
           }
           return false;
         })
-      ): globalRowData);
+      ) : globalRowData);
     setQuery(inputQuery);
     setRowData(searchedData);
+  }
+
+  const getCVdetails = (event, name) => {
+    const { getcandidateDoc } = props;
+    const reqObj = { candidate_id: name.toString() }
+    getcandidateDoc(reqObj);
+    setShow(true)
   }
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <Toolbar>
-          <Typography variant="h6" id="table1Title" component="div" className={classes.tableTitle}>Candidate List</Typography>
+          <Typography variant="h6" id="table1Title" component="div" className={classes.tableTitle}>Candidate Listings</Typography>
 
           {search && <div>
             <Paper component="form" className={classes.inputPaperRoot}>
@@ -347,6 +359,18 @@ const CandidateList = (props) => {
                             </Fragment>
                           )
                         }
+                        if (col.field === 'candidate_document' && col.name === 'Resume') {
+                          if (row.candidate_document != '') {
+                            const display = row.candidate_document;
+                            return (
+                              <TableCell key={colIndex} style={{ padding: 5 }}>
+                                <span onClick={(event) => getCVdetails(event, row.candidate_id)} >View {" "}</span>
+                                <a href={row.candidate_document} download>Download </a>
+                              </TableCell>
+                            )
+                          }
+                        }
+
                         return (
                           <Fragment key={colIndex}>
                             {!col.hide && <TableCell key={colIndex} className={col.field === 'candidate_name' ? classes.stickyColumnCellName : ''} style={{ padding: 5 }}>{(col.field === 'preferred_location' || col.field === 'secondary_skill') ? row[col.field].split(',').join(', ') : row[col.field]}</TableCell>}
@@ -375,6 +399,17 @@ const CandidateList = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Dialog open={show}>
+        <DialogTitle ></DialogTitle>
+        <DialogContent>
+          <SinglePagePDFViewer pdf={samplePDF} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

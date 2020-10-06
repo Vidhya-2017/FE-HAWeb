@@ -50,16 +50,16 @@ class Report extends React.Component {
     const { eventReport, colHeader, data } = this.state;
     const doc = new jsPDF('l', 'pt');
     doc.setFontSize(14);
-    doc.setFontStyle('bold')
+    // doc.setFontStyle('bold')
     doc.text(`Event Report`, 40, 40);
     doc.setFontSize(11);
-    doc.setFontStyle('normal')
+    // doc.setFontStyle('normal')
     doc.text(`Event Name: ${eventReport.Hackathon_Details[0].EventName}`, 40, 70);
     doc.text(`Client Name: ${eventReport.Hackathon_Details[0].ClientName}`, 400, 70);
     doc.text(`Location: ${eventReport.Hackathon_Details[0].Location}`, 40, 90);
     doc.text(`Date: ${new Date(eventReport.Hackathon_Details[0].Date).toLocaleDateString()}`, 400, 90);
     doc.setFontSize(14);
-    doc.setFontStyle('bold')
+    // doc.setFontStyle('bold')
     doc.text('Candidate Feedback:', 40, 120);
     doc.autoTable({
       startY: 140,

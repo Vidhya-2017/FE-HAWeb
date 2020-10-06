@@ -19,7 +19,8 @@ export class Dashboard extends React.Component {
       panelList: [],
       showToast: false,
       toastMsg: null,
-      candidateId: ''
+      candidateId: '',
+      candidateCv: []
     }
   }
 
@@ -126,6 +127,18 @@ export class Dashboard extends React.Component {
       }
     })
   }
+
+  getCandidateDocDetails = (res) => {
+    this.props.getCandidatecv(res).then((res) => {
+      if (res && res.errCode === 200) {
+        const cvDetails = res.arrRes
+        this.setState({
+          candidateCv: cvDetails
+        })
+      } 
+    })
+  }
+
   componentDidMount() {
     this.getCandidateData()
   }
@@ -179,6 +192,9 @@ export class Dashboard extends React.Component {
             candidateDetails={this.props.candidateDetails}
             CandidatesbulkUpload={this.CandidatesbulkUpload}
             updatTp1ScheduleDetails={this.props.updatTp1ScheduleDetails}
+            candidateCvDetails ={this.state.candidateCv}
+            // getcandidateDoc={this.getcandidateDoc}
+            getCandidateDocDetails={this.getCandidateDocDetails}
           />
         </div>
         {showToast &&
