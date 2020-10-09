@@ -27,7 +27,11 @@ const SelectStyles = (width = 200, maxWidth = 215) => {
         boxShadow: '0 0 0 1px #000000'
       }
     }),
-      menu: styles => ({ ...styles, backgroundColor: '#fff', border: '1px solid #999' }),
+      menu: styles => ({ 
+        ...styles, 
+        backgroundColor: '#fff',
+      zIndex: 1000,
+      border: '1px solid #999' }),
         indicatorSeparator: styles => ({ ...styles, backgroundColor: 'none' }),
           option: (styles, { isFocused, isSelected }) => {
             return {

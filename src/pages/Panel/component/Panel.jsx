@@ -12,7 +12,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import moment from 'moment';
+import * as moment from 'moment';
 
 const styles = (theme) => ({
   iconRoot: {
@@ -61,7 +61,7 @@ const SelectStyles = (width = 200, maxWidth = 215) => {
         boxShadow: '0 0 0 1px #000000'
       }
     }),
-    menu: styles => ({ ...styles, backgroundColor: '#fff', border: '1px solid #999', zIndex: 10 }),
+    menu: styles => ({ ...styles, backgroundColor: '#fff', border: '1px solid #999', zIndex: 1000 }),
     indicatorSeparator: styles => ({ ...styles, backgroundColor: 'none' }),
     option: (styles, { isFocused, isSelected }) => {
       return {
@@ -130,6 +130,7 @@ class Panel extends React.Component {
       toastMsg: '',
       skills: [],
       skillList: [],
+      panelEditMode: false,
       showAddPanelModal: false,
       formIsValid: false,
       value: '',
@@ -149,7 +150,9 @@ class Panel extends React.Component {
       appointmentDetails: [],
       isUpdate: false,
       lastEditablevalue: [],
-      appointmentValidations: []
+      appointmentValidations: [],
+      panelid: '',
+      panel_calendar_id: ''
     }
     this.columnFields = [
       {
@@ -209,31 +212,7 @@ class Panel extends React.Component {
               defaultValue={defaultValuePanelCat}
             />
           )
-        },
-      },
-      {
-        title: "Start Time",
-        field: "start_time",
-      },
-      {
-        title: "End Time",
-        field: "end_time",
-      },
-      {
-        title: "Duration(min)",
-        field: "duration",
-      },
-      {
-        title: "Until Date",
-        field: "until_date",
-      },
-      {
-        title: "Recurrence Days",
-        field: "recurrence_days",
-      },
-      {
-        title: "Recurrence Pattern",
-        field: "recurrence_pattern",
+        }
       },
     ]
 
@@ -393,9 +372,9 @@ class Panel extends React.Component {
     });
   }
 
-  handleModalSubmit = () => {
-    const { formValues, panelCat, appointmentDetails } = this.state;
-    const skillIds = this.state.skills.map(skill => skill.skillId);
+  handleModalEdit = () => {
+    const { formValues, panelCat, appointmentDetails, panelid, skills } = this.state;
+    const skillIds = skills.map(skill => skill.skillId);
     const reqObj = {
       panel_name: formValues.name.value,
       sap_id: formValues.sapid.value,
@@ -404,28 +383,44 @@ class Panel extends React.Component {
       email_id: formValues.email.value,
       panel_category: panelCat.value,
       appointmentDetails: appointmentDetails,
+      panel_id: panelid,
+      updated_by: "1",
       created_by: "1"
     }
-    const skillNames = this.state.skills.map(item => item.label);
-    this.props.addPanel(reqObj).then(response => {
+    this.props.editPanel(reqObj).then(response => {
+      Object.entries(panelForm).map(([key, value]) => {
+        value.value = "";
+        value.valid = false;
+        return 0;
+      });
       if (response && response.errCode === 201) {
-        const myObj = {
-          panel_id: response.arrRes,
-          panel_name: formValues.name.value,
-          sap_id: formValues.sapid.value,
-          contact: formValues.contact.value,
-          email_id: formValues.email.value,
-          skill_name: skillNames.toString(),
-          skill_id: skillIds
-        }
-        const updatedItems = [...this.state.panelListVal, myObj];
+        const panleresult = response.panel_res;
+        this.setState(prevState => ({
+          panelListVal: prevState.panelListVal.map(
+            el => el.panel_id === panleresult.panel_id ? {
+              ...el,
+              panel_name: panleresult.panel_name,
+              email_id: panleresult.email_id,
+              sap_id: panleresult.sap_id,
+              skill_id: panleresult.skill_id,
+              skill_name: panleresult.skill_name,
+              contact: panleresult.contact,
+              skill_value: panleresult.skill_value,
+              updated_by: panleresult.updated_by,
+              is_active: panleresult.is_active,
+              created_date: panleresult.created_date,
+              panel_category: panleresult.panel_category,
+              appointment_detil: panleresult.appointment_detil
+            } : el
+          )
+        }));
+
         this.setState({
           formValues: { ...panelForm },
           skills: '',
           showAddPanelModal: false,
-          panelListVal: updatedItems,
           showToast: true,
-          toastMsg: "Panel added successfully!",
+          toastMsg: "Panel Updated successfully!",
           showappointments: false,
           formIsValid: false,
           appointmentDetails: [],
@@ -481,12 +476,100 @@ class Panel extends React.Component {
         })
       }
     });
+  }
+
+  handleModalSubmit = () => {
+    const { formValues, panelCat, appointmentDetails, panelListVal, skills } = this.state;
+    const skillIds = skills.map(skill => skill.skillId);
+    const reqObj = {
+      panel_name: formValues.name.value,
+      sap_id: formValues.sapid.value,
+      contact: formValues.contact.value,
+      skill_id: skillIds.toString(),
+      email_id: formValues.email.value,
+      panel_category: panelCat.value,
+      appointmentDetails: appointmentDetails,
+      created_by: "1"
+    }
+    skills.map(item => item.label);
+    this.props.addPanel(reqObj).then(response => {
+      Object.entries(panelForm).map(([key, value]) => {
+        value.value = "";
+        value.valid = false;
+        return 0;
+      });
+      if (response && response.errCode === 201) {
+        const panleresult = response.panel_res;
+
+        this.setState({
+          formValues: { ...panelForm },
+          skills: '',
+          showAddPanelModal: false,
+          panelListVal: [...panelListVal, panleresult],
+          showToast: true,
+          toastMsg: "Panel added successfully!",
+          showappointments: false,
+          formIsValid: false,
+          appointmentDetails: [],
+          panelCat: '',
+          startTime: '',
+          startTimeVal: moment(),
+          endTime: '',
+          endTimeVal: moment(),
+          duration: '',
+          untilDateVal: moment().format('YYYY-MM-DD'),
+          recurrenceDays: '',
+          recurrencePattern: '',
+        });
+      }
+      else if (response && response.errCode === 404) {
+        this.setState({
+          formValues: { ...panelForm },
+          showAddPanelModal: false,
+          showToast: true,
+          toastMsg: " Panel Already exists!",
+          showappointments: false,
+          formIsValid: false,
+          appointmentDetails: [],
+          panelCat: '',
+          startTime: '',
+          startTimeVal: moment(),
+          endTime: '',
+          endTimeVal: moment(),
+          duration: '',
+          untilDateVal: moment().format('YYYY-MM-DD'),
+          recurrenceDays: '',
+          recurrencePattern: '',
+        })
+      }
+      else {
+        this.setState({
+          formValues: { ...panelForm },
+          showAddPanelModal: false,
+          showToast: true,
+          toastMsg: "Error in adding Panel!",
+          showappointments: false,
+          formIsValid: false,
+          appointmentDetails: [],
+          panelCat: '',
+          startTime: '',
+          startTimeVal: moment(),
+          endTime: '',
+          endTimeVal: moment(),
+          duration: '',
+          untilDateVal: moment().format('YYYY-MM-DD'),
+          recurrenceDays: '',
+          recurrencePattern: '',
+        });
+      }
+    });
   };
 
   handleModalClose = () => {
     this.setState({
       showAddPanelModal: false, formValues: { ...panelForm }, skills: '', showappointments: false,
       formIsValid: false,
+      panelEditMode: false,
       appointmentDetails: [],
       panelCat: '',
       startTime: '',
@@ -497,7 +580,12 @@ class Panel extends React.Component {
       untilDateVal: moment().format('YYYY-MM-DD'),
       recurrenceDays: '',
       recurrencePattern: '',
-    })
+    });
+    Object.entries(panelForm).map(([key, value]) => {
+      value.value = "";
+      value.valid = false;
+      return 0;
+    });
   }
 
 
@@ -720,6 +808,52 @@ class Panel extends React.Component {
     })
   }
 
+  handlePanelEdit = (event, rowdata) => {
+    let panelcategoryvalue;
+    let skillsvalue;
+    Object.entries(panelForm).map(([key, value]) => {
+      if (key === 'name') {
+        value.value = rowdata.panel_name;
+        value.valid = true;
+      }
+      if (key === 'sapid') {
+        value.value = rowdata.sap_id;
+        value.valid = true;
+      }
+      if (key === 'email') {
+        value.value = rowdata.email_id;
+        value.valid = true;
+      }
+      if (key === 'contact') {
+        value.value = rowdata.contact;
+        value.valid = true;
+      }
+      if (key === 'skills') {
+        value.value = rowdata.skill_id;
+        skillsvalue = rowdata.skill_value;
+        value.valid = true;
+      }
+      if (key === 'panelCat') {
+        value.value = rowdata.panel_category;
+        panelcategoryvalue = { value: rowdata.panel_category, label: rowdata.panel_category };
+        value.valid = true;
+      }
+      return 0;
+    });
+    let appointmeidlen = rowdata.appointment_detil.length;
+    this.setState({
+      showAddPanelModal: true,
+      panelEditMode: true,
+      panelCat: panelcategoryvalue,
+      skills: skillsvalue,
+      appointmentDetails: rowdata.appointment_detil,
+      appointmentid: appointmeidlen + 1,
+      formIsValid: true,
+      panelid: rowdata.panel_id
+    });
+
+  }
+
   handlesubmitvalidation = () => {
     const { startTime, endTime, duration, untilDateVal, recurrenceDays, recurrencePattern } = this.state;
     let formvalid = true;
@@ -762,32 +896,30 @@ class Panel extends React.Component {
 
 
   handleAddAppointment = () => {
-
+    const { appointmentid, startTime, startTimeVal, endTime, endTimeVal, duration, untilDateVal, recurrenceDays, recurrencePattern, appointmentDetails } = this.state;
     const formvalid = this.handlesubmitvalidation();
     if (formvalid && !this.state.startendtimeerror) {
       let stringData = this.state.recurrenceDays.reduce((result, item) => {
         return `${result}${item.label},`
       }, "");
       stringData = stringData.replace(/,(\s+)?$/, '');
-      let {appointmentid} = this.state;
+      let appointvalue = appointmentid + 1;
       const appointmentObj = {
-        appointmentid: appointmentid++,
-        startTime: this.state.startTime,
-        startTimeVal: this.state.startTimeVal,
-        endTime: this.state.endTime,
-        endTimeVal: this.state.endTimeVal,
-        duration: this.state.duration,
-        untilDateVal: this.state.untilDateVal,
-        untillDateValue: this.state.untilDateVal,
-        recurrenceDays: this.state.recurrenceDays,
-        recurrencePattern: this.state.recurrencePattern,
-        recurrencePatternValue: this.state.recurrencePattern.value,
+        appointmentid: appointmentid,
+        startTime: startTime,
+        startTimeVal: startTimeVal,
+        endTime: endTime,
+        endTimeVal: endTimeVal,
+        duration: duration,
+        untilDateVal: untilDateVal,
+        untillDateValue: untilDateVal,
+        recurrenceDays: recurrenceDays,
+        recurrencePattern: recurrencePattern,
+        recurrencePatternValue: recurrencePattern.value,
         recurrenceDaysValue: stringData
       }
 
-      const appointmentvalue = [...this.state.appointmentDetails, appointmentObj];
-
-      this.setState({ appointmentDetails: appointmentvalue, startTime: '', startTimeVal: moment(), endTime: '', endTimeVal: moment(), duration: '', untilDateVal: moment().format('YYYY-MM-DD'), recurrenceDays: '', recurrencePattern: '' });
+      this.setState({ appointmentDetails: [...appointmentDetails, appointmentObj], startTime: '', startTimeVal: moment(), endTime: '', endTimeVal: moment(), duration: '', untilDateVal: moment().format('YYYY-MM-DD'), recurrenceDays: '', recurrencePattern: '', appointmentid: appointvalue });
 
       this.inputFieldChange({ target: { value: 'appointmen', name: "appointMent", validation: { required: true }, type: "text" } });
     }
@@ -795,57 +927,78 @@ class Panel extends React.Component {
   }
 
   handleEditAppointment = (rowdata, value) => {
-    this.setState({
-      lastEditablevalue: value,
-      startTimeVal: value.startTimeVal,
-      endTimeVal: value.endTimeVal,
-      startTime: value.startTime,
-      endTime: value.endTime,
-      duration: value.duration,
-      recurrenceDays: value.recurrenceDays,
-      recurrenceDaysValue: value.recurrenceDaysValue,
-      recurrencePattern: value.recurrencePattern,
-      recurrencePatternValue: value.recurrencePatternValue,
-      untilDateVal: value.untilDateVal,
-      untillDateValue: value.untillDateValue,
-      isUpdate: true
-    });
+    const panleditmode = this.state.panelEditMode;
+    if (!panleditmode) {
+      this.setState({
+        showappointments: true,
+        lastEditablevalue: value,
+        startTimeVal: value.startTimeVal,
+        endTimeVal: value.endTimeVal,
+        startTime: value.startTime,
+        endTime: value.endTime,
+        duration: value.duration,
+        recurrenceDays: value.recurrenceDays,
+        recurrenceDaysValue: value.recurrenceDaysValue,
+        recurrencePattern: value.recurrencePattern,
+        recurrencePatternValue: value.recurrencePatternValue,
+        untilDateVal: value.untilDateVal,
+        untillDateValue: value.untillDateValue,
+        isUpdate: true
+      });
+    } else {
+      this.setState({
+        showappointments: true,
+        lastEditablevalue: value,
+        startTimeVal: value.startTimeVal,
+        endTimeVal: value.endTimeVal,
+        startTime: value.startTime,
+        endTime: value.endTime,
+        duration: value.duration,
+        recurrenceDays: value.recurrenceDays,
+        recurrenceDaysValue: value.recurrenceDaysValue,
+        recurrencePattern: value.recurrencePattern,
+        recurrencePatternValue: value.recurrencePatternValue,
+        untilDateVal: value.untilDateVal,
+        untillDateValue: value.untillDateValue,
+        isUpdate: true,
+        panel_calendar_id: value.panel_calendar_id
+      });
+    }
   }
 
   handleUpdateAppointment = () => {
     const formvalid = this.handlesubmitvalidation();
     if (formvalid && !this.state.startendtimeerror) {
-      const stateval = this.state;
-      const appointmentidval = stateval.lastEditablevalue.appointmentid;
+      const { startTime, startTimeVal, endTime, endTimeVal, duration, untilDateVal, recurrenceDays, recurrencePattern, lastEditablevalue, panel_calendar_id } = this.state;
+      const appointmentidval = lastEditablevalue.appointmentid;
       let stringData = this.state.recurrenceDays.reduce((result, item) => {
         return `${result}${item.label},`
       }, "");
       stringData = stringData.replace(/,(\s+)?$/, '');
-      let appointmentvalue = [...this.state.appointmentDetails];
-      appointmentvalue = appointmentvalue.filter(function (obj) {
-        return obj.appointmentid !== appointmentidval;
-      });
-      let {appointmentid} = this.state;
-      const appointmentObj = {
-        appointmentid: appointmentid++,
-        startTime: this.state.startTime,
-        startTimeVal: this.state.startTimeVal,
-        endTime: this.state.endTime,
-        endTimeVal: this.state.endTimeVal,
-        duration: this.state.duration,
-        untilDateVal: this.state.untilDateVal,
-        untillDateValue: this.state.untilDateVal,
-        recurrenceDays: this.state.recurrenceDays,
-        recurrencePattern: this.state.recurrencePattern,
-        recurrencePatternValue: this.state.recurrencePattern.value,
-        recurrenceDaysValue: stringData
-      }
 
-      const new_appointmentvalue = [...appointmentvalue, appointmentObj];
+      this.setState(prevState => ({
+        appointmentDetails: prevState.appointmentDetails.map(
+          el => el.appointmentid === appointmentidval ? {
+            ...el,
+            appointmentid: appointmentidval,
+            startTime: startTime,
+            startTimeVal: startTimeVal,
+            endTime: endTime,
+            endTimeVal: endTimeVal,
+            duration: duration,
+            untilDateVal: untilDateVal,
+            untillDateValue: untilDateVal,
+            recurrenceDays: recurrenceDays,
+            recurrencePattern: recurrencePattern,
+            recurrencePatternValue: recurrencePattern.value,
+            recurrenceDaysValue: stringData,
+            panel_calendar_id: panel_calendar_id
+          } : el
+        )
+      }));
+
       this.setState({
-        appointmentDetails: new_appointmentvalue, lastEditablevalue: '',
-        startTime: '', startTimeVal: moment(), endTime: '', endTimeVal: moment(), duration: '',
-        untilDateVal: moment().format('YYYY-MM-DD'), recurrenceDays: '', recurrencePattern: '', isUpdate: false
+        lastEditablevalue: '', startTime: '', startTimeVal: moment(), endTime: '', endTimeVal: moment(), duration: '', untilDateVal: moment().format('YYYY-MM-DD'), recurrenceDays: '', recurrencePattern: '', isUpdate: false
       });
     }
   }
@@ -859,11 +1012,19 @@ class Panel extends React.Component {
 
   hadleDeleteAppointment = (rowData, value) => {
     let appointmentvalue = [...this.state.appointmentDetails];
+    let formvalid;
     const appointmentidval = value.appointmentid;
     appointmentvalue = appointmentvalue.filter(function (obj) {
       return obj.appointmentid !== appointmentidval;
     });
-    this.setState({ appointmentDetails: appointmentvalue });
+
+    if (appointmentvalue.length <= 0) {
+      formvalid = false;
+    } else {
+      formvalid = true;
+    }
+
+    this.setState({ appointmentDetails: appointmentvalue, formIsValid: formvalid });
   }
 
   AppointmentShow = () => {
@@ -872,7 +1033,10 @@ class Panel extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { formIsValid, skillList, formValues, showappointments, appointmentValidations, appointmentDetails, showAddPanelModal, panelCat, skills, startTimeVal, endTimeVal, duration, untilDateVal, recurrenceDays, recurrencePattern, panelListVal, startendtimeerror, isUpdate } = this.state;
+    const { formIsValid, skillList, formValues, showappointments, appointmentValidations, appointmentDetails,
+      showAddPanelModal, panelCat, skills, startTimeVal, endTimeVal, duration, untilDateVal, recurrenceDays,
+      recurrencePattern, panelListVal, startendtimeerror, isUpdate, panelEditMode } = this.state;
+
     return (
       <div className="PanelList_container" id="panelDiv">
         <Dialog fullScreen open={showAddPanelModal} onClose={this.handleModalClose} TransitionComponent={Transition}>
@@ -882,18 +1046,21 @@ class Panel extends React.Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" style={{ flex: 1 }} >
-                Add Panel Details
-            </Typography>
-              <Button style={(!formIsValid) ? { backgroundColor: "#ECECEC", color: "#000000", cursor: "pointer" } : { backgroundColor: "#1aba3d", color: "#ffffff" }} disabled={!formIsValid} variant="outlined" onClick={this.handleModalSubmit}  >
-                Submit
-            </Button>
+                {panelEditMode ? 'Edit Panel Details' : 'Add Panel Details'}
+              </Typography>
+              {panelEditMode &&
+                <Button style={(!formIsValid) ? { backgroundColor: "#ECECEC", color: "#000000", cursor: "pointer" } : { backgroundColor: "#1aba3d", color: "#ffffff" }} disabled={!formIsValid} variant="outlined" onClick={this.handleModalEdit}  >Update</Button>
+              }
+              {!panelEditMode &&
+                <Button style={(!formIsValid) ? { backgroundColor: "#ECECEC", color: "#000000", cursor: "pointer" } : { backgroundColor: "#1aba3d", color: "#ffffff" }} disabled={!formIsValid} variant="outlined" onClick={this.handleModalSubmit}  >            Submit </Button>
+              }
             </Toolbar>
           </AppBar>
-          <DialogTitle id="Panel-Name">Add Panel Details</DialogTitle>
+          <DialogTitle id="Panel-Name">{panelEditMode ? 'Edit Panel Details' : 'Add Panel Details'}</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={2} >         
-                <InputLabel htmlFor="panelCategory" style={{ margin: 0, padding: '18px 0 0'}}>Panel Name</InputLabel>
+              <Grid item xs={12} sm={2} >
+                <InputLabel htmlFor="panelCategory" style={{ margin: 0, padding: '18px 0 0' }}>Panel Name</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <TextField
@@ -910,13 +1077,13 @@ class Panel extends React.Component {
               </Grid>
               <Hidden only={['xs']}><Grid item spacing={0} sm={1} ></Grid></Hidden>
               <Grid item xs={12} sm={2} >
-                <InputLabel htmlFor="sapid" style={{ margin: 0, padding: '18px 0 0'}}>Sap ID</InputLabel>
+                <InputLabel htmlFor="sapid" style={{ margin: 0, padding: '18px 0 0' }}>SAP ID</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <TextField
                   className="w-100"
                   required={true}
-                  label="Sap ID"
+                  label="SAP ID"
                   variant="outlined"
                   margin="dense"
                   type="number"
@@ -926,7 +1093,7 @@ class Panel extends React.Component {
                 />
               </Grid>
               <Grid item xs={12} sm={2} >
-                <InputLabel htmlFor="email" style={{ margin: 0, padding: '18px 0 0'}}>Email ID</InputLabel>
+                <InputLabel htmlFor="email" style={{ margin: 0, padding: '18px 0 0' }}>Email ID</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <TextField
@@ -943,13 +1110,13 @@ class Panel extends React.Component {
               </Grid>
               <Grid item xs={12} sm={1} ></Grid>
               <Grid item xs={12} sm={2} >
-                <InputLabel htmlFor="contact" style={{ margin: 0, padding: '18px 0 0'}}>Contact Number</InputLabel>
+                <InputLabel htmlFor="contact" style={{ margin: 0, padding: '18px 0 0' }}>Contact No</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <TextField
                   className="w-100"
                   required={true}
-                  label="Phone Number"
+                  label="Contact No"
                   inputProps={{ max: 12 }}
                   variant="outlined"
                   margin="dense"
@@ -960,7 +1127,7 @@ class Panel extends React.Component {
                 />
               </Grid>
               <Grid item xs={12} sm={2} >
-                <InputLabel htmlFor="panelCategory" style={{ margin: 0, padding: '18px 0 0'}}>Panel Category</InputLabel>
+                <InputLabel htmlFor="panelCategory" style={{ margin: 0, padding: '18px 0 0' }}>Panel Category</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <Select
@@ -977,7 +1144,7 @@ class Panel extends React.Component {
               </Grid>
               <Grid item xs={12} sm={1} ></Grid>
               <Grid item xs={12} sm={2} >
-                <InputLabel htmlFor="selectSkills" style={{ margin: 0, padding: '18px 0 0'}}>Select Skills</InputLabel>
+                <InputLabel htmlFor="selectSkills" style={{ margin: 0, padding: '18px 0 0' }}>Select Skills</InputLabel>
               </Grid>
               <Grid item xs={12} sm={3} >
                 <Select
@@ -1003,14 +1170,14 @@ class Panel extends React.Component {
               {showappointments && <React.Fragment>
 
                 <Grid item xs={12} sm={2}>
-                  <InputLabel htmlFor="startTime" style={{ margin: 0, padding: '18px 0 0'}}>Start Time</InputLabel>
+                  <InputLabel htmlFor="startTime" style={{ margin: 0, padding: '18px 0 0' }}>Start Time</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardTimePicker
                       margin="normal"
                       id="startTime"
-                      style={{ width: '100%'}}
+                      style={{ width: '100%' }}
                       InputProps={{ className: classes.dateTimePicker }}
                       label="Start Time"
                       inputVariant="outlined"
@@ -1021,14 +1188,14 @@ class Panel extends React.Component {
                 </Grid>
                 <Grid item sm={1} ></Grid>
                 <Grid item xs={12} sm={2}>
-                  <InputLabel htmlFor="endTime" style={{ margin: 0, padding: '18px 0 0'}}>End Time</InputLabel>
+                  <InputLabel htmlFor="endTime" style={{ margin: 0, padding: '18px 0 0' }}>End Time</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardTimePicker
                       margin="normal"
                       id="endTime"
-                      style={{ width: '100%'}}
+                      style={{ width: '100%' }}
                       InputProps={{ className: classes.dateTimePicker }}
                       label="End Time"
                       inputVariant="outlined"
@@ -1042,7 +1209,7 @@ class Panel extends React.Component {
 
 
                 <Grid item xs={12} sm={2} >
-                  <InputLabel htmlFor="duration" style={{ margin: 0, padding: '18px 0 0'}}>Duration</InputLabel>
+                  <InputLabel htmlFor="duration" style={{ margin: 0, padding: '18px 0 0' }}>Duration</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3} >
                   <TextField
@@ -1060,7 +1227,7 @@ class Panel extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={1} ></Grid>
                 <Grid item xs={12} sm={2} >
-                  <InputLabel htmlFor="until" style={{ margin: 0, padding: '18px 0 0'}}>Until</InputLabel>
+                  <InputLabel htmlFor="until" style={{ margin: 0, padding: '18px 0 0' }}>Until</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
 
@@ -1069,11 +1236,11 @@ class Panel extends React.Component {
                       margin="normal"
                       id="untilDate"
                       label="Until Date"
-                      format="MM/dd/yyyy"
+                      format="dd/MM/yyyy"
                       inputVariant="outlined"
                       value={untilDateVal}
                       onChange={this.handleDateChange}
-                      style={{ width: '100%'}}
+                      style={{ width: '100%' }}
                       InputProps={{ className: classes.dateTimePicker }}
                       helperText={appointmentValidations.untilDatevalidation ? 'Please select the untill date' : ''}
                       KeyboardButtonProps={{
@@ -1084,7 +1251,7 @@ class Panel extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={2} >
-                  <InputLabel htmlFor="selectSkills" style={{ margin: 0, padding: '18px 0 0'}}>Recurrence Days</InputLabel>
+                  <InputLabel htmlFor="selectSkills" style={{ margin: 0, padding: '18px 0 0' }}>Recurrence Days</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Select
@@ -1105,7 +1272,7 @@ class Panel extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={1} ></Grid>
                 <Grid item xs={12} sm={2} >
-                  <InputLabel htmlFor="reccurence" style={{ margin: 0, padding: '18px 0 0'}}>Recurrence Pattern</InputLabel>
+                  <InputLabel htmlFor="reccurence" style={{ margin: 0, padding: '18px 0 0' }}>Recurrence Pattern</InputLabel>
                 </Grid>
                 <Grid item xs={12} sm={3} >
                   <Select
@@ -1149,12 +1316,13 @@ class Panel extends React.Component {
               </React.Fragment>
               }
             </Grid>
+            <br />
             {appointmentDetails.length > 0 &&
               <MaterialTable
                 title="Appointment Details"
                 columns={this.ColumnValue}
                 data={appointmentDetails}
-                style={{ boxShadow: 'none', border: 'solid 1px #ccc', maxWidth: "80%", maxHeight: "350px", paddingLeft: '100' }}
+                style={{ boxShadow: 'none', border: 'solid 1px #ccc', maxWidth: "92%", maxHeight: "75%", paddingLeft: '100' }}
                 options={{
                   actionsColumnIndex: -1,
                   pageSizeOptions: []
@@ -1193,23 +1361,20 @@ class Panel extends React.Component {
                 icon: 'add',
                 tooltip: 'Add Panel Data',
                 isFreeAction: true,
-                onClick: (event) => this.setState({ showAddPanelModal: true })
+                onClick: (event) => this.setState({ showAddPanelModal: true, isUpdate: false, panelEditMode: false })
               },
+              {
+                icon: 'edit',
+                tooltip: 'Edit Appointment',
+                onClick: (event, rowData) => this.handlePanelEdit(event, rowData)
+              },
+              {
+                icon: 'delete',
+                tooltip: 'Delete Appointment',
+                onClick: (event, rowData) => this.hadleDeleteAppointment(event, rowData)
+              }
             ]}
-            editable={{
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve) => {
-                  resolve();
-                  if (oldData) {
-                    this.editSubmit(newData, oldData);
-                  }
-                }),
-              onRowDelete: (oldData) =>
-                new Promise((resolve) => {
-                  resolve();
-                  this.handleDelete(oldData.panel_id);
-                })
-            }}
+
           />
         </Paper>
       </div>

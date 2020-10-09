@@ -85,6 +85,7 @@
             .userControl{
                 display: flex;
                 .toggleUser{
+                    z-index: 0;
                     padding: 7px 0;
                 }
                 .deleteIcon{
