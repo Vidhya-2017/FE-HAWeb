@@ -9,6 +9,7 @@ import CustomiseView from '../CustomiseView/CustomiseView';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from '@material-ui/icons/Search';
 import SinglePagePDFViewer from "../PdfView/PdfView";
+import FileViewer from "react-file-viewer";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -125,6 +126,7 @@ const CandidateList = (props) => {
 
   const handleClose = () => setShow(false);
   const samplePDF = candidateCvDetails.candidate_document;
+  const docType = candidateCvDetails.document_extension ;
 
   useEffect(() => {
     // globalRowData = props.rowData;
@@ -402,7 +404,11 @@ const CandidateList = (props) => {
       <Dialog open={show}>
         <DialogTitle ></DialogTitle>
         <DialogContent>
+        { docType == 'pdf' ? 
           <SinglePagePDFViewer pdf={samplePDF} />
+          : 
+          <FileViewer fileType={docType} filePath={samplePDF}  />
+        }
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
