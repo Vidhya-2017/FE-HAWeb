@@ -3,7 +3,7 @@ import { Row, Col, ListGroup, Form } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import clients from '../../common/clients';
-import { Grid, TextField } from '@material-ui/core';
+import { Grid, TextField, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class LevelOfAssessment extends React.Component {
@@ -109,26 +109,30 @@ class LevelOfAssessment extends React.Component {
         </Grid>
 
         {selectedLevel.length > 0 && assessmentLevel &&
-          <div>
-            <ListGroup style={{ margin: '0px 10px 10px' }}>
-              {selectedLevel.map((list) => (
-                <ListGroup.Item key={list.id} style={{ height: 40, padding: '7px 20px', display: 'flex', justifyContent: 'space-between' }} disabled={this.props.disabled}>
-                  <p>{list.value}</p>
-                  <Form.Check
-                    type="checkbox"
-                    id={list.id}
-                    checked={list.checked}
-                    disabled={this.props.isDisabled}
-                    label=""
-                    value={list.id}
-                    className='toggleUser'
-                    onChange={this.onSprintLevelChange}
-                  />
-                  {/* <IonCheckbox slot="end" checked={list.checked} value={list.id} onIonChange={this.onSprintLevelChange} /> */}
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </div>}
+          <TableContainer component={Paper}>
+            <Table  size="small" >
+              <TableBody>
+                {selectedLevel.map((list) => (
+                 <TableRow key={list.id}>
+                    <TableCell component="th" scope="row">
+                    {list.value}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Checkbox
+                        defaultChecked={list.checked}
+                        color="primary"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        value={list.id}
+                        disabled={this.props.disabled}
+                        onChange={this.onSprintLevelChange}
+                      />
+                    </TableCell>  
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>  
+          </TableContainer>
+         }
       </div>
     );
   }

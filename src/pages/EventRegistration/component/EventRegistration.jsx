@@ -25,7 +25,8 @@ const styles = (theme) => ({
     marginTop: '15px',
   },
   SpanAlignOne: {
-    width: '100%'
+    width: '100%',
+    marginTop: 0
   },
 
 });
@@ -322,7 +323,7 @@ class EventRegistration extends React.Component {
         <div className='registerForm'>
           <div className='paper'>
             <Grid container spacing={2}>
-              <Grid item xs={5} className={classes.SpanAlign}>
+              <Grid item xs={5}>
                 <span>Event Register :</span>
               </Grid>
               {!editEvent ?
@@ -365,7 +366,7 @@ class EventRegistration extends React.Component {
 
           <div className='paper'>
             <Grid container spacing={2}>
-              <Grid item xs={5} className={classes.SpanAlign}>
+              <Grid item xs={5}>
                 <span>Client Name:</span>
               </Grid>
 
@@ -376,6 +377,7 @@ class EventRegistration extends React.Component {
                   value={clientSelected ? clientSelected : null}
                   defaultValue={clientSelected}
                   onChange={this.clientChange}
+                  disabled={!showEditBtn}
                   renderInput={params => (
                     <TextField
                       {...params}
@@ -392,7 +394,7 @@ class EventRegistration extends React.Component {
           </div>
           <div className='paper'>
             <Grid container spacing={2}>
-              <Grid item xs={5} className={classes.SpanAlign}>
+              <Grid item xs={5}>
                 <span>Date:</span>
               </Grid>
 
