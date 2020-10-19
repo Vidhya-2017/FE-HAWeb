@@ -4,6 +4,8 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import clients from '../../common/clients';
+import { Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class Duration extends React.Component {
   constructor(props) {
@@ -43,20 +45,46 @@ class Duration extends React.Component {
     }
   }
 
-  durationOnChange = (e) => {
-    this.props.onEventChange({target: {...e, name: 'duration'}});
+  durationOnChange = (e, value) => {
+    this.props.onEventChange({ target: { ...value, name: 'duration' } });
   }
 
   render() {
     return (
-      <Fragment>
+      <div className='paper'>
         {/* <IonLabel>Duration</IonLabel>
         <IonSelect name='duration' value={this.state.durationValue} placeholder="Select Duration" onIonChange={this.durationOnChange}>
           {this.state.durationList.map((list) =>
             <IonSelectOption key={list.DurationID} value={list.DurationID}>{list.Duration}</IonSelectOption>
           )}
         </IonSelect> */}
-        <Row>
+        <Grid container spacing={2}>
+          <Grid item xs={5} >
+            <span>Duration:</span>
+          </Grid>
+
+          <Grid item xs={7}>
+            <Autocomplete
+              options={this.state.durationList}
+              getOptionLabel={option => option.label}
+              value={this.state.durationValue}
+              defaultValue={this.state.durationValue}
+              onChange={this.durationOnChange}
+              disabled={this.props.disabled}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="Duration"
+                  placeholder="Duration"
+                  margin="dense"
+                  variant="outlined"
+                  required
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+        {/* <Row>
           <Col className='fieldName'><span>Duration:</span></Col>
           <Col>
             <Select
@@ -70,8 +98,8 @@ class Duration extends React.Component {
               isDisabled={this.props.isDisabled}
             />
           </Col>
-        </Row>
-      </Fragment>
+        </Row> */}
+      </div>
     );
   }
 }

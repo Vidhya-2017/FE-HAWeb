@@ -3,6 +3,8 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import clients from '../../common/clients';
+import { Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class EventLocation extends React.Component {
   constructor(props) {
@@ -56,13 +58,13 @@ class EventLocation extends React.Component {
     }
   }
 
-  durationOnChange = (e) => {
-    this.props.onEventChange({target: {...e, name: 'eventLocation'}});
+  durationOnChange = (e, value) => {
+    this.props.onEventChange({ target: { ...value, name: 'eventLocation' } });
   }
 
   render() {
     return (
-      <Fragment>
+      <div className='paper'>
         {/* <IonLabel>Event Location</IonLabel>
         <IonSelect  name='eventLocation' value={this.state.eventLocationValue} placeholder="Select Location" onIonChange={this.durationOnChange}>
           {this.state.eventLocation.map((list) =>
@@ -73,7 +75,34 @@ class EventLocation extends React.Component {
           }
         </IonSelect> */}
 
-        <Row>
+        <Grid container spacing={2}>
+          <Grid item xs={5} >
+            <span>Event Location:</span>
+          </Grid>
+
+          <Grid item xs={7}>
+            <Autocomplete
+              options={this.state.eventLocation}
+              getOptionLabel={option => option.label}
+              value={this.state.eventLocationValue}
+              defaultValue={this.state.eventLocationValue}
+              onChange={this.durationOnChange}
+              disabled={this.props.disabled}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label={"Event Location"}
+                  placeholder="Event Location"
+                  margin="dense"
+                  variant="outlined"
+                  required
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        {/* <Row>
           <Col className='fieldName'><span>Event Location:</span></Col>
           <Col>
             <Select
@@ -87,8 +116,8 @@ class EventLocation extends React.Component {
               isDisabled={this.props.isDisabled}
             />
           </Col>
-        </Row>
-      </Fragment>
+        </Row> */}
+      </div>
     );
   }
 }

@@ -1,6 +1,6 @@
 .eventRegisterWrapper {
   min-width: 470px;
-  margin: 0 auto;
+  margin: 0px 30% 0% 30%;
 
   .eveRegCntrlPanel {
     text-align: center;
@@ -63,10 +63,11 @@
 
     .datePicker {
       height: 40px;
-      width: 215px;
+      width: 277px;
       border: solid 1px #000;
       border-radius: 5px;
       margin-bottom: 14px;
+      z-index: 99 !important;
 
       .react-date-picker__inputGroup {
         .react-date-picker__inputGroup__input:invalid {

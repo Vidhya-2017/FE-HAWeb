@@ -3,6 +3,8 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import clients from '../../common/clients';
+import { Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class AssessingParameter extends React.Component {
   constructor(props) {
@@ -43,26 +45,27 @@ class AssessingParameter extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state.assessingParameterList.length > 0 && nextProps.selectedValue !== this.state.assessingParameter) {
-      const paramsVal  = this.state.assessingParameterList.filter(f => nextProps.selectedValue.includes(f.value));
+      const paramsVal = this.state.assessingParameterList.filter(f => nextProps.selectedValue.includes(f.value));
       this.setState({ assessingParameter: paramsVal ? paramsVal : null });
     }
   }
 
-  assessingPrmtrOnChange = (assessingParameter) => {
+  assessingPrmtrOnChange = (e, assessingParameter) => {
     this.setState({
       assessingParameter: assessingParameter
     });
     const value = [];
-    if(assessingParameter) {
+    if (assessingParameter) {
       assessingParameter.forEach(item => {
         value.push(item.value)
       })
     }
-    this.props.onEventChange({target: {value, name: 'assessingParameter'}});
+    this.props.onEventChange({ target: { value, name: 'assessingParameter' } });
   }
 
   render() {
     const { assessingParameter, assessingParameterList } = this.state;
+    const che = assessingParameter ? assessingParameter : []
     return (
       <Fragment>
         {/* <IonLabel></IonLabel>
@@ -71,23 +74,35 @@ class AssessingParameter extends React.Component {
             <IonSelectOption key={list.AssId} value={list.AssId}>{list.AssName}</IonSelectOption>
           )}
         </IonSelect> */}
-        <Row>
-          <Col className='fieldName'><span>Assessing Parameter:</span></Col>
-          <Col>
-            <Select
-              onChange={this.assessingPrmtrOnChange}
-              options={assessingParameterList}
-              defaultValue={assessingParameter}
-              value={assessingParameter}
-              styles={SelectStyles(215)}
-              isMulti
-              closeMenuOnSelect={false}
-              className="mb-3"
-              isDisabled={this.props.isDisabled}
-              placeholder='Assessing Parameter'
-            />
-          </Col>
-        </Row>
+        <Grid container spacing={2}>
+          <Grid item xs={5} >
+            <span>Assessing Parameter:</span>
+          </Grid>
+
+          <Grid item xs={7}>
+            <div>
+              <Autocomplete
+                multiple
+                options={assessingParameterList}
+                getOptionLabel={option => option ? option.label : ''}
+                value={che}
+                defaultValue={che}
+                onChange={this.assessingPrmtrOnChange}
+                disabled={this.props.disabled}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Assessing Parameter"
+                    placeholder="Select"
+                    margin="dense"
+                    fullWidth
+                    variant="outlined"
+                  />
+                )}
+              />
+            </div>
+          </Grid>
+        </Grid>
       </Fragment>
     );
   }

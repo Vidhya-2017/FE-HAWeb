@@ -3,6 +3,8 @@ import { Row, Col, ListGroup, Form } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import clients from '../../common/clients';
+import { Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class LevelOfAssessment extends React.Component {
 
@@ -52,19 +54,22 @@ class LevelOfAssessment extends React.Component {
     }
   }
 
-  onLevelChange = (e) => {
+  onLevelChange = (e, assesmentValue) => {
     const selectedLevelCheck = [];
-    if (Number(e.value) > 0) {
-      for (let i = 0; i < Number(e.value) + 2; i++) {
-        selectedLevelCheck.push({
-          id: i,
-          value: i === (Number(e.value) + 1) ? 'Final Assessment' : `Sprint ${i}`,
-          checked: true
-        });
+    if (assesmentValue != null && assesmentValue) {
+      if (Number(assesmentValue.value) > 0) {
+        for (let i = 0; i < Number(assesmentValue.value) + 2; i++) {
+          selectedLevelCheck.push({
+            id: i,
+            value: i === (Number(e.value) + 1) ? 'Final Assessment' : `Sprint ${i}`,
+            checked: true
+          });
+        }
       }
+      this.setState({ selectedLevel: selectedLevelCheck, assessmentLevel: assesmentValue.value });
+      this.props.onEventChange({ target: { ...assesmentValue, name: 'assessmentLevel' } });
     }
-    this.setState({ selectedLevel: selectedLevelCheck, assessmentLevel: e.value });
-    this.props.onEventChange({ target: { ...e, name: 'assessmentLevel' } });
+
   }
 
   onSprintLevelChange = (e) => {
@@ -76,22 +81,33 @@ class LevelOfAssessment extends React.Component {
   render() {
     const { selectedLevel, assessmentLevel, assessmentLevelList } = this.state;
     return (
-      <Fragment>
-        <Row>
-          <Col className='fieldName'><span>No of Sprint:</span></Col>
-          <Col>
-            <Select
-              value={assessmentLevel}
-              onChange={this.onLevelChange}
+      <div>
+        <Grid container spacing={2}>
+          <Grid item xs={5}>
+            <span>No of Sprint:</span>
+          </Grid>
+          <Grid item xs={7}>
+            <Autocomplete
+              closeIcon=""
               options={assessmentLevelList}
+              getOptionLabel={option => option.label || option}
+              value={assessmentLevel}
               defaultValue={assessmentLevel}
-              styles={SelectStyles(215)}
-              className="mb-3"
-              placeholder='No of Sprint'
-              isDisabled={this.props.isDisabled}
+              onChange={this.onLevelChange}
+              disabled={this.props.disabled}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="No of Sprint"
+                  placeholder="No of Sprint"
+                  margin="dense"
+                  variant="outlined"
+                />
+              )}
             />
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
+
         {selectedLevel.length > 0 && assessmentLevel &&
           <div>
             <ListGroup style={{ margin: '0px 10px 10px' }}>
@@ -113,7 +129,7 @@ class LevelOfAssessment extends React.Component {
               ))}
             </ListGroup>
           </div>}
-      </Fragment>
+      </div>
     );
   }
 };

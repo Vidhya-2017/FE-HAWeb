@@ -4,7 +4,8 @@ import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import './css/SkillListMenu.css'
 import clients from '../../common/clients';
-
+import { Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class SkillListMenu extends React.Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class SkillListMenu extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.selectedSkillSet) {
       if (this.state.skillSetList.length !== 0) {
-        const skillVal  = this.state.skillSetList.filter(f => nextProps.selectedValue.includes(f.value));
+        const skillVal = this.state.skillSetList.filter(f => nextProps.selectedValue.includes(f.value));
         this.setState({ selectedSkillSet: skillVal ? skillVal : [] });
       }
     }
@@ -60,42 +61,58 @@ class SkillListMenu extends React.Component {
     }
   }
 
-  skillOnChange = (selectedSkillSet) => {
+
+  skillOnChange = (e, selectedSkillSet) => {
     this.setState({
       selectedSkillSet
     });
     const value = [];
-    if(selectedSkillSet) {
+    if (selectedSkillSet) {
       selectedSkillSet.forEach(item => {
+
         value.push(item.value)
       })
     }
-    this.props.onEventChange({target: {value, name: 'skillset'}});
+    this.props.onEventChange({ target: { value, name: 'skillset' } });
     // this.props.onEventChange({target: {...e, name: 'skillset'}});
   }
 
 
   render() {
     const { selectedSkillSet, skillSetList } = this.state;
+    const selectedSkillSets = selectedSkillSet ? selectedSkillSet : [];
+
     return (
-      <Fragment>
-        <Row>
-          <Col className='fieldName'><span>Skill List:</span></Col>
-          <Col>
-            <Select
-              onChange={this.skillOnChange}
-              options={skillSetList}
-              defaultValue={selectedSkillSet}
-              value={selectedSkillSet}
-              styles={SelectStyles(215)}
-              isMulti
-              closeMenuOnSelect={false}
-              className="mb-3"
-              placeholder='Skill List'
-              isDisabled={this.props.isDisabled}
-            />
-          </Col>
-        </Row>
+      <div className='paper'>
+        <Grid container spacing={2}>
+          <Grid item xs={5} >
+            <span>Skill List:</span>
+          </Grid>
+
+          <Grid item xs={7}>
+            <div>
+              <Autocomplete
+                multiple
+                options={skillSetList}
+                getOptionLabel={option => option.label}
+                value={selectedSkillSets}
+                defaultValue={selectedSkillSets}
+                onChange={this.skillOnChange}
+                disabled={this.props.disabled}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Skill List"
+                    placeholder="Select"
+                    margin="dense"
+                    fullWidth
+                    variant="outlined"
+                  />
+                )}
+              />
+            </div>
+          </Grid>
+        </Grid>
         {/* <IonItem disabled={this.props.eventDisabled}>
           <IonLabel>Skill List</IonLabel>
           <IonSelect name='skillset' multiple={true} value={selectedSkillSet} onIonChange={this.skillOnChange} placeholder="Select skills">
@@ -106,7 +123,7 @@ class SkillListMenu extends React.Component {
             }
           </IonSelect>
         </IonItem> */}
-      </Fragment>
+      </div>
     );
   }
 }

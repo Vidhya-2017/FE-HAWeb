@@ -4,6 +4,8 @@ import Select from 'react-select';
 import SelectStyles from '../../common/SelectStyles';
 import './css/SkillListMenu.css';
 import clients from '../../common/clients';
+import { Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class competancyList extends React.Component {
   constructor(props) {
@@ -50,7 +52,7 @@ class competancyList extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedValue !== this.state.selectedCompentency) {
       if (this.state.compentencySetList.length !== 0) {
-        const compentencyVal  = this.state.compentencySetList.filter(f => nextProps.selectedValue.includes(f.value));
+        const compentencyVal = this.state.compentencySetList.filter(f => nextProps.selectedValue.includes(f.value));
         this.setState({ selectedCompentency: compentencyVal ? compentencyVal : null });
       }
     }
@@ -60,17 +62,17 @@ class competancyList extends React.Component {
     }
   }
 
-  compentencyOnChange = (selectedCompentency) => {
+  compentencyOnChange = (e, selectedCompentency) => {
     this.setState({
       selectedCompentency: selectedCompentency
     });
     const value = [];
-    if(selectedCompentency) {
+    if (selectedCompentency) {
       selectedCompentency.forEach(item => {
         value.push(item.value)
       })
     }
-    this.props.onEventChange({target: {value, name: 'competancy'}});
+    this.props.onEventChange({ target: { value, name: 'competancy' } });
   }
 
   onIconClick = (value) => {
@@ -81,25 +83,39 @@ class competancyList extends React.Component {
 
   render() {
     const { compentencySetList, selectedCompentency } = this.state;
+    const selectedCompentencys = selectedCompentency ? selectedCompentency : [];
+
     return (
-      <Fragment>
-        <Row>
-          <Col className='fieldName'><span>Compentency Rating:</span></Col>
-          <Col>
-            <Select
-              onChange={this.compentencyOnChange}
-              options={compentencySetList}
-              value={selectedCompentency}
-              defaultValue={selectedCompentency}
-              styles={SelectStyles(215)}
-              className="mb-3"
-              isMulti
-              closeMenuOnSelect={false}
-              placeholder='Compentency Rating'
-              isDisabled={this.props.isDisabled}
-            />
-          </Col>
-        </Row>
+      <div className='paper'>
+        <Grid container spacing={2}>
+          <Grid item xs={5} >
+            <span>Compentency Rating:</span>
+          </Grid>
+
+          <Grid item xs={7}>
+            <div>
+              <Autocomplete
+                multiple
+                options={compentencySetList}
+                getOptionLabel={option => option.label}
+                value={selectedCompentencys}
+                defaultValue={selectedCompentencys}
+                onChange={this.compentencyOnChange}
+                disabled={this.props.disabled}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Compentency Rating"
+                    placeholder="Select"
+                    margin="dense"
+                    fullWidth
+                    variant="outlined"
+                  />
+                )}
+              />
+            </div>
+          </Grid>
+        </Grid>
         {/* <IonItem disabled={this.props.eventDisabled}>
           <IonLabel>Compentency Rating</IonLabel>
           <IonSelect name='competancy' multiple={true} value={selectedCompentency} onIonChange={this.compentencyOnChange} placeholder="Select Compentency">
@@ -126,7 +142,7 @@ class competancyList extends React.Component {
             <IonTextarea placeholder="Enter other skill set details..."></IonTextarea>
           }
         </div>} */}
-      </Fragment>
+      </div>
     );
   }
 }

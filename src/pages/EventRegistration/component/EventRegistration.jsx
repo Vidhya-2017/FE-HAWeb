@@ -11,6 +11,24 @@ import CompetancyMenu from '../../../components/commonUI/Compentency';
 import EventLocation from '../../../components/commonUI/EventLocation';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/EventRegistration.scss';
+import { withStyles, Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+const styles = (theme) => ({
+
+  paper: {
+    maxWidth: 400,
+    margin: `${theme.spacing(1)}px auto`,
+    padding: theme.spacing(2),
+  },
+  SpanAlign: {
+    marginTop: '15px',
+  },
+  SpanAlignOne: {
+    width: '100%'
+  },
+
+});
 
 const inputField = {
   value: '',
@@ -148,14 +166,16 @@ class EventRegistration extends React.Component {
     this.inputFieldChange(e);
   }
 
-  eventFieldChange = (selectedEvent) => {
+  eventFieldChange = (e, selectedEvent) => {
     this.setState({ selectedEvent });
-    this.geUserEventList(selectedEvent.value);
+    if (selectedEvent !== null && selectedEvent) {
+      this.geUserEventList(selectedEvent.value);
+    }
     // this.inputFieldChange({target: {...selectedEvent, name: 'eveName'}});
   }
 
-  clientChange = (e) => {
-    this.inputFieldChange({ target: { ...e, name: 'clientName' } });
+  clientChange = (e, value) => {
+    this.inputFieldChange({ target: { ...value, name: 'clientName' } });
   }
 
   dateChange = (e) => {
@@ -181,20 +201,22 @@ class EventRegistration extends React.Component {
   }
 
   checkValidity(inputValue, rules) {
-    const value = inputValue.toString();
-    let isValid = true;
-    if (!rules) {
-      return true;
-    }
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
+    if (inputValue != "" && inputValue) {
+      const value = inputValue.toString();
+      let isValid = true;
+      if (!rules) {
+        return true;
+      }
+      if (rules.required) {
+        isValid = value.trim() !== '' && isValid;
+      }
 
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid
+      if (rules.isNumeric) {
+        const pattern = /^\d+$/;
+        isValid = pattern.test(value) && isValid
+      }
+      return isValid;
     }
-    return isValid;
   }
 
 
@@ -237,6 +259,7 @@ class EventRegistration extends React.Component {
       if (!isUserExist) {
         reqObj.OrganizerData.push(user_id);
       }
+
       this.props.registerEvent(reqObj).then((response) => {
         this.eventCreateOrEdit(response, 'Event Registered successfully.');
       })
@@ -287,6 +310,7 @@ class EventRegistration extends React.Component {
     this.setState({ editEvent: true });
   }
   render() {
+    const { classes } = this.props;
     const { registerEvent, showEditBtn, formIsValid, eventList, selectedEvent, selectedLevel, clientDetailsList, editEvent } = this.state;
     const clientSelected = clientDetailsList.find(list => list.value === registerEvent.clientName.value);
     return (
@@ -296,66 +320,101 @@ class EventRegistration extends React.Component {
           {!editEvent && <i onClick={this.editEvent} className="editEvent fa fa-pencil fa-lg" aria-hidden="true"></i>}
         </div>
         <div className='registerForm'>
-          <Row>
-            <Col className='fieldName'><span>Event Name:</span></Col>
-            <Col>
-              {!editEvent ? <InputGroup size="sm" className="mb-3">
-                <FormControl
-                  placeholder="Event Name"
-                  type="text"
-                  className='inputField'
-                  name="eventName"
-                  value={registerEvent.eventName.value}
-                  onChange={this.inputFieldChange}
+          <div className='paper'>
+            <Grid container spacing={2}>
+              <Grid item xs={5} className={classes.SpanAlign}>
+                <span>Event Register :</span>
+              </Grid>
+              {!editEvent ?
+                <Grid item xs={7}>
+                  <TextField
+                    className={classes.SpanAlignOne}
+                    inputProps={{ style: { height: 5 } }}
+                    id="outlined-multiline-flexible"
+                    type="text"
+                    name="eventName"
+                    variant="outlined"
+                    label="Event Name"
+                    margin="normal"
+                    value={registerEvent.eventName.value}
+                    onChange={this.inputFieldChange}
+                  />
+                </Grid> :
+                <Grid item xs={7}>
+                  <Autocomplete
+                    options={eventList}
+                    getOptionLabel={option => option.label || ''}
+                    value={selectedEvent ? selectedEvent : null}
+
+                    onChange={this.eventFieldChange}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="Event Name"
+                        placeholder="Event Name"
+                        margin="dense"
+                        variant="outlined"
+                        required
+                      />
+                    )}
+                  />
+                </Grid>}
+            </Grid>
+          </div>
+          <EventLocation disabled={!showEditBtn} selectedValue={registerEvent.eventLocation.value} onEventChange={this.onEventChange} />
+
+          <div className='paper'>
+            <Grid container spacing={2}>
+              <Grid item xs={5} className={classes.SpanAlign}>
+                <span>Client Name:</span>
+              </Grid>
+
+              <Grid item xs={7}>
+                <Autocomplete
+                  options={clientDetailsList}
+                  getOptionLabel={option => option ? option.label : ''}
+                  value={clientSelected ? clientSelected : null}
+                  defaultValue={clientSelected}
+                  onChange={this.clientChange}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Event Name"
+                      placeholder="Event Name"
+                      margin="dense"
+                      variant="outlined"
+                      required
+                    />
+                  )}
                 />
-              </InputGroup> :
-                <Select
-                  value={selectedEvent ? selectedEvent : null}
-                  onChange={this.eventFieldChange}
-                  options={eventList}
-                  defaultValue={selectedEvent}
-                  styles={SelectStyles(215)}
-                  className="mb-3"
-                  placeholder='Event Name'
-                />}
-            </Col>
-          </Row>
-          <EventLocation isDisabled={!showEditBtn} selectedValue={registerEvent.eventLocation.value} onEventChange={this.onEventChange} />
-          <Row>
-            <Col className='fieldName'><span>Client Name:</span></Col>
-            <Col>
-              <Select
-                value={clientSelected ? clientSelected : null}
-                onChange={this.clientChange}
-                options={clientDetailsList}
-                defaultValue={clientSelected}
-                styles={SelectStyles(215)}
-                className="mb-3"
-                placeholder='Client Name'
-                isDisabled={!showEditBtn}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col className='fieldName'><span>Date:</span></Col>
-            <Col>
-              <DatePicker
-                className="datePicker"
-                format="yyyy-MM-dd"
-                onChange={this.dateChange}
-                value={registerEvent.date.value}
-                monthPlaceholder="mm"
-                yearPlaceholder="yyyy"
-                dayPlaceholder="dd"
-                disabled={!showEditBtn}
-              />
-            </Col>
-          </Row>
-          <Duration isDisabled={!showEditBtn} selectedValue={registerEvent.duration.value} onEventChange={this.onEventChange} />
-          <SkillListMenu isDisabled={!showEditBtn} isCandidateSkill={false} eventSkillList={[]} selectedValue={registerEvent.skillset && registerEvent.skillset.value} onEventChange={this.onEventChange} />
-          <CompetancyMenu isDisabled={!showEditBtn} isCompentency={false} eventcompentencyList={[]} selectedValue={registerEvent.competancy.value} showCompentencyChips={true} onEventChange={this.onEventChange} />
-          <LevelOfAssessment isDisabled={!showEditBtn} selected={selectedLevel} selectedValue={registerEvent.assessmentLevel.value} onEventChange={this.onEventChange} />
-          <AssessingParameter isDisabled={!showEditBtn} selectedValue={registerEvent.assessingParameter.value} onEventChange={this.onEventChange} />
+              </Grid>
+            </Grid>
+          </div>
+          <div className='paper'>
+            <Grid container spacing={2}>
+              <Grid item xs={5} className={classes.SpanAlign}>
+                <span>Date:</span>
+              </Grid>
+
+              <Grid item xs={7}>
+                <DatePicker
+                  className="datePicker"
+                  format="yyyy-MM-dd"
+                  onChange={this.dateChange}
+                  value={registerEvent.date.value}
+                  monthPlaceholder="mm"
+                  yearPlaceholder="yyyy"
+                  dayPlaceholder="dd"
+                  disabled={!showEditBtn}
+                />
+              </Grid>
+            </Grid>
+          </div>
+          <Duration disabled={!showEditBtn} selectedValue={registerEvent.duration.value} onEventChange={this.onEventChange} />
+          <SkillListMenu disabled={!showEditBtn} isCandidateSkill={false} eventSkillList={[]} selectedValue={registerEvent.skillset && registerEvent.skillset.value} onEventChange={this.onEventChange} />
+          <CompetancyMenu disabled={!showEditBtn} isCompentency={false} eventcompentencyList={[]} selectedValue={registerEvent.competancy.value} showCompentencyChips={true} onEventChange={this.onEventChange} />
+          <LevelOfAssessment disabled={!showEditBtn} selected={selectedLevel} selectedValue={registerEvent.assessmentLevel.value} onEventChange={this.onEventChange} />
+          <AssessingParameter disabled={!showEditBtn} selectedValue={registerEvent.assessingParameter.value} onEventChange={this.onEventChange} />
           <div className="eveRegCntrlPanel">
             <Button className='file-upload fileUploadBtn btn shadow' onClick={this.cancelEvent}>Cancel</Button>
             {showEditBtn && <Button disabled={!formIsValid} className='file-upload fileUploadBtn btn shadow' onClick={this.submitEventReg}>
@@ -368,4 +427,4 @@ class EventRegistration extends React.Component {
   }
 }
 
-export default EventRegistration;
+export default withStyles(styles, { withTheme: true })(EventRegistration);
