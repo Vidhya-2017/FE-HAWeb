@@ -4,6 +4,9 @@ import Select from 'react-select';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/CandidateSelection.scss';
 import CandidateSkeleton from './CandidateSkeleton';
+import {  Grid, TextField, InputAdornment, Checkbox, FormControlLabel,Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import SearchIcon from '@material-ui/icons/Search';
 
 class CandidateSelection extends React.Component {
   constructor(props) {
@@ -38,11 +41,13 @@ class CandidateSelection extends React.Component {
   }
 
 
-  eventFieldChange = (eventSelected) => {
+  eventFieldChange = (e,eventSelected) => {
     const event_id = eventSelected.value;
-    if (event_id) {
-      this.setState({ eventSelected: eventSelected, candidateList: [] });
-      this.checkIsOrganiser(event_id);
+    if (eventSelected) {
+        if (event_id) {
+        this.setState({ eventSelected: eventSelected, candidateList: [] });
+        this.checkIsOrganiser(event_id);
+      }
     }
   }
 
@@ -148,69 +153,95 @@ class CandidateSelection extends React.Component {
           <h3 className='pageTitle'>Candidate Selection</h3>
         </div>
         <div className='candidateSelectionForm'>
-          <Row>
-            <Col className='fieldName'><span>Event Name:</span></Col>
-            <Col>
-              <Select
-                value={eventSelected}
-                onChange={this.eventFieldChange}
-                options={EventDetailsList}
-                defaultValue={eventSelected}
-                styles={SelectStyles(220)}
-                className="mb-3"
-                placeholder='Event Name'
-              />
-            </Col>
-          </Row>
-          {candidateList && eventSelected && <div>
+        <div className='paper'>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <span>Event Name:</span>
+              </Grid>
+              <Grid item xs={7}>
+                <Autocomplete
+                  options={EventDetailsList}
+                  getOptionLabel={option => option ? option.label : ''}
+                  value={eventSelected}
+                  defaultValue={eventSelected}
+                  onChange={this.eventFieldChange}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Event Name"
+                      placeholder="Event Name"
+                      margin="dense"
+                      variant="outlined"
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+                
+            </Grid>
+          </div>
+
+          {candidateList && eventSelected && 
+          <div>
             <p className='memberLabel'>Candidate List:</p>
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Search Candidates"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-                onChange={this.searchCandidate}
-                value={searchQuery}
-              />
-              <InputGroup.Append>
-                <InputGroup.Text id="basic-addon1">
-                  <i className="fa fa-search" aria-hidden="true"></i>
-                </InputGroup.Text>
-              </InputGroup.Append>
-            </InputGroup>
+                  <TextField
+                    inputProps={{ style: { height: 5 } }}
+                    id="outlined-multiline-flexible"
+                    type="text"
+                    name="eventName"
+                    variant="outlined"
+                    label="Event Name"
+                    margin="normal"
+                    fullWidth
+                    value={searchQuery}
+                    onChange={this.searchCandidate}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                     }}
+                  />
             <div className="checkBoxAll">
               <p>Selected Candidate:{count}</p>
-              <Form.Check
-                type="checkbox"
-                size="lg"
+              <FormControlLabel
+                value="end"
+                control={<Checkbox color="primary" />}
                 label="Select All"
-                className='toggleUser'
                 onChange={(e) => this.handleCandidateSelectionAll(e)}
               />
             </div>
           </div>}
-          {candidateList && candidateList.length > 0 && <div className="candidateList">
-          <ListGroup className="userListGroup">
-            {candidateList.map(list =>
-            <ListGroup.Item key={list.ID} className="userList">
-              <div className="candidateDetails">
-              <p>{list.EmpName}</p>
-              <p>{list.SkillName}</p>
-              <p className="email">{list.EmailId}</p>
-              </div>
-              <Form.Check
-                type="checkbox"
-                size="lg"
-                id={list.user_id}
-                checked={list.EventID !== null && list.EventID !== ''}
-                label=""
-                className='toggleUser'
-                onChange={(e) => this.handleCandidateSelection(e, list)}
-              />
-              </ListGroup.Item>
-            )}
-            </ListGroup>
-          </div>}
+          { candidateList && candidateList.length > 0 && 
+            <div className="candidateList">
+              {candidateList.map(list => 
+              <TableContainer component={Paper}>
+            <Table  size="small" >
+              <TableBody>
+                 <TableRow key={list.ID}>
+                    <TableCell component="th" scope="row">
+                      <div className="candidateDetails">
+                        <p>{list.EmpName}</p>
+                        <p>{list.SkillName}</p>
+                        <p className="email">{list.EmailId}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Checkbox
+                      checked={list.EventID !== null && list.EventID !== ''}
+                        color="primary"
+                        value={list.id}
+                        onChange={(e) => this.handleCandidateSelection(e, list)}
+                      />
+                    </TableCell>  
+                  </TableRow> 
+              </TableBody>   
+            </Table>  
+          </TableContainer>
+          )}
+            </div>
+          }
           {candidateList && candidateList.length === 0 && eventSelected &&
             <CandidateSkeleton />}
           {candidateList && candidateList.length > 0 && <div className='panelRegCntrlPanel'>

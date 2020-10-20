@@ -19,8 +19,7 @@
         padding-left: 10px;
     }
     .memberLabel{
-        margin: 10px 0;
-        padding: 0 10px;
+        margin: 5px 0;
         font-size: 18px;
         font-weight: 500;
     }
@@ -144,4 +143,10 @@
    100% {
      background-position: 1000px 0;
    }
+ }
+
+ .candidateDetails{
+     p{
+         margin-bottom: 5px;
+     }
  }
