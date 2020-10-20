@@ -8,6 +8,16 @@ const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
 
 const HACKERANCHOR = '/hackeranchor';
 const DEMANDSUPPLY = '/demand-supply';
+const TRAININGFACILITATOR = '/TrainingFacilitator/';
+
+const TFAxiosAPI = axios.create({
+    baseURL: `${HOSTNAME}${TRAININGFACILITATOR}`,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'text/plain'
+    }
+});
+
 
 const axiosAPI = axios.create({
     baseURL: `${HOSTNAME}${HACKERANCHOR}`,
@@ -27,7 +37,8 @@ const DSaxiosAPI = axios.create({
 
 const clients = {
     axiosAPI,
-    DSaxiosAPI
+    DSaxiosAPI,
+    TFAxiosAPI
 };
 
 const interceptors = new Interceptors();
@@ -36,4 +47,7 @@ interceptors.addResponseInterceptors(axiosAPI);
 
 interceptors.addRequestInterceptors(DSaxiosAPI);
 interceptors.addResponseInterceptors(DSaxiosAPI);
+
+interceptors.addRequestInterceptors(TFAxiosAPI);
+interceptors.addResponseInterceptors(TFAxiosAPI);
 export default clients;

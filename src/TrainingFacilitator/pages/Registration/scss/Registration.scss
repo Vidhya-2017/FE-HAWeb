@@ -1,0 +1,18 @@
+/* Made with love by Mutiullah Samim*/
+
+.register_container{
+    .container{
+        width: 40%;
+        min-height: auto;
+        padding-bottom: 20px;;
+    }
+    .blue_theme{
+        height: auto;
+    }
+    $breakpoint-tablet: 775px;
+    @media (max-width: $breakpoint-tablet) {
+        .container{width: 100%; height: auto; }
+        
+        
+    }
+}

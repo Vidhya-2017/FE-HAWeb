@@ -1,0 +1,123 @@
+
+.batchFormation_container{
+    .container{
+        width: 70%;
+        min-height: auto;
+        padding-bottom: 20px;
+        border: solid 1px lightgrey;
+    }
+    .addUser {
+        font-size: 26px;
+        color: #2196f3;
+        padding: 0;
+        margin: 0 20px;
+        cursor: pointer;
+    }
+    .candidateList {
+        // max-height: 450px;
+        overflow: auto;
+        border: solid 1px #e3e3e3;
+        max-height: 500px;
+        overflow: scroll;
+        margin-bottom: 10px;
+        .userList {
+          display: flex;
+          justify-content: space-between;
+    
+          .candidateDetails {
+            .email {
+              color: #979696;
+              font-size: 13px;
+            }
+    
+            p {
+              margin: 0;
+              font-size: 14px;
+            }
+          }
+    
+          .toggleUser {
+            width: 40px;
+            padding: 5px;
+            .form-check-input {
+              height: 20px;
+              width: 20px;
+              margin: 0;
+              padding: 0;
+            }
+          }
+        }
+      }
+      .submitBtn{
+        margin: 10px
+      }
+      .userListGroup {
+        .userList {
+          padding: 10px;
+          display: flex;
+          justify-content: space-between;
+          height: 50px;
+          .userDetails {
+            p {
+              margin: 0;
+              color: #666666;
+              font-size: 13px;
+            }
+    
+            h6 {
+              margin: 0;
+              font-size: 16px;
+            }
+          }
+    
+          .userControl {
+            display: flex;
+    
+            .toggleUser {
+              padding: 7px 0;
+            }
+    
+            .deleteIcon {
+              margin: 0 10px;
+              padding: 10px 5px;
+              color: red;
+            }
+          }
+        }
+      }
+    .eventModal {
+        .userListGroup {
+          padding: 0 10px;
+      
+          .userList {
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+          }
+        }
+        
+        .fileUploadBtn {
+          background: #1b91e5;
+          border: solid 2px #1b91e5;
+          color: white;
+          font-weight: 500;
+          height: 40px;
+          margin-left: 10px;
+      
+          &:hover {
+            background: white;
+            color: #1b91e5;
+            border: solid 2px #1b91e5;
+          }
+        }
+      }
+    
+    $breakpoint-tablet: 775px;
+    @media (max-width: $breakpoint-tablet) {
+        .container{width: 100%; height: auto; }
+        
+        
+    }
+
+} 
+

@@ -32,6 +32,26 @@ import EventListContainer from './pages/EventList/container/EventListContainer';
 import SignUpContainer from './pages/SignUp/container/SignUpContainer';
 import ForgotPasswordContainer from './pages/ForgotPassword/container/ForgotPasswordContainer';
 import DemandDBContainer from './pages/DemandDashboard/container/DemandDBContainer';
+// Training Facilitator Imports
+import SMEAssignContainer from './TrainingFacilitator/pages/SMEAssign/container/SMEAssignContainer'
+// import ForgetPassword from './pages/ForgetPassword/ForgetPassword';
+import SMEListContainer from './TrainingFacilitator/pages/SME/container/SMEListContainer';
+import SkillListContainer from './TrainingFacilitator/pages/Skill/container/SkillListContainer';
+import TrainingCreationContainer from './TrainingFacilitator/pages/TrainingCreation/container/TrainingCreationContainer';
+import ExternalTrainingContainer from './TrainingFacilitator/pages/ExternalTraining/container/ExternalTrainingContainer';
+import TrainingTypeContainer from './TrainingFacilitator/pages/TrainingType/container/TrainingTypeContainer';
+import DurationMasterContainer from './TrainingFacilitator/pages/DurationMaster/container/DurationMasterContainer';
+import AssesmentTypeContainer from './TrainingFacilitator/pages/AssesmentType/container/AssesmentTypeContainer';
+import CandidateRegistrationContainer from './TrainingFacilitator/pages/CandidateRegistration/container/CandidateRegistrationContainer';
+import BatchFormationContainer from './TrainingFacilitator/pages/BatchFormation/container/BatchFormationContainer';
+import TFCandidateSelectionContainer from './TrainingFacilitator/pages/CandidateSelection/container/TFCandidateSelectionContainer';
+import TrainingListContainer from './TrainingFacilitator/pages/TrainingList/container/TrainingListContainer';
+import SMECompletedTopicsContainer from './TrainingFacilitator/pages/SMECompletedTopics/container/SMECompletedTopics';
+import LOBListContainer from './TrainingFacilitator/pages/LOB/container/LOBListContainer';
+import AccountMasterContainer from './TrainingFacilitator/pages/AccountMaster/container/AccountMasterContainer';
+import TrainingFeedbackContainer from './TrainingFacilitator/pages/TrainingFeedback/container/TrainingFeedbackContainer';
+import TRCandidateFeedbackContainer from './TrainingFacilitator/pages/TRCandidateFeedback/container/TRCandidateFeedbackContainer';
+// import Home from './TrainingFacilitator/pages/Home/container/HomeContainer';
 import './App.scss';
 
 const outerTheme = createMuiTheme({
@@ -127,6 +147,28 @@ class Home extends React.Component {
               <Route path="/forgotPassword" component={ForgotPasswordContainer} />
               <Route path="/TpSchedule" component={TpSchedule} />
               <Route path="/demandDashboard" render={(props) => <MuiPickersUtilsProvider utils={MomentUtils}><DemandDBContainer {...props} /></MuiPickersUtilsProvider>} />
+
+              {/* Training Facilitator Route */}
+              <Route path="/trainingCreation" component={TrainingCreationContainer} />
+              <Route path="/user" component={SMEListContainer} />
+              <Route path="/skill" component={SkillListContainer} />
+              <Route path="/externalTraining" component={ExternalTrainingContainer} />
+              <Route path="/trainingType" component={TrainingTypeContainer} />
+              <Route path="/durationMaster" component={DurationMasterContainer} />
+              <Route path="/assesmentType" component={AssesmentTypeContainer} />
+              <Route path="/smeAssign" component={SMEAssignContainer} />
+              <Route path="/batchFormation" component={BatchFormationContainer} />
+              <Route path="/lob" component={LOBListContainer} />
+              {/* <Route path="/home" component={Home} />    */}
+              {/* <PrivateRoute component={Home} path="/home" /> */}
+              <Route path="/candidateRegistration" component={CandidateRegistrationContainer} />
+              <Route path="/TFCandidateSelection" component={TFCandidateSelectionContainer} />
+              <Route path="/trainingList" component={TrainingListContainer} />
+              <Route path="/account" component={AccountMasterContainer} />
+              <Route path="/smeTopicsCovered" component={SMECompletedTopicsContainer} />
+              <Route path="/candidateFeedbackList" component={TrainingFeedbackContainer} />
+              <Route path="/trainingcandidateFeedback" component={TRCandidateFeedbackContainer} />
+
             </Switch>
             <Footer />
           </div>

@@ -1,0 +1,11 @@
+.btn-primary {background: linear-gradient(to right, #26a2fa 0%, #0066ae 94%); color:#fff; font-weight:600; border-color: #2199ef;} 
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus{
+    background: #fff; color:#0066ae; border-color: #2199ef;
+}
+.btn-primary:hover, .btn-primary:active{background: #fff; color:#0066ae; border-color: #2199ef;} 
+
+.btn-primary:hover {
+    color: #0066ae;
+    background-color: #fff;
+    border-color: #0062cc;
+}

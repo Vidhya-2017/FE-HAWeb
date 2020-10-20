@@ -1,0 +1,41 @@
+/* Made with love by Mutiullah Samim*/
+
+.batchMaster_container{
+    .container{
+        width: 70%;
+        padding-bottom: 20px;
+        min-height: auto;
+        border: solid 1px lightgrey;
+        .addUser {
+            font-size: 26px;
+            color: #2196f3;
+            padding: 0;
+            margin: 0 20px;
+            cursor: pointer;
+        }
+    }
+    .blue_theme{
+        height: auto;
+    }
+
+    $breakpoint-tablet: 775px;
+    @media (max-width: $breakpoint-tablet) {
+        .container{width: 100%; height: auto; }
+        .login-block{
+            height: auto !important;
+            position: relative;
+        }
+        .banner-sec img{ width: 100%; height: auto;}
+        .banner-text{
+            width: 95%;
+            position: absolute;
+            bottom: 100%;
+            padding-left: 10px; 
+            color: #fff;
+        }
+    }
+
+    
+
+} 
+
