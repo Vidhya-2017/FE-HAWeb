@@ -1,98 +1,158 @@
-import React from 'react';
-import { Row, Col, Modal, FormControl, InputGroup, ListGroup, Form, Toast, Button } from 'react-bootstrap';
-import Select from 'react-select';
-import moment from 'moment';
-import SelectStyles from '../../../common/SelectStyles';
-import '../scss/SquadFormation.scss';
+import React from "react";
+import {
+  Grid,
+  Typography,
+  Button,
+  TextField,
+  withStyles,
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  Divider,
+  IconButton,
+  ListItem,
+  List,
+  Checkbox,
+  ListItemText,
+  ListItemSecondaryAction,
+} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import SearchIcon from "@material-ui/icons/Search";
+import { Toast } from "react-bootstrap";
+import moment from "moment";
+import "../scss/SquadFormation.scss";
 
+const styles = (theme) => ({
+  root: {
+    display: "flex",
+    alignItems: "center",
+    borderRadius: 30,
+    width: 250,
+    height: 40,
+  },
+  customizedButton: {
+    position: "absolute",
+    left: "89%",
+    top: "5%",
+    color: "gray",
+  },
+  gridAlign: {
+    padding: "10px 10px -10px -10px !important",
+  },
+  textField: {
+    width: "90%",
+    paddingTop: "-5px",
+    paddingBottom: "-5px",
+    fontWeight: 100,
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  listCustom: {
+    width: "100%",
+    maxWidth: 360,
+  },
+});
 
 class SquadFormation extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       showToast: false,
-      toastMsg: '',
+      toastMsg: "",
       EventDetailsList: [],
       eventSelected: null,
       showUserModal: false,
       squadList: [],
       selectedSquad: null,
-      newSquadName: '',
+      newSquadName: "",
       candidateList: [],
-      searchQuery: ''
-    }
+      searchQuery: "",
+    };
     this.candidateList = [];
   }
 
   componentDidMount() {
     this.props.getEventList().then((response) => {
       if (response && response.arrRes) {
-        const eventList = response.arrRes.map(list => {
+        const eventList = response.arrRes.map((list) => {
           return {
             value: list.EventId,
             EventId: list.EventId,
-            label: list.Name
-          }
+            label: list.Name,
+          };
         });
         this.setState({ EventDetailsList: eventList, loading: false });
       } else {
-        this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
+        this.setState({
+          showToast: true,
+          toastMsg: "Something went Wrong. Please try again later.",
+        });
       }
     });
   }
 
-  handleEventChange = (eventSelected) => {
-    this.setState({ eventSelected, selectedSquad: null, candidateList: [] });
-    let id = eventSelected.value;
-    const user_id = this.props.userDetails.user_id;
-    const isPanelReq = { eventID: id, userID: user_id };
-    this.props.checkIsOrganiser(isPanelReq).then((panelRes) => {
-      if (panelRes && panelRes.ispanel !== '' && !panelRes.ispanel) {
-        this.getSquadList(id);
-      } else {
-        this.setState({ toastMsg: "You don't have permission. Please contact Organiser.", showToast: true });
-      }
-    });
-  }
+  handleEventChange = (e, eventSelected) => {
+    if (eventSelected !== null) {
+      this.setState({ eventSelected, selectedSquad: null, candidateList: [] });
+      let id = eventSelected.value;
+      const user_id = this.props.userDetails.user_id;
+      const isPanelReq = { eventID: id, userID: user_id };
+      this.props.checkIsOrganiser(isPanelReq).then((panelRes) => {
+        if (panelRes && panelRes.ispanel !== "" && !panelRes.ispanel) {
+          this.getSquadList(id);
+        } else {
+          this.setState({
+            toastMsg: "You don't have permission. Please contact Organiser.",
+            showToast: true,
+          });
+        }
+      });
+    }
+  };
 
-  getSquadList = (id, newSquadName = '') => {
+  getSquadList = (id, newSquadName = "") => {
     const reqObj = { eventID: id };
     this.props.getSquadList(reqObj).then((response) => {
       if (response && response.arrRes) {
-        const squadList = response.arrRes.map(list => {
+        const squadList = response.arrRes.map((list) => {
           return {
             value: list.ID,
             ID: list.ID,
             label: list.SquadName,
-            squad_team_img: list.squad_team_img
-          }
+            squad_team_img: list.squad_team_img,
+          };
         });
         let selectedSquad = null;
         if (newSquadName) {
-          selectedSquad = squadList.find(list => list.label === newSquadName);
+          selectedSquad = squadList.find((list) => list.label === newSquadName);
           this.setState({
             squadList,
             selectedSquad,
             showToast: true,
-            toastMsg: 'Squad Created successfully',
-            showUserModal: false
-          })
+            toastMsg: "Squad Created successfully",
+            showUserModal: false,
+          });
         } else {
           this.setState({ squadList });
         }
       }
-    })
-  }
+    });
+  };
   createSquadName = () => {
     this.setState({ showUserModal: true });
-  }
+  };
 
   handleClose = () => this.setState({ showUserModal: false });
 
   squadNameOnChange = (e) => {
-    this.setState({ newSquadName: e.target.value })
-  }
+    this.setState({ newSquadName: e.target.value });
+  };
 
   handleNewSquadSubmit = () => {
     const { newSquadName, eventSelected } = this.state;
@@ -103,71 +163,88 @@ class SquadFormation extends React.Component {
       CreatedDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
       CreatedBy: this.props.userDetails.user_id,
       UpdatedBy: this.props.userDetails.user_id,
-      UpdatedDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-    }
+      UpdatedDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+    };
     this.props.addSquad(reqObj).then((response) => {
       if (response && response.errCode === 200) {
         this.getSquadList(eventSelected.value, newSquadName);
-      }
-      else {
+      } else {
         this.setState({
           showToast: true,
           toastMsg: response.status,
         });
       }
     });
-  }
+  };
 
-  handleSquadChange = (selectedSquad) => {
-    const { eventSelected } = this.state;
-    this.setState({ selectedSquad });
-    const req = { event_id: eventSelected.value };
-    const request = { squad_id: selectedSquad.value };
-    this.props.getSquadCandidateList(request).then((squadRes) => {
-      if (squadRes && (squadRes.errCode === 200 || squadRes.errCode === 404)) {
-        const squadCandidates = squadRes.arrRes;
-        this.props.getCandidateList(req).then((res) => {
-          if (res && (res.errCode === 200 || res.errCode === 404)) {
-            let eventCandidates = res.arrRes.filter(list => list.SquadName === null || list.SquadName === '');
-            eventCandidates = eventCandidates.sort((a, b) => (a.EmpName > b.EmpName) ? 1 : -1);
-            const candidateList = [...squadCandidates, ...eventCandidates];
-            this.candidateList = candidateList;
-            this.setState({ candidateList })
-          } else if (res && res.errCode === 404) {
-            this.setState({ showToast: true, toastMsg: 'No Records found in Candidate List' })
-          } else {
-            this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
-          }
-        });
-      } else {
-        this.setState({ showToast: true, toastMsg: 'Something went Wrong. Please try again later.' })
-      }
-    });
-
-  }
+  handleSquadChange = (e, selectedSquad) => {
+    if (selectedSquad !== null) {
+      const { eventSelected } = this.state;
+      this.setState({ selectedSquad });
+      const req = { event_id: eventSelected.value };
+      const request = { squad_id: selectedSquad.value };
+      this.props.getSquadCandidateList(request).then((squadRes) => {
+        if (
+          squadRes &&
+          (squadRes.errCode === 200 || squadRes.errCode === 404)
+        ) {
+          const squadCandidates = squadRes.arrRes;
+          this.props.getCandidateList(req).then((res) => {
+            if (res && (res.errCode === 200 || res.errCode === 404)) {
+              let eventCandidates = res.arrRes.filter(
+                (list) => list.SquadName === null || list.SquadName === ""
+              );
+              eventCandidates = eventCandidates.sort((a, b) =>
+                a.EmpName > b.EmpName ? 1 : -1
+              );
+              const candidateList = [...squadCandidates, ...eventCandidates];
+              this.candidateList = candidateList;
+              this.setState({ candidateList });
+            } else if (res && res.errCode === 404) {
+              this.setState({
+                showToast: true,
+                toastMsg: "No Records found in Candidate List",
+              });
+            } else {
+              this.setState({
+                showToast: true,
+                toastMsg: "Something went Wrong. Please try again later.",
+              });
+            }
+          });
+        } else {
+          this.setState({
+            showToast: true,
+            toastMsg: "Something went Wrong. Please try again later.",
+          });
+        }
+      });
+    }
+  };
 
   searchCandidate = (e) => {
     const query = e.target.value;
     const lowerCaseQuery = query.toLowerCase();
-    const searchedData = (query
+    const searchedData = query
       ? this.candidateList.filter((list) =>
-        list['EmpName']
-          .toLowerCase()
-          .includes(lowerCaseQuery)
-      )
-      : this.candidateList);
+          list["EmpName"].toLowerCase().includes(lowerCaseQuery)
+        )
+      : this.candidateList;
     this.setState({ candidateList: searchedData, searchQuery: query });
-  }
+  };
 
   handleCandidateSelection = (e, list) => {
     const { candidateList, selectedSquad } = this.state;
-    const candidateIndex = candidateList && candidateList.findIndex((lst) => list.ID === lst.ID);
+    const candidateIndex =
+      candidateList && candidateList.findIndex((lst) => list.ID === lst.ID);
     const updatedcandidateList = [...candidateList];
-    updatedcandidateList[candidateIndex].SquadName = e.target.checked ? selectedSquad.value : '';
+    updatedcandidateList[candidateIndex].SquadName = e.target.checked
+      ? selectedSquad.value
+      : "";
     this.setState({
-      candidateList: updatedcandidateList
+      candidateList: updatedcandidateList,
     });
-  }
+  };
 
   insertCandidate = () => {
     const { eventSelected, selectedSquad } = this.state;
@@ -177,9 +254,9 @@ class SquadFormation extends React.Component {
       EventID: eventSelected.value,
       isActive: true,
       CreatedBy: this.props.userDetails.user_id,
-      UpdatedBy: this.props.userDetails.user_id
-    }
-    this.props.squadCandidatesInsert(reqObj).then(response => {
+      UpdatedBy: this.props.userDetails.user_id,
+    };
+    this.props.squadCandidatesInsert(reqObj).then((response) => {
       if (response && response.errCode === 200) {
         this.setState({
           toastMsg: "Squad Registered successfully",
@@ -187,136 +264,230 @@ class SquadFormation extends React.Component {
           candidateList: [],
           eventSelected: null,
           selectedSquad: null,
-        })
-      } else if(response && response.errCode === 404) {
+        });
+      } else if (response && response.errCode === 404) {
         this.setState({
           showToast: true,
           toastMsg: response.status,
         });
       } else {
-          this.setState({
-            showToast: true,
-            toastMsg: 'Something went Wrong. Please try again later.',
-          });
-        }
-    })
-  }
+        this.setState({
+          showToast: true,
+          toastMsg: "Something went Wrong. Please try again later.",
+        });
+      }
+    });
+  };
 
   render() {
-    const { eventSelected, candidateList, searchQuery, squadList, newSquadName, selectedSquad, EventDetailsList, showToast, toastMsg, showUserModal } = this.state;
+    const { classes } = this.props;
+    const {
+      eventSelected,
+      candidateList,
+      searchQuery,
+      squadList,
+      newSquadName,
+      selectedSquad,
+      EventDetailsList,
+      showToast,
+      toastMsg,
+      showUserModal,
+    } = this.state;
     this.CandidateIDs = [];
-    candidateList.forEach(list => {
-      if (list.SquadName !== null && list.SquadName !== '') {
-        this.CandidateIDs.push(list.ID)
+
+    candidateList.forEach((list) => {
+      if (list.SquadName !== null && list.SquadName !== "") {
+        this.CandidateIDs.push(list.ID);
       }
-    })
+    });
     return (
-      <div className='squadWrapper'>
+      <div className="squadWrapper">
         <div className="pageHeader">
-          <h3 className='pageTitle'>Squad Formation</h3>
-          {eventSelected && <i onClick={this.createSquadName} className="addUser fa fa-plus" aria-hidden="true"></i>}
+          <h3 className="pageTitle">Squad Formation</h3>
+          {eventSelected && (
+            <i
+              onClick={this.createSquadName}
+              className="addUser fa fa-plus"
+              aria-hidden="true"
+            ></i>
+          )}
         </div>
-        <div className='eventCoordForm'>
-          <Row>
-            <Col className='fieldName'><span>Event Name:</span></Col>
-            <Col>
-              <Select
-                value={eventSelected}
-                onChange={this.handleEventChange}
+        <div className="eventCoordForm">
+          <Grid container spacing={2}>
+            <Grid item xs={4} style={{ padding: "25px 15px 10px 15px" }}>
+              <Typography>Event Name:</Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Autocomplete
                 options={EventDetailsList}
-                defaultValue={eventSelected}
-                styles={SelectStyles(220)}
-                className="mb-3"
-                placeholder='Event Name'
-              />
-            </Col>
-          </Row>
-          {squadList.length > 0 && <Row>
-            <Col className='fieldName'><span>Squad Name:</span></Col>
-            <Col>
-              <Select
-                value={selectedSquad}
-                onChange={this.handleSquadChange}
-                options={squadList}
-                defaultValue={selectedSquad}
-                styles={SelectStyles(220)}
-                className="mb-3"
-                placeholder='Event Name'
-              />
-            </Col>
-          </Row>}
-          {candidateList && selectedSquad && <div>
-            <p className='memberLabel'>Candidate List: Count - {this.CandidateIDs.length}</p>
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Search Candidates"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-                onChange={this.searchCandidate}
-                value={searchQuery}
-              />
-              <InputGroup.Append>
-                <InputGroup.Text id="basic-addon1">
-                  <i className="fa fa-search" aria-hidden="true"></i>
-                </InputGroup.Text>
-              </InputGroup.Append>
-            </InputGroup>
-          </div>}
-          {candidateList && candidateList.length > 0 && <div className="candidateList">
-            <ListGroup className="userListGroup">
-              {candidateList.map(list =>
-                <ListGroup.Item key={list.EmpName} className="userList">
-                  <div className="candidateDetails">
-                    <p>{list.EmpName}</p>
-                    <p className="email">{list.SkillName}</p>
-                  </div>
-                  <Form.Check
-                    type="checkbox"
-                    size="lg"
-                    id={list.user_id}
-                    checked={list.SquadName !== null && list.SquadName !== ''}
-                    label=""
-                    className='toggleUser'
-                    onChange={(e) => this.handleCandidateSelection(e, list)}
+                getOptionLabel={(option) => option.label}
+                onChange={this.handleEventChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Event Name"
+                    placeholder="Event Name"
+                    margin="dense"
+                    variant="outlined"
+                    required
                   />
-                </ListGroup.Item>
-              )}
-            </ListGroup>
-          </div>}
-          {candidateList && candidateList.length > 0 && <div className='panelRegCntrlPanel'>
-            <Button disabled={this.CandidateIDs.length === 0} className='file-upload fileUploadBtn btn shadow' onClick={this.insertCandidate}>Submit</Button>
-          </div>}
-        </div>
-        <Modal className='eventModal' show={showUserModal} centered onHide={this.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Squad Name</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Squad Name"
-                aria-label="Squad Name"
-                value={newSquadName}
-                aria-describedby="Squad Name"
-                onChange={this.squadNameOnChange}
+                )}
               />
-            </InputGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button disabled={newSquadName.length === 0} className='file-upload fileUploadBtn btn shadow' onClick={this.handleNewSquadSubmit}>Submit</Button>
-          </Modal.Footer>
-        </Modal>
-        {showToast &&
+            </Grid>
+          </Grid>
+
+          {squadList.length > 0 && (
+            <Grid container spacing={2}>
+              <Grid item xs={4} style={{ padding: "25px 15px 10px 15px" }}>
+                <Typography>Squad Name:</Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Autocomplete
+                  value={selectedSquad}
+                  options={squadList}
+                  getOptionLabel={(option) => option.label}
+                  defaultValue={selectedSquad}
+                  onChange={this.handleSquadChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Squad Name"
+                      placeholder="Squad Name"
+                      margin="dense"
+                      variant="outlined"
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+          )}
+
+          {candidateList && selectedSquad && (
+            <Grid container spacing={2}>
+              <Grid item xs={7}>
+                <TextField
+                  name="searchcandidate"
+                  variant="outlined"
+                  id="input-with-icon-textfield"
+                  label="Search Candidate"
+                  placeholder="Search Candidate"
+                  margin="normal"
+                  onChange={this.searchCandidate}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    style: { height: 45 },
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <p style={{ marginTop: "25px" }}>
+                  Candidate List: Count - {this.CandidateIDs.length}
+                </p>
+              </Grid>
+            </Grid>
+          )}
+
+          {candidateList && candidateList.length > 0 && (
+            <List dense className={classes.listCustom}>
+              {candidateList.map((list) => {
+                const labelId = `checkbox-list-secondary-label-${list.EmpName}`;
+                return (
+                  <ListItem key={list.EmpName} button>
+                    <ListItemText
+                      primary={list.EmpName}
+                      secondary={list.SkillName}
+                    />
+                    <ListItemSecondaryAction>
+                      <Checkbox
+                        edge="end"
+                        onChange={(e) => this.handleCandidateSelection(e, list)}
+                        checked={
+                          list.SquadName !== null && list.SquadName !== ""
+                        }
+                        inputProps={{ "aria-labelledby": list.user_id }}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                );
+              })}
+            </List>
+          )}
+          {candidateList && candidateList.length > 0 && (
+            <div className="panelRegCntrlPanel">
+              <Button
+                disabled={this.CandidateIDs.length === 0}
+                className="file-upload fileUploadBtn btn shadow"
+                onClick={this.insertCandidate}
+              >
+                Submit
+              </Button>
+            </div>
+          )}
+        </div>
+        <Dialog
+          fullWidth={true}
+          maxWidth="xs"
+          onClose={this.handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={showUserModal}
+        >
+          <div style={{ marginLeft: "5px", marginRight: "5px" }}>
+            <IconButton className={classes.customizedButton}>
+              <CloseIcon onClick={this.handleClose} />
+            </IconButton>
+            <DialogTitle id="simple-dialog-title">Squad Name</DialogTitle>
+            <Divider />
+            <Grid container spacing={-10}>
+              <Grid item xs={8}>
+                <TextField
+                  type="CandidateName"
+                  name="candidatename"
+                  required
+                  variant="outlined"
+                  label="Squad Name"
+                  placeholder="Squad Name"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ style: { height: 3 } }}
+                  onChange={this.squadNameOnChange}
+                />
+              </Grid>
+            </Grid>
+            <br />
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="medium"
+              disabled={newSquadName.length === 0}
+              onClick={this.handleNewSquadSubmit}
+              style={{ float: "right" }}
+            >
+              Submit
+            </Button>
+            <br />
+            <br />
+          </div>
+        </Dialog>
+
+        {showToast && (
           <Toast
             style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              background: '#deeddd',
-              border: '1px solid #28a745',
-              color: '#6c757d',
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              background: "#deeddd",
+              border: "1px solid #28a745",
+              color: "#6c757d",
               fontWeight: 500,
-              width: 400
+              width: 400,
             }}
             onClose={() => this.setState({ showToast: false })}
             show={showToast}
@@ -325,9 +496,10 @@ class SquadFormation extends React.Component {
           >
             <Toast.Body>{toastMsg}</Toast.Body>
           </Toast>
-        }
+        )}
       </div>
-    )
+    );
   }
 }
-export default SquadFormation;
+// export default SquadFormation;
+export default withStyles(styles, { withTheme: true })(SquadFormation);

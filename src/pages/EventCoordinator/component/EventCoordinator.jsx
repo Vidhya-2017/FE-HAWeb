@@ -1,9 +1,20 @@
 import React from 'react';
-import { Row, Col, Modal, FormControl, InputGroup, ListGroup, Form, Toast, Button } from 'react-bootstrap';
+import { Row, Col, FormControl, InputGroup, ListGroup, Form, Toast } from 'react-bootstrap';
 import Select from 'react-select';
 import moment from 'moment';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/EventCoordinator.scss';
+import {
+  Grid, TextField, InputAdornment, Checkbox, FormControlLabel, Table, TableBody, TableCell,
+  TableContainer, TableRow, Card, Switch, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  Snackbar, List, ListItem, ListItemSecondaryAction, ListItemText
+} from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import SearchIcon from '@material-ui/icons/Search';
+import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import MuiAlert from '@material-ui/lab/Alert';
 
 class EventCoordinator extends React.Component {
 
@@ -20,6 +31,7 @@ class EventCoordinator extends React.Component {
       clientId: '',
       users: [],
       showUserModal: false,
+      btnDisable: false
     }
   }
 
@@ -40,7 +52,7 @@ class EventCoordinator extends React.Component {
     });
   }
 
-  handleEventChange = (eventSelected) => {
+  handleEventChange = (e, eventSelected) => {
     this.setState({ eventSelected, userList: [], clientName: '' });
     let id = eventSelected.value;
     let clientName = '';
@@ -154,7 +166,7 @@ class EventCoordinator extends React.Component {
       const req = { 'searchData': value }
       this.props.getUserBySearch(req).then((res) => {
         this.setState({
-          users: res.userList, search: value
+          users: res.userList, search: value, btnDisable: true
         })
       })
 
@@ -191,119 +203,161 @@ class EventCoordinator extends React.Component {
           {eventSelected && <i onClick={this.viewUserList} className="addUser fa fa-user-plus" aria-hidden="true"></i>}
         </div>
         <div className='eventCoordForm'>
-          <Row>
-            <Col className='fieldName'><span>Event Name:</span></Col>
-            <Col>
-              <Select
-                value={eventSelected}
-                onChange={this.handleEventChange}
-                options={EventDetailsList}
-                defaultValue={eventSelected}
-                styles={SelectStyles(220)}
-                className="mb-3"
-                placeholder='Event Name'
-              />
-            </Col>
-          </Row>
+          <div className='paper'>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <span>Event Name:</span>
+              </Grid>
+              <Grid item xs={7}>
+                <Autocomplete
+                  options={EventDetailsList}
+                  getOptionLabel={option => option.label}
+                  value={eventSelected}
+                  defaultValue={eventSelected}
+                  onChange={this.handleEventChange}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Event Name"
+                      placeholder="Event Name"
+                      margin="dense"
+                      variant="outlined"
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </div>
           {eventSelected && eventSelected.value && clientName &&
             <p className="clientName">Client: {clientName}</p>
           }
           {userList && eventSelected && <p className='memberLabel'>Member List:</p>}
           {userList && eventSelected && <p className='toggleNote'>Note: Toggle this to become Event Organiser.</p>}
           {userList && userList.length === 0 && eventSelected &&
-            <ListGroup.Item variant="danger">No records found.</ListGroup.Item>
+            <TextField
+              fullWidth
+              disabled
+              error
+              label="No records found."
+              variant="outlined"
+              inputProps={{
+                style: { color: '#721c24', backgroundColor: '#f5c6cb' },
+              }}
+            />
           }
-          <ListGroup className="userListGroup">
-            {userList && userList.map((list) =>
-              <ListGroup.Item className="userList">
-                <div className='userDetails'>
-                  <h6>{list.first_name} {list.last_name}</h6>
-                  <p>{list.ispanel ? 'Panelist' : 'Organiser'}</p>
-                </div>
-                <div className='userControl'>
-                  <Form.Check
-                    type="switch"
-                    id={list.user_id}
-                    checked={!list.ispanel}
-                    label=""
-                    className='toggleUser'
-                    onChange={(e) => this.toggleUserRole(e, list)}
+          {userList.length > 0 && <Card className="candidateList">
+            <List style={{padding: 0}}>
+              {userList && userList.map((list) =>
+                <ListItem key={list.ID} style={{ border: 'solid 1px #e3e3e3'}}>
+                   <ListItemText
+                   id={list.ID}
+                    primary={`${list.first_name} ${list.last_name}`}
+                    secondary={list.ispanel ? 'Panelist' : 'Organiser'}
                   />
-                  <i className="fa fa-trash-o deleteIcon" onClick={() => this.removeUser(list)} />
-                </div>
-              </ListGroup.Item>
-            )}
-          </ListGroup>
-
+                  <ListItemSecondaryAction>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          id={list.user_id}
+                          checked={!list.ispanel}
+                          onChange={(e) => this.toggleUserRole(e, list)}
+                          name="checkedB"
+                          color="primary"
+                        />
+                      }
+                    />
+                    <DeleteOutlinedIcon color="secondary" onClick={() => this.removeUser(list)} />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )}
+            </List>
+          </Card>}
           {userList && userList.length > 0 &&
             <div className='panelRegCntrlPanel'>
               <Button className='file-upload fileUploadBtn btn shadow' onClick={this.submitPanel}>Submit</Button>
             </div>
           }
         </div>
+        <Dialog
+          open={showUserModal}
+          onClose={this.handleClose}
+          aria-labelledby="draggable-dialog-title"
+        >
+          <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+            Add Coordinators
+          <CloseIcon style={{ marginLeft: '43%' }} onClick={this.handleClose} />
+          </DialogTitle>
+          <DialogContent style={{ margin: 0, width: '380px' }}>
+            <TextField
+              id="outlined-multiline-flexible"
+              type="text"
+              name="Search"
+              variant="outlined"
+              label="Search Users"
+              margin="normal"
+              fullWidth
+              onChange={this.searchUsers}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <div className="userListGroup">
+              <List dense  >
+                {users.length > 0 && users.map(list =>
+                  <ListItem key={list.ID} button style={{ height: '65px', border: 'solid 1px #e0e0e0' }} >
+                    <ListItemText id={list.ID} >
 
-        <Modal className='eventModal' show={showUserModal} centered onHide={this.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Coordinators</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Search Users"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-                onChange={this.searchUsers}
-              />
-              <InputGroup.Append>
-                <InputGroup.Text id="basic-addon1">
-                  <i className="fa fa-search" aria-hidden="true"></i>
-                </InputGroup.Text>
-              </InputGroup.Append>
-            </InputGroup>
-            <ListGroup className="userListGroup">
-              {users.length > 0 && users.map(list =>
-                <ListGroup.Item className="userList">
-                  <h6>{list.first_name} {list.last_name}</h6>
-                  {userList.some((data) => data.user_id === list.user_id) ?
-                    <Form.Check
-                      type="checkbox"
-                      checked={true}
-                      id={list.user_id}
-                      onChange={(e, user) => this.handleUserCheckClick(e, list)}
-                    />
-                    : <Form.Check
-                      type="checkbox"
-                      id={list.user_id}
-                      onChange={(e, user) => this.handleUserCheckClick(e, list)}
-                    />
-                  }
-                </ListGroup.Item>
-              )}
-            </ListGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button className='file-upload fileUploadBtn btn shadow' onClick={this.handleOnSubmit}>Submit</Button>
-          </Modal.Footer>
-        </Modal>
+                      <h6>{list.first_name} {list.last_name}</h6>
+
+                    </ListItemText>
+                    <ListItemSecondaryAction>
+                      {userList.some((data) => data.user_id === list.user_id) ?
+                        <Checkbox
+                          checked={true}
+                          id={list.user_id}
+                          onChange={(e, user) => this.handleUserCheckClick(e, list)}
+                          color="primary"
+                        /> :
+                        <Checkbox
+                          id={list.user_id}
+                          onChange={(e, user) => this.handleUserCheckClick(e, list)}
+                          color="primary"
+                        />
+                      }
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                )}
+              </List>
+            </div>
+            <DialogContentText>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="primary" type="submit" onClick={this.handleOnSubmit} disabled={!this.state.btnDisable}>
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
         {showToast &&
-          <Toast
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              background: '#deeddd',
-              border: '1px solid #28a745',
-              color: '#6c757d',
-              fontWeight: 500,
-              width: 400
+          <Snackbar
+            style={{ width: 320 }}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
             }}
+            open={showToast}
+            autoHideDuration={3000}
             onClose={() => this.setState({ showToast: false })}
-            show={showToast}
-            delay={3000}
-            autohide
           >
-            <Toast.Body>{toastMsg}</Toast.Body>
-          </Toast>
+            <MuiAlert onClose={() => this.setState({ showToast: false })} severity="success">
+              {toastMsg}
+            </MuiAlert>
+          </Snackbar>
         }
       </div>
     )
