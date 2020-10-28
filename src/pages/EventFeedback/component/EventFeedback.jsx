@@ -202,6 +202,7 @@ class EventFeedback extends React.Component {
               <TextField
                 id="outlined-basic"
                 disabled
+                className={classes.input}
                 inputProps={{ style: { height: 3 } }}
                 variant="outlined"
                 value={clientName}
