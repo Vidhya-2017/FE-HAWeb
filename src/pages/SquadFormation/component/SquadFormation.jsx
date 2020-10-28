@@ -15,6 +15,8 @@ import {
   Checkbox,
   ListItemText,
   ListItemSecondaryAction,
+  Table,
+  TableRow,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -40,12 +42,12 @@ const styles = (theme) => ({
   gridAlign: {
     padding: "10px 10px -10px -10px !important",
   },
-  textField: {
-    width: "90%",
-    paddingTop: "-5px",
-    paddingBottom: "-5px",
-    fontWeight: 100,
-  },
+  // textField: {
+  //   width: "80%",
+  //   paddingTop: "20px",
+  //   paddingBottom: "20px",
+  //   fontWeight: 100,
+  // },
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
@@ -55,8 +57,18 @@ const styles = (theme) => ({
   },
   listCustom: {
     width: "100%",
-    maxWidth: 360,
+    maxWidth: 760,
   },
+  tableBorder: {
+    // borderWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "black",
+    borderStyle: "solid",
+  },
+ 
 });
 
 class SquadFormation extends React.Component {
@@ -398,22 +410,28 @@ class SquadFormation extends React.Component {
               {candidateList.map((list) => {
                 const labelId = `checkbox-list-secondary-label-${list.EmpName}`;
                 return (
-                  <ListItem key={list.EmpName} button>
-                    <ListItemText
-                      primary={list.EmpName}
-                      secondary={list.SkillName}
-                    />
-                    <ListItemSecondaryAction>
-                      <Checkbox
-                        edge="end"
-                        onChange={(e) => this.handleCandidateSelection(e, list)}
-                        checked={
-                          list.SquadName !== null && list.SquadName !== ""
-                        }
-                        inputProps={{ "aria-labelledby": list.user_id }}
-                      />
-                    </ListItemSecondaryAction>
-                  </ListItem>
+                  <Table className={classes.tableBorder}>
+                    
+                      <ListItem key={list.EmpName} button>
+                        <ListItemText
+                          primary={list.EmpName}
+                          secondary={list.SkillName}
+                        />
+                        <ListItemSecondaryAction>
+                          <Checkbox
+                            edge="end"
+                            onChange={(e) =>
+                              this.handleCandidateSelection(e, list)
+                            }
+                            checked={
+                              list.SquadName !== null && list.SquadName !== ""
+                            }
+                            inputProps={{ "aria-labelledby": list.user_id }}
+                          />
+                        </ListItemSecondaryAction>
+                      </ListItem>
+           
+                  </Table>
                 );
               })}
             </List>
@@ -446,6 +464,7 @@ class SquadFormation extends React.Component {
             <Grid container spacing={-10}>
               <Grid item xs={8}>
                 <TextField
+                  //  className={classes.textField}
                   type="CandidateName"
                   name="candidatename"
                   required
@@ -455,7 +474,7 @@ class SquadFormation extends React.Component {
                   fullWidth
                   margin="normal"
                   InputLabelProps={{ shrink: true }}
-                  inputProps={{ style: { height: 3 } }}
+                  inputProps={{ style: { height: 5 } }}
                   onChange={this.squadNameOnChange}
                 />
               </Grid>
