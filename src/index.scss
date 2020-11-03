@@ -93,15 +93,14 @@ code {
   z-index: 1038;
   transform: translateX(-225px);
 }
-#layoutSidenav #layoutSidenav_content {
+ #layoutSidenav_content {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-width: 0;
   flex-grow: 1;
-  min-height: calc(100vh - 56px);
-  margin-left: -225px;
+  min-height: calc(100vh - 65px);
 }
 
 .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {

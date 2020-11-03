@@ -45,7 +45,7 @@ class DemandDashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.getDemandReport("2020-08-19");
+    this.getDemandReport("2020-08-06");
   }
 
   getDemandReport(currentDate) {

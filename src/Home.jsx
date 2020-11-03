@@ -119,8 +119,8 @@ class Home extends React.Component {
           <Spinner className='spinner' animation="grow" variant="primary" />
         </div>
         <Header history={this.props.history} />
-        <div id="layoutSidenav" className='routerContent'>
-          <SideNavBar history={this.props.history} />
+        <div className='routerContent'>
+          {/* <SideNavBar history={this.props.history} /> */}
           <div style={sideMenuStyles} id="layoutSidenav_content">
             <Switch>
               <Route path="/" exact component={LoginContainer} />
