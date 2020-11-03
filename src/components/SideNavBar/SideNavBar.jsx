@@ -277,8 +277,8 @@ class SideNavBar extends React.Component {
                           <div className={`sb-nav-link-icon ${activeNav === "addSPOC"}`}><i className="fa fa-table"></i></div>
                           ADD SPOC
                         </Button>
-                        <Button className={`${activeNav === "Add Recruiter"} nav-link`} onClick={() => this.pageRedirect('/Add Recruiter', 'Add Recruiter')}>
-                          <div className={`sb-nav-link-icon ${activeNav === "Add Recruiter"}`}><i className="fa fa-list-alt"></i></div>
+                        <Button className={`${activeNav === "addRecruiter"} nav-link`} onClick={() => this.pageRedirect('/addRecruiter', 'addRecruiter')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "addRecruiter"}`}><i className="fa fa-list-alt"></i></div>
                           Add Recruiter
                         </Button>
                         <Button className={`${activeNav === "previousEmpolyer"} nav-link`} onClick={() => this.pageRedirect('/previousEmpolyer', 'previousEmpolyer')}>
