@@ -96,6 +96,50 @@ class SideNavBar extends React.Component {
       pathname: '/eventList',
       value: 'eventList',
       id: '2'
+    }, {
+      pathname: '/trainingCreation',
+      value: 'trainingCreation',
+      id: '3'
+    },{
+      pathname: '/TFCandidateSelection',
+      value: 'TFCandidateSelection',
+      id: '3'
+    },{
+      pathname: '/smeTopicsCovered',
+      value: 'smeTopicsCovered',
+      id: '3'
+    },{
+      pathname: '/candidateFeedbackList',
+      value: 'candidateFeedbackList',
+      id: '3'
+    },{
+      pathname: '/user',
+      value: 'user',
+      id: '3'
+    },{
+      pathname: '/skill',
+      value: 'skill',
+      id: '3'
+    },{
+      pathname: '/assesmentType',
+      value: 'assesmentType',
+      id: '3'
+    },{
+      pathname: '/trainingType',
+      value: 'trainingType',
+      id: '3'
+    },{
+      pathname: '/trainingList',
+      value: 'trainingList',
+      id: '3'
+    },{
+      pathname: '/durationMaster',
+      value: 'durationMaster',
+      id: '3'
+    },{
+      pathname: '/lob',
+      value: 'lob',
+      id: '3'
     }];
     const activeNav = navBars.find(nav => nav.pathname === props.history.location.pathname);
     this.state = {
@@ -218,27 +262,92 @@ class SideNavBar extends React.Component {
                       </Fragment>
                     </Accordion.Collapse>
                   </Fragment>
+                  <Fragment>
+                    <Accordion.Toggle as={Card.Header} style={{ justifyContent: 'space-between', cursor: 'pointer', paddingRight: 10 }} onClick={() => this.eventDetailsOpen('eventDetails')} className={`${selectedAccordion === "3"} nav-link`} eventKey="3">
+                      Demand Supply
+                      <div className={`sb-nav-link-icon ${activeNav === "eventDetails"}`}><i className={`fa ${selectedAccordion === "3" ? 'fa-angle-down' : 'fa-angle-right'} fa-lg`}></i></div>
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey="3">
+                      <Fragment>
+                        <Button className={`${activeNav === "demand"} nav-link`} onClick={() => this.pageRedirect('/demand', 'demand')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "demand"}`}><i className="fa fa-tachometer"></i></div>
+                          Dashboard
+                        </Button>
+                        <Button className={`${activeNav === "addSPOC"} nav-link`} onClick={() => this.pageRedirect('/addSPOC', 'addSPOC')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "addSPOC"}`}><i className="fa fa-table"></i></div>
+                          ADD SPOC
+                        </Button>
+                        <Button className={`${activeNav === "Add Recruiter"} nav-link`} onClick={() => this.pageRedirect('/Add Recruiter', 'Add Recruiter')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "Add Recruiter"}`}><i className="fa fa-list-alt"></i></div>
+                          Add Recruiter
+                        </Button>
+                        <Button className={`${activeNav === "previousEmpolyer"} nav-link`} onClick={() => this.pageRedirect('/previousEmpolyer', 'previousEmpolyer')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "previousEmpolyer"}`}><i className="fa fa-list-alt"></i></div>
+                          Company List
+                        </Button>
+                        <Button className={`${activeNav === "panel"} nav-link`} onClick={() => this.pageRedirect('/panel', 'panel')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "panel"}`}><i className="fa fa-list-alt"></i></div>
+                          Panel
+                        </Button>
+                      </Fragment>
+                    </Accordion.Collapse>
+                  </Fragment>
+                  <Fragment>
+                    <Accordion.Toggle as={Card.Header} style={{ justifyContent: 'space-between', cursor: 'pointer', paddingRight: 10 }} onClick={() => this.eventDetailsOpen('eventDetails')} className={`${selectedAccordion === "4"} nav-link`} eventKey="4">
+                      Training Facilitator
+                      <div className={`sb-nav-link-icon ${activeNav === "eventDetails"}`}><i className={`fa ${selectedAccordion === "4" ? 'fa-angle-down' : 'fa-angle-right'} fa-lg`}></i></div>
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey="4">
+                      <Fragment>
+                        <Button className={`${activeNav === "trainingCreation"} nav-link`} onClick={() => this.pageRedirect('/trainingCreation', 'trainingCreation')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "trainingCreation"}`}><i className="fa fa-tachometer"></i></div>
+                          Training Registration
+                        </Button>
+                        <Button className={`${activeNav === "TFCandidateSelection"} nav-link`} onClick={() => this.pageRedirect('/TFCandidateSelection', 'TFCandidateSelection')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "TFCandidateSelection"}`}><i className="fa fa-table"></i></div>
+                          Candidate Selection
+                        </Button>
+                        
+                        <Button className={`${activeNav === "smeTopicsCovered"} nav-link`} onClick={() => this.pageRedirect('/smeTopicsCovered', 'smeTopicsCovered')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "smeTopicsCovered"}`}><i className="fa fa-table"></i></div>
+                          SME Topics Covered
+                        </Button>
+                        <Button className={`${activeNav === "candidateFeedbackList"} nav-link`} onClick={() => this.pageRedirect('/candidateFeedbackList', 'candidateFeedbackList')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "candidateFeedbackList"}`}><i className="fa fa-table"></i></div>
+                          Candidate Feedback
+                        </Button>
+                        <Button className={`${activeNav === "user"} nav-link`} onClick={() => this.pageRedirect('/user', 'user')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "user"}`}><i className="fa fa-table"></i></div>
+                          User List
+                        </Button>
+                        <Button className={`${activeNav === "skill"} nav-link`} onClick={() => this.pageRedirect('/skill', 'skill')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "skill"}`}><i className="fa fa-table"></i></div>
+                          Skill List
+                        </Button>
+                        <Button className={`${activeNav === "assesmentType"} nav-link`} onClick={() => this.pageRedirect('/assesmentType', 'assesmentType')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "assesmentType"}`}><i className="fa fa-table"></i></div>
+                          Assessment Scale
+                        </Button>
+                        <Button className={`${activeNav === "trainingType"} nav-link`} onClick={() => this.pageRedirect('/trainingType', 'trainingType')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "trainingType"}`}><i className="fa fa-table"></i></div>
+                          Training Type
+                        </Button>
+                        <Button className={`${activeNav === "trainingList"} nav-link`} onClick={() => this.pageRedirect('/trainingList', 'trainingList')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "trainingList"}`}><i className="fa fa-table"></i></div>
+                          Training List
+                        </Button>
+                        <Button className={`${activeNav === "durationMaster"} nav-link`} onClick={() => this.pageRedirect('/durationMaster', 'durationMaster')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "durationMaster"}`}><i className="fa fa-table"></i></div>
+                          Duration List
+                        </Button>
+                        <Button className={`${activeNav === "lob"} nav-link`} onClick={() => this.pageRedirect('/lob', 'lob')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "lob"}`}><i className="fa fa-table"></i></div>
+                          LOB 
+                        </Button>
+                      </Fragment>
+                    </Accordion.Collapse>
+                  </Fragment>
                 </Accordion>
-                <Button className={`${activeNav === "demand"} nav-link`} onClick={() => this.pageRedirect('/demand', 'demand')}>
-                  <div className={`sb-nav-link-icon ${activeNav === "demand"}`}><i className="fa fa-tachometer"></i></div>
-                  Demand Supply
-                </Button>
-                <Button className={`${activeNav === "addSPOC"} nav-link`} onClick={() => this.pageRedirect('/addSPOC', 'addSPOC')}>
-                  <div className={`sb-nav-link-icon ${activeNav === "addSPOC"}`}><i className="fa fa-users"></i></div>
-                  ADD SPOC
-                </Button>
-                <Button className={`${activeNav === "addRecruiter"} nav-link`} onClick={() => this.pageRedirect('/addRecruiter', 'addRecruiter')}>
-                  <div className={`sb-nav-link-icon ${activeNav === "addRecruiter"}`}><i className="fa fa-users"></i></div>
-                  Add Recruiter
-                </Button>
-                <Button className={`${activeNav === "previousEmpolyer"} nav-link`} onClick={() => this.pageRedirect('/previousEmpolyer', 'previousEmpolyer')}>
-                  <div className={`sb-nav-link-icon ${activeNav === "previousEmpolyer"}`}><i className="fa fa-users"></i></div>
-                  Company List
-                </Button>
-                <Button className={`${activeNav === "panel"} nav-link`} onClick={() => this.pageRedirect('/panel', 'panel')}>
-                  <div className={`sb-nav-link-icon ${activeNav === "panel"}`}><i className="fa fa-users"></i></div>
-                 Panel
-                </Button>
                 <Button className={`${activeNav === "more"} nav-link`} onClick={() => this.pageRedirect('/more', 'more')}>
                   <div className={`sb-nav-link-icon ${activeNav === "more"}`}><i className="fa fa-ellipsis-v"></i></div>
                   More

@@ -1,0 +1,31 @@
+
+.exTraining_container{
+    .container{
+        width: 50%;
+        padding-bottom: 20px;
+        min-height: auto;
+    }
+    .blue_theme{
+        height: auto;
+    }
+    $breakpoint-tablet: 775px;
+    @media (max-width: $breakpoint-tablet) {
+        .container{width: 100%; height: auto; }
+        .login-block{
+            height: auto !important;
+            position: relative;
+        }
+        .banner-sec img{ width: 100%; height: auto;}
+        .banner-text{
+            width: 95%;
+            position: absolute;
+            bottom: 100%;
+            padding-left: 10px; 
+            color: #fff;
+        }
+    }
+
+    
+
+} 
+

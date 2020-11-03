@@ -1,0 +1,101 @@
+.pageTitle{
+    padding: 10px 20px;
+}
+.handlerContainer{
+    display: flex;
+    justify-content: space-between;
+    padding: 50px 20px;
+    .uploadBtn{
+        .fileUploadBtn{
+            background: #1b91e5;
+            border: solid 2px #1b91e5;
+            color: white;
+            font-weight: 500;
+            &:hover {
+                background: white;
+                color: #1b91e5;
+                border: solid 2px #1b91e5;
+                svg {
+                    margin-right: 10px;
+                    fill: #1b91e5;
+                }
+            }
+
+            &.file-upload input[type='file'] {
+                display: none;
+            }
+            svg {
+                margin-right: 10px;
+                fill: white;
+            }
+        }
+        .fileName {
+            // padding-left: 10px;
+            color: #000;
+            font-weight: 500;
+        }
+    }
+    .filterSwitch{
+        height: 40px;
+        padding-top: 8px;
+    }
+}
+
+.candidateListTable{
+    padding: 20px 20px 0;
+    .listTable{
+        max-height: 500px;
+        overflow: scroll;
+        border: solid 1px grey;
+        margin-bottom: 10px;
+        .rowlist{
+            &:hover{
+                background: #b3d7ff70;
+            }
+        }
+        .listHeader{
+            background: #1b91e5;
+            color: white;
+            th {
+                font-weight: 500;
+                &:focus{
+                    outline: none;
+                }
+                .filterTextField{
+                    background-color: #ddebfb !important;
+                    padding: 5px;
+                    height: 30px;
+                    font-size: 15px;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+    .table td, .table th{
+        padding: 5px;
+        word-break: break-all;
+    }
+    .react-bootstrap-table-pagination{
+        margin: 0;
+        .recordPerPage{
+            .pageSelectedBtn{
+                color: #fff;
+                background-color: #1b91e5a8;
+                border-color: #1b91e5a8;
+            }
+            .pageBtn{
+                color: #fff;
+                background-color: #1b91e5;
+                border-color: #1b91e5;
+            }
+        }
+        .react-bootstrap-table-pagination-list{
+            justify-content: flex-end;
+            display: flex;
+        }
+    }
+}
+
+.noteContainer{
+    margin: 20px;
+}
