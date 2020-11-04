@@ -97,7 +97,7 @@ const CandidateStatusTable = (props) => {
     if(showAll) {
       setShowAll(showAll => !showAll);
     }
-  }, [props.tableTitle]);
+  }, [props.tableTitle, showAll]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -126,7 +126,7 @@ const CandidateStatusTable = (props) => {
     setRowData(searchedData);
   }
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowData.length - page * rowsPerPage);
+  // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowData.length - page * rowsPerPage);
 
   const showHideColumn = (value, currentIndex) => {
     const updateColData = [...columnData];
@@ -202,11 +202,11 @@ const CandidateStatusTable = (props) => {
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>

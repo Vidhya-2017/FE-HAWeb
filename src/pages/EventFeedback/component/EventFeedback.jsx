@@ -155,12 +155,10 @@ class EventFeedback extends React.Component {
 
   render() {
     const {
-      selectedEvent,
       eventList,
       clientName,
       rating,
       formIsValid,
-      comment,
       showSuccessMessage,
       toastMessage,
     } = this.state;

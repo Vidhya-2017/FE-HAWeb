@@ -1,7 +1,4 @@
-import React, { Fragment } from 'react';
-import { Row, Col, ListGroup, Form } from 'react-bootstrap';
-import Select from 'react-select';
-import SelectStyles from '../../common/SelectStyles';
+import React from 'react';
 import clients from '../../common/clients';
 import { Grid, TextField, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';

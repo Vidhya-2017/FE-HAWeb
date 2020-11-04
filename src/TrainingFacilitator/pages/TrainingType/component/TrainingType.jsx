@@ -244,7 +244,6 @@ class TrainingType extends React.Component {
               headerStyle: {
                 backgroundColor: '#E0E0E0',
                 whiteSpace: 'nowrap',
-                whiteSpace: 'nowrap',
                 lineHeight :'15px',
                 fontSize: '16px',
                 color:'#212529',
@@ -252,7 +251,6 @@ class TrainingType extends React.Component {
               },
               rowStyle: {
                 lineHeight :'15px',
-                fontSize:'13px',
                 whiteSpace: 'nowrap',
                 fontSize: '14px'
               }

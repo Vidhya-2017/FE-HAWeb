@@ -1,11 +1,8 @@
-import React, { Fragment } from 'react';
-import { Row, Col } from 'react-bootstrap';
-import Select from 'react-select';
-import SelectStyles from '../../common/SelectStyles';
-import './css/SkillListMenu.css';
+import React from 'react';
 import clients from '../../common/clients';
 import { Grid, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import './css/SkillListMenu.css';
 
 class competancyList extends React.Component {
   constructor(props) {

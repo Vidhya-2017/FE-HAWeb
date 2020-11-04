@@ -86,7 +86,7 @@ const Header = (props) => {
   }
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" dense>
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton edge="start" onClick={toggleDrawer(!drawerOpen)} className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />

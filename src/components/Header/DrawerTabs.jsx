@@ -145,7 +145,8 @@ const trainingMorePaths = [
 export default function DrawerTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const selectedTab = window.sessionStorage.getItem('selectedTab');
+  const [value, setValue] = React.useState(selectedTab ? parseInt(selectedTab) : 0);
   const [drawerOpen, setDrawerOpen] = React.useState(props.drawerOpen);
   const [expanded, setExpanded] = React.useState('panel1');
 
@@ -165,6 +166,7 @@ export default function DrawerTabs(props) {
   }, [props.drawerOpen])
 
   const pageRedirect = (path) => {
+    window.sessionStorage.setItem('selectedTab', value);
     props.toggleDrawer(!drawerOpen, path);
   }
   return (

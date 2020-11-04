@@ -1,22 +1,6 @@
 import React from "react";
 import {
-  Grid,
-  Typography,
-  Button,
-  TextField,
-  withStyles,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  Divider,
-  IconButton,
-  ListItem,
-  List,
-  Checkbox,
-  ListItemText,
-  ListItemSecondaryAction,
-  Table,
-  TableRow,
+  Grid, Typography, Button, TextField, withStyles, InputAdornment, Dialog, DialogTitle, Divider, IconButton, ListItem, List, Checkbox, ListItemText, ListItemSecondaryAction, Table,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -296,7 +280,6 @@ class SquadFormation extends React.Component {
     const {
       eventSelected,
       candidateList,
-      searchQuery,
       squadList,
       newSquadName,
       selectedSquad,
@@ -408,7 +391,7 @@ class SquadFormation extends React.Component {
           {candidateList && candidateList.length > 0 && (
             <List dense className={classes.listCustom}>
               {candidateList.map((list) => {
-                const labelId = `checkbox-list-secondary-label-${list.EmpName}`;
+                // const labelId = `checkbox-list-secondary-label-${list.EmpName}`;
                 return (
                   <Table className={classes.tableBorder}>
                     

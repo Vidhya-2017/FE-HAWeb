@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, InputGroup, FormControl, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import Select from 'react-select';
 import DatePicker from 'react-date-picker';
 import moment from 'moment';
@@ -9,7 +9,6 @@ import AssessingParameter from '../../../components/commonUI/AssessingParameter'
 import Duration from '../../../components/commonUI/Duration';
 import CompetancyMenu from '../../../components/commonUI/Compentency';
 import EventLocation from '../../../components/commonUI/EventLocation';
-import SelectStyles from '../../../common/SelectStyles';
 import '../scss/EventRegistration.scss';
 import { withStyles, Grid, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';

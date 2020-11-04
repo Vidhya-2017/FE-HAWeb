@@ -1,18 +1,13 @@
 import React from 'react';
-import { Row, Col, FormControl, InputGroup, ListGroup, Form, Toast } from 'react-bootstrap';
-import Select from 'react-select';
 import moment from 'moment';
-import SelectStyles from '../../../common/SelectStyles';
 import '../scss/EventCoordinator.scss';
 import {
-  Grid, TextField, InputAdornment, Checkbox, FormControlLabel, Table, TableBody, TableCell,
-  TableContainer, TableRow, Card, Switch, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  Grid, TextField, InputAdornment, Checkbox, FormControlLabel, Card, Switch, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
   Snackbar, List, ListItem, ListItemSecondaryAction, ListItemText
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import SearchIcon from '@material-ui/icons/Search';
-import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MuiAlert from '@material-ui/lab/Alert';
 

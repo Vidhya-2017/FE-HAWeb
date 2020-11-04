@@ -209,67 +209,6 @@ class CandidateUpload extends Component {
         options.push(item);
       }
     });
-    const sizePerPageRenderer = ({
-      // options,
-      currSizePerPage,
-      onSizePerPageChange
-    }) => (
-        <div className="btn-group recordPerPage" role="group">
-          {
-            options.map((option) => {
-              const isSelect = currSizePerPage === `${option.page}`;
-              return (
-                <button
-                  key={option.text}
-                  type="button"
-                  onClick={() => onSizePerPageChange(option.page)}
-                  className={`btn ${isSelect ? 'pageSelectedBtn' : 'pageBtn'}`}
-                >
-                  {option.text}
-                </button>
-              );
-            })
-          }
-        </div>
-      );
-    const pageButtonRenderer = ({
-      page,
-      active,
-      disable,
-      title,
-      onPageChange
-    }) => {
-      const handleClick = (e) => {
-        e.preventDefault();
-        onPageChange(page);
-      };
-      const activeStyle = {
-        border: 'none',
-        padding: '6px 12px',
-        color: 'white'
-      };
-      const Btnalign = {
-        marginLeft: '20px'
-      }
-      if (active) {
-        activeStyle.backgroundColor = '#1b91e5a8';
-      } else {
-        activeStyle.backgroundColor = '#1b91e5';
-      }
-      if (typeof page === 'string') {
-        activeStyle.backgroundColor = '#1b91e5';
-      }
-      return (
-        <li key={page} className="page-item">
-          <button key={page} onClick={handleClick} style={activeStyle}>{page}</button>
-        </li>
-      );
-    };
-    const paginationOptions = {
-      sizePerPageRenderer,
-      pageButtonRenderer
-    };
-
 
     return (
       <div>
