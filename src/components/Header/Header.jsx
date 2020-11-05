@@ -79,7 +79,6 @@ const Header = (props) => {
   };
 
   const dataCheck = (open, path) => {
-    console.log('-open--', open);
     setDrawerOpen(open);
     props.history.push(path);
 

@@ -88,69 +88,75 @@ const useStyles = makeStyles((theme) => ({
   },
   accDetails: {
     display: 'block',
-    padding: '8px 0'
+    padding: '0'
   }
 }));
 
 const hackeranchorDashBoard = [
-  { text: 'Event Details', path: '/home'},
-  { text: 'Event Status', path: '/eventStatus'},
-  { text: 'Squad Report', path: '/squadReport'},
-  { text: 'Event Report', path: '/eventReport'},
+  { text: 'Event Details', path: '/home' },
+  { text: 'Event Status', path: '/eventStatus' },
+  { text: 'Squad Report', path: '/squadReport' },
+  { text: 'Event Report', path: '/eventReport' },
 ];
 
 const hackeranchorRegEvent = [
-  { text: 'Event Registration', path: '/eventRegister'},
-  { text: 'Candidate Upload', path: '/candidateUpload'},
-  { text: 'Candidate Selection', path: '/candidateSelection'},
+  { text: 'Event Registration', path: '/eventRegister' },
+  { text: 'Candidate Upload', path: '/candidateUpload' },
+  { text: 'Candidate Selection', path: '/candidateSelection' },
 ]
 
 
 const hackeranchorManageEvent = [
-  { text: 'Event Co-Ordinator', path: '/eventCoordinator'},
-  { text: 'Squad Formation', path: '/squadFormation'},
-  { text: 'Candidate Feedback', path: '/candidateFeedback'},
-  { text: 'Event Feedback', path: '/eventFeedback'},
-  { text: 'Event List', path: '/eventList'},
+  { text: 'Event Co-Ordinator', path: '/eventCoordinator' },
+  { text: 'Squad Formation', path: '/squadFormation' },
+  { text: 'Candidate Feedback', path: '/candidateFeedback' },
+  { text: 'Event Feedback', path: '/eventFeedback' },
+  { text: 'Event List', path: '/eventList' },
 ]
 
 
 const demandPaths = [
-  
-  { text: 'Demand Dashboard', path: '/demandDashboard'},
-  { text: 'Demand Supply', path: '/demand'},
-  { text: 'Add SPOC', path: '/addSPOC'},
-  { text: 'Add Recuriter', path: '/addRecruiter'},
-  { text: 'Company List', path: '/previousEmpolyer'},
-  { text: 'Panel', path: '/panel'},
+
+  { text: 'Demand Dashboard', path: '/demandDashboard' },
+  { text: 'Demand Supply', path: '/demand' },
+  { text: 'Add SPOC', path: '/addSPOC' },
+  { text: 'Add Recuriter', path: '/addRecruiter' },
+  { text: 'Company List', path: '/previousEmpolyer' },
+  { text: 'Panel', path: '/panel' },
 ];
 
 const trainingPaths = [
-  { text: 'Training Registration', path: '/trainingCreation'},
-  { text: 'Candidate Selection', path: '/TFCandidateSelection'},
-  { text: 'SME Covered Topics', path: '/smeTopicsCovered'},
-  { text: 'Candidate Feedback', path: '/candidateFeedbackList'},
+  { text: 'Training Registration', path: '/trainingCreation' },
+  { text: 'Candidate Selection', path: '/TFCandidateSelection' },
+  { text: 'SME Covered Topics', path: '/smeTopicsCovered' },
+  { text: 'Candidate Feedback', path: '/candidateFeedbackList' },
 ];
 
 const trainingMorePaths = [
-  { text: 'Users', path: '/user'},
-  { text: 'Skills', path: '/skill'},
-  { text: 'Assessment Scale', path: '/assesmentType'},
-  { text: 'Training Type', path: '/trainingType'},
-  { text: 'Training List', path: '/trainingList'},
-  { text: 'Duration List', path: '/durationMaster'},
-  { text: 'LOB', path: '/lob'}
+  { text: 'Users', path: '/user' },
+  { text: 'Skills', path: '/skill' },
+  { text: 'Assessment Scale', path: '/assesmentType' },
+  { text: 'Training Type', path: '/trainingType' },
+  { text: 'Training List', path: '/trainingList' },
+  { text: 'Duration List', path: '/durationMaster' },
+  { text: 'LOB', path: '/lob' }
 ];
 
-export default function DrawerTabs(props) {
+const selectedStyle = {
+  borderLeft: 'solid #2196F3',
+  background: '#87cefa3d'
+}
+const DrawerTabs = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const selectedTab = window.sessionStorage.getItem('selectedTab');
+  const selectedPanel = window.sessionStorage.getItem('selectedPanel');
   const [value, setValue] = React.useState(selectedTab ? parseInt(selectedTab) : 0);
   const [drawerOpen, setDrawerOpen] = React.useState(props.drawerOpen);
-  const [expanded, setExpanded] = React.useState('panel1');
+  const [expanded, setExpanded] = React.useState(selectedPanel ? selectedPanel : 'panel1');
 
   const handleAccordionChange = (panel) => (event, newExpanded) => {
+    window.sessionStorage.setItem('selectedPanel', panel);
     setExpanded(newExpanded ? panel : false);
   };
   const handleChange = (event, newValue) => {
@@ -171,7 +177,7 @@ export default function DrawerTabs(props) {
   }
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      {/* <AppBar position="static" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -185,7 +191,7 @@ export default function DrawerTabs(props) {
           <Tab wrapped className={classes.tabBtn} label="Demand Supply" {...a11yProps(1)} />
           <Tab wrapped className={classes.tabBtn} label="Training Facilitator" {...a11yProps(2)} />
         </Tabs>
-      </AppBar>
+      </AppBar> */}
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
@@ -198,10 +204,9 @@ export default function DrawerTabs(props) {
                 <Typography>Dashboard</Typography>
               </AccordionSummary>
               <MuiAccordionDetails className={classes.accDetails}>
-                <List>
+                <List disablePadding>
                   {hackeranchorDashBoard.map((item, index) => (
-                    <ListItem button key={item.path} onClick={() => pageRedirect(item.path)}>
-                      {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                    <ListItem style={props.history.location.pathname === item.path ? selectedStyle : {}} button key={item.path} onClick={() => pageRedirect(item.path)}>
                       <ListItemText primary={item.text} />
                     </ListItem>
                   ))}
@@ -213,10 +218,9 @@ export default function DrawerTabs(props) {
                 <Typography>Register Event</Typography>
               </AccordionSummary>
               <MuiAccordionDetails className={classes.accDetails}>
-                <List>
+                <List disablePadding>
                   {hackeranchorRegEvent.map((item, index) => (
-                    <ListItem button key={item.path} onClick={() => pageRedirect(item.path)}>
-                      {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                    <ListItem style={props.history.location.pathname === item.path ? selectedStyle : {}} button key={item.path} onClick={() => pageRedirect(item.path)}>
                       <ListItemText primary={item.text} />
                     </ListItem>
                   ))}
@@ -228,26 +232,24 @@ export default function DrawerTabs(props) {
                 <Typography>Manage Event</Typography>
               </AccordionSummary>
               <MuiAccordionDetails className={classes.accDetails}>
-                <List>
+                <List disablePadding>
                   {hackeranchorManageEvent.map((item, index) => (
-                    <ListItem button key={item.path} onClick={() => pageRedirect(item.path)}>
-                    {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                    <ListItem style={props.history.location.pathname === item.path ? selectedStyle : {}} button key={item.path} onClick={() => pageRedirect(item.path)}>
                       <ListItemText primary={item.text} />
                     </ListItem>
                   ))}
                 </List>
               </MuiAccordionDetails>
             </Accordion>
-            <List>
-              <ListItem button key={'more'} onClick={() => pageRedirect('/more')}>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+            <List disablePadding>
+              <ListItem style={props.history.location.pathname === '/more' ? selectedStyle : {}} button key={'more'} onClick={() => pageRedirect('/more')}>
                 <ListItemText primary="More" />
               </ListItem>
             </List>
           </div>
         </div>
         <div value={value} index={1} dir={theme.direction}>
-          <List>
+          <List disablePadding>
             {demandPaths.map((item, index) => (
               <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
                 {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
@@ -257,7 +259,7 @@ export default function DrawerTabs(props) {
           </List>
         </div>
         <div value={value} index={2} dir={theme.direction}>
-          <List>
+          <List disablePadding>
             {trainingPaths.map((item, index) => (
               <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
                 {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
@@ -266,22 +268,26 @@ export default function DrawerTabs(props) {
             ))}
           </List>
           <Accordion square >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel3d-content" id="panel3d-header">
-                <Typography>Master</Typography>
-              </AccordionSummary>
-              <MuiAccordionDetails className={classes.accDetails}>
-                <List>
-                  {trainingMorePaths.map((item, index) => (
-                    <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
-                      {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-                      <ListItemText primary={item.text} />
-                    </ListItem>
-                  ))}
-                </List>
-              </MuiAccordionDetails>
-            </Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel3d-content" id="panel3d-header">
+              <Typography>Master</Typography>
+            </AccordionSummary>
+            <MuiAccordionDetails className={classes.accDetails}>
+              <List disablePadding>
+                {trainingMorePaths.map((item, index) => (
+                  <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
+                    {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                    <ListItemText primary={item.text} />
+                  </ListItem>
+                ))}
+              </List>
+            </MuiAccordionDetails>
+          </Accordion>
         </div>
       </SwipeableViews>
     </div>
   );
 }
+
+
+
+export default React.memo(DrawerTabs);

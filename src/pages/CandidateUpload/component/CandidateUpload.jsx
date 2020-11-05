@@ -309,7 +309,6 @@ class CandidateUpload extends Component {
       pageButtonRenderer
     };
 
-console.log('--selectedEventData---', selectedEventData);
     return (
       <div>
         <h3 className='pageTitle'>Candidate Upload</h3>
