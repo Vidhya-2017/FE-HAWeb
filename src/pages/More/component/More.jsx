@@ -187,13 +187,13 @@ class More extends React.Component {
         this.setState({
           clientListVal: response.arrRes,
           showToast: true,
-          toastMessage: " client Data loaded successfully"
+          toastMessage: " Client Data Loaded Successfully"
         })
       } else {
         this.setState({
           clientListVal: [],
           showToast: true,
-          toastMessage: "Error in loading  client Data"
+          toastMessage: "Error In Loading  Client Data"
         })
       }
     });
@@ -207,13 +207,13 @@ class More extends React.Component {
         this.setState({
           locationListVal: response.arrRes,
           showToast: true,
-          toastMessage: " Location Data loaded successfully"
+          toastMessage: " Location Data Loaded Successfully"
         })
       } else {
         this.setState({
           locationListVal: [],
           showToast: true,
-          toastMessage: "Error in loading  location Data"
+          toastMessage: "Error In Loading  Location Data"
         })
       }
     });
@@ -226,13 +226,13 @@ class More extends React.Component {
         this.setState({
           skillListVal: response.arrRes,
           showToast: true,
-          toastMessage: " Skill Data loaded successfully"
+          toastMessage: " Skill Data Loaded Successfully"
         })
       } else {
         this.setState({
           skillListVal: [],
           showToast: true,
-          toastMessage: "Error in loading  skill Data"
+          toastMessage: "Error In Loading  Skill Data"
         })
       }
     });
@@ -245,13 +245,13 @@ class More extends React.Component {
         this.setState({
           competancyListVal: response.arrRes,
           showToast: true,
-          toastMessage: " competancy Data loaded successfully"
+          toastMessage: " Competancy Data Loaded Successfully"
         })
       } else {
         this.setState({
           competancyListVal: [],
           showToast: true,
-          toastMessage: "Error in loading competancy Data"
+          toastMessage: "Error In Loading Competancy Data"
         })
       }
     });
@@ -263,13 +263,13 @@ class More extends React.Component {
         this.setState({
           assessmentListVal: response.arrRes,
           showToast: true,
-          toastMessage: "assessment Data loaded successfully"
+          toastMessage: "Assessment Data Loaded Successfully"
         })
       } else {
         this.setState({
           assessmentListVal: [],
           showToast: true,
-          toastMessage: "Error in loading assessment Data"
+          toastMessage: "Error In Loading Assessment Data"
         })
       }
     });
@@ -287,13 +287,13 @@ class More extends React.Component {
         this.setState({
           clientListVal: data,
           showToast: true,
-          toastMessage: " client Name deleted successfully",
+          toastMessage: " Client Name Deleted Successfully",
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in  client Name deletion"
+          toastMessage: "Error In Client Name Deletion"
         });
       }
     });
@@ -311,13 +311,13 @@ class More extends React.Component {
         this.setState({
           locationListVal: data,
           showToast: true,
-          toastMessage: " Location Name deleted successfully",
+          toastMessage: " Location Name Deleted Successfully",
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in  location Name deletion"
+          toastMessage: "Error In Location Name Deletion"
         });
       }
     });
@@ -335,13 +335,13 @@ class More extends React.Component {
         this.setState({
           skillListVal: data,
           showToast: true,
-          toastMessage: " Skill Name deleted successfully",
+          toastMessage: " Skill Name Deleted Successfully",
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in skill Name deletion"
+          toastMessage: "Error In Skill Name Deletion"
         });
       }
     });
@@ -361,13 +361,13 @@ class More extends React.Component {
         this.setState({
           competancyListVal: data,
           showToast: true,
-          toastMessage: " Competancy Name deleted successfully",
+          toastMessage: " Competancy Name Deleted Successfully",
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in  competancy Name deletion"
+          toastMessage: "Error In Competancy Name Deletion"
         });
       }
     });
@@ -387,13 +387,13 @@ class More extends React.Component {
         this.setState({
           assessmentListVal: data,
           showToast: true,
-          toastMessage: " Assessment Name deleted successfully",
+          toastMessage: " Assessment Name Deleted Successfully",
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in assessment Name deletion"
+          toastMessage: "Error In Assessment Name Deletion"
         });
       }
     });
@@ -411,19 +411,19 @@ class More extends React.Component {
         this.setState(prevState => ({
           ...prevState, clientListVal: data,
           showToast: true,
-          toastMessage: " client name updated successfully",
+          toastMessage: "Client Name Updated Successfully",
         }))
       }
       else if (response && response.errCode === 404) {
         this.setState({
           showToast: true,
-          toastMessage: " failed in updating  client name"
+          toastMessage: "Failed In Updating Client Name"
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "error in updating the  client name"
+          toastMessage: "Error In Updating The Client Name"
         });
       }
     });
@@ -455,19 +455,19 @@ class More extends React.Component {
         this.setState(prevState => ({
           ...prevState, locationListVal: data,
           showToast: true,
-          toastMessage: "Location name updated successfully",
+          toastMessage: "Location Name Updated Successfully",
         }))
       }
       else if (response && response.errCode === 404) {
         this.setState({
           showToast: true,
-          toastMessage: "Failed in updating location name"
+          toastMessage: "Failed In Updating Location Name"
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in updating the location name"
+          toastMessage: "Error In Updating The Location Name"
         });
       }
     });
@@ -487,19 +487,19 @@ class More extends React.Component {
         this.setState(prevState => ({
           ...prevState, skillListVal: data,
           showToast: true,
-          toastMessage: "Skill name updated successfully",
+          toastMessage: "Skill Name Updated Successfully",
         }))
       }
       else if (response && response.errCode === 404) {
         this.setState({
           showToast: true,
-          toastMessage: "Failed in updating  skill name"
+          toastMessage: "Failed In Updating Skill Name"
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in updating the skill name"
+          toastMessage: "Error In Updating The Skill Name"
         });
       }
     });
@@ -519,19 +519,19 @@ class More extends React.Component {
         this.setState(prevState => ({
           ...prevState, competancyListVal: data,
           showToast: true,
-          toastMessage: " client name updated successfully",
+          toastMessage: " Competancy Name Updated Successfully",
         }))
       }
       else if (response && response.errCode === 404) {
         this.setState({
           showToast: true,
-          toastMessage: " Failed in updating  competancy name"
+          toastMessage: " Failed In Updating Competancy Name"
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in updating the  competancy name"
+          toastMessage: "Error In Updating The Competancy Name"
         });
       }
     });
@@ -553,19 +553,19 @@ class More extends React.Component {
         this.setState(prevState => ({
           ...prevState, assessmentListVal: data,
           showToast: true,
-          toastMessage: "Assessment name updated successfully",
+          toastMessage: "Assessment Name Updated Successfully",
         }))
       }
       else if (response && response.errCode === 404) {
         this.setState({
           showToast: true,
-          toastMessage: " Failed in updating  assessment name"
+          toastMessage: " Failed In Updating Assessment Name"
         });
       }
       else {
         this.setState({
           showToast: true,
-          toastMessage: "Error in updating the  assessment name"
+          toastMessage: "Error In Updating The Assessment Name"
         });
       }
     });
@@ -596,14 +596,21 @@ class More extends React.Component {
           showAddclientModal: false,
           clientListVal: updatedItems,
           showToast: true,
-          toastMessage: "Client name added successfully!"
+          toastMessage: "Client Name Added Successfully!"
+        })
+      }
+      else if(response && response.errCode === 208) {
+        this.setState({
+          showAddclientModal: false,
+          showToast: true,
+          toastMessage: "Already Added The Client Name!"
         })
       }
       else {
         this.setState({
           showAddclientModal: false,
           showToast: true,
-          toastMessage: "Error in adding  client name!"
+          toastMessage: "Error In Adding Client Name!"
         })
       }
     });
@@ -644,14 +651,21 @@ class More extends React.Component {
           showAddclientModal1: false,
           locationListVal: updatedItems,
           showToast: true,
-          toastMessage: " Location name added successfully!"
+          toastMessage: " Location Name Added Successfully!"
+        })
+      }
+      else if(response && response.errCode === 208) {
+        this.setState({
+          showAddclientModal: false,
+          showToast: true,
+          toastMessage: "Already Added The Location Name!"
         })
       }
       else {
         this.setState({
           showAddclientModal1: false,
           showToast: true,
-          toastMessage: "Error in adding  location name!"
+          toastMessage: "Error In Adding  Location Name!"
         })
       }
     });
@@ -678,14 +692,21 @@ class More extends React.Component {
           showAddclientModal2: false,
           skillListVal: updatedItems,
           showToast: true,
-          toastMessage: "Skill name added successfully!"
+          toastMessage: "Skill Name Added Successfully!"
+        })
+      }
+      else if(response && response.errCode === 208) {
+        this.setState({
+          showAddclientModal: false,
+          showToast: true,
+          toastMessage: "Already Added The Skill Name!"
         })
       }
       else {
         this.setState({
           showAddclientModal2: false,
           showToast: true,
-          toastMessage: "Error in adding  skill name!"
+          toastMessage: "Error In Adding  Skill Name!"
         })
       }
     });
@@ -715,14 +736,21 @@ class More extends React.Component {
           showAddclientModal3: false,
           competancyListVal: updatedItems,
           showToast: true,
-          toastMessage: "Competancy name added successfully!"
+          toastMessage: "Competancy Name Added Successfully!"
+        })
+      }
+      else if(response && response.errCode === 208) {
+        this.setState({
+          showAddclientModal: false,
+          showToast: true,
+          toastMessage: "Already Added The Competancy Name!"
         })
       }
       else {
         this.setState({
           showAddclientModal3: false,
           showToast: true,
-          toastMessage: "Error in adding  competancy name!"
+          toastMessage: "Error In Adding Competancy Name!"
         })
       }
     });
@@ -756,14 +784,21 @@ class More extends React.Component {
           showAddclientModal4: false,
           assessmentListVal: updatedItems,
           showToast: true,
-          toastMessage: "Assessment name added successfully!"
+          toastMessage: "Assessment Name Added Successfully!"
+        })
+      }
+      else if(response && response.errCode === 208) {
+        this.setState({
+          showAddclientModal: false,
+          showToast: true,
+          toastMessage: "Already Added The Assessment Name!"
         })
       }
       else {
         this.setState({
           showAddclientModal4: false,
           showToast: true,
-          toastMessage: "Error in adding assessment name!"
+          toastMessage: "Error In Adding Assessment Name!"
         })
       }
     });
