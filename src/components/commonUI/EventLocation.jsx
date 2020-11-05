@@ -80,7 +80,7 @@ class EventLocation extends React.Component {
           <Grid item xs={7}>
             <Autocomplete
               options={this.state.eventLocation}
-              getOptionLabel={option => option.label}
+              getOptionLabel={option => option.label || option}
               value={this.state.eventLocationValue}
               defaultValue={this.state.eventLocationValue}
               onChange={this.durationOnChange}

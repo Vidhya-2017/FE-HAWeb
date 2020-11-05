@@ -91,7 +91,7 @@ class SkillListMenu extends React.Component {
               <Autocomplete
                 multiple
                 options={skillSetList}
-                getOptionLabel={option => option.label}
+                getOptionLabel={option => option.label || option}
                 value={selectedSkillSets}
                 defaultValue={selectedSkillSets}
                 onChange={this.skillOnChange}

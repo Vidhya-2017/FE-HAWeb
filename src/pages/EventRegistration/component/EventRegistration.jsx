@@ -275,6 +275,18 @@ class EventRegistration extends React.Component {
 
   eventCreateOrEdit = (response, message) => {
     if (response && response.errCode === 200) {
+      this.props.getEventList().then((response) => {
+        if (response && response.arrRes.length > 0) {
+          const eventList = response.arrRes.map(list => {
+            return {
+              value: list.EventId,
+              EventId: list.EventId,
+              label: list.Name
+            }
+          });
+          this.setState({ eventList });
+        }
+      });
       this.setState({
         registerEvent: { ...regEventForm },
         organizerList: [],
@@ -343,7 +355,7 @@ class EventRegistration extends React.Component {
                 <Grid item xs={7}>
                   <Autocomplete
                     options={eventList}
-                    getOptionLabel={option => option.label || ''}
+                    getOptionLabel={option => option.label || option}
                     value={selectedEvent ? selectedEvent : null}
 
                     onChange={this.eventFieldChange}

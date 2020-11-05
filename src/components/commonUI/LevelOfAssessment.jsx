@@ -58,7 +58,7 @@ class LevelOfAssessment extends React.Component {
         for (let i = 0; i < Number(assesmentValue.value) + 2; i++) {
           selectedLevelCheck.push({
             id: i,
-            value: i === (Number(e.value) + 1) ? 'Final Assessment' : `Sprint ${i}`,
+            value: i === (Number(assesmentValue.value) + 1) ? 'Final Assessment' : `Sprint ${i}`,
             checked: true
           });
         }
@@ -84,7 +84,7 @@ class LevelOfAssessment extends React.Component {
             <span>No of Sprint:</span>
           </Grid>
           <Grid item xs={7}>
-            <Autocomplete
+            {assessmentLevelList.length > 0 && <Autocomplete
               closeIcon=""
               options={assessmentLevelList}
               getOptionLabel={option => option.label || option}
@@ -101,7 +101,7 @@ class LevelOfAssessment extends React.Component {
                   variant="outlined"
                 />
               )}
-            />
+            />}
           </Grid>
         </Grid>
 

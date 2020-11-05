@@ -94,7 +94,7 @@ class competancyList extends React.Component {
               <Autocomplete
                 multiple
                 options={compentencySetList}
-                getOptionLabel={option => option.label}
+                getOptionLabel={option => option.label || option}
                 value={selectedCompentencys}
                 defaultValue={selectedCompentencys}
                 onChange={this.compentencyOnChange}

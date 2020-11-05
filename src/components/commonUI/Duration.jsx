@@ -62,7 +62,7 @@ class Duration extends React.Component {
           <Grid item xs={7}>
             <Autocomplete
               options={this.state.durationList}
-              getOptionLabel={option => option.label}
+              getOptionLabel={option => option.label || option}
               value={this.state.durationValue}
               defaultValue={this.state.durationValue}
               onChange={this.durationOnChange}
