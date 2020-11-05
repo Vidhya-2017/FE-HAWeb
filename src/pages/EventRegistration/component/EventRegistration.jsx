@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import Select from 'react-select';
 import DatePicker from 'react-date-picker';
 import moment from 'moment';
 import SkillListMenu from '../../../components/commonUI/SkillListMenu';

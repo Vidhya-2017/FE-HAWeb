@@ -1091,7 +1091,11 @@ class More extends React.Component {
                   style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
                   options={{
                     actionsColumnIndex: -1,
-                    pageSizeOptions: []
+                    pageSizeOptions: [],
+                    headerStyle: {
+                      backgroundColor: '#EEEEEE',
+                      color: '#000'
+                    }
                   }}
                   actions={[
                     {
@@ -1162,7 +1166,11 @@ class More extends React.Component {
                   style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
                   options={{
                     actionsColumnIndex: -1,
-                    pageSizeOptions: []
+                    pageSizeOptions: [],
+                    headerStyle: {
+                      backgroundColor: '#EEEEEE',
+                      color: '#000'
+                    }
                   }}
                   actions={[
                     {
@@ -1235,7 +1243,11 @@ class More extends React.Component {
                   style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
                   options={{
                     actionsColumnIndex: -1,
-                    pageSizeOptions: []
+                    pageSizeOptions: [],
+                    headerStyle: {
+                      backgroundColor: '#EEEEEE',
+                      color: '#000'
+                    }
                   }}
                   actions={[
                     {
@@ -1309,7 +1321,11 @@ class More extends React.Component {
                   style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
                   options={{
                     actionsColumnIndex: -1,
-                    pageSizeOptions: []
+                    pageSizeOptions: [],
+                    headerStyle: {
+                      backgroundColor: '#EEEEEE',
+                      color: '#000'
+                    }
                   }}
                   actions={[
                     {
@@ -1396,7 +1412,11 @@ class More extends React.Component {
                   style={{ boxShadow: 'none', border: 'solid 1px #ccc' }}
                   options={{
                     actionsColumnIndex: -1,
-                    pageSizeOptions: []
+                    pageSizeOptions: [],
+                    headerStyle: {
+                      backgroundColor: '#EEEEEE',
+                      color: '#000'
+                    }
                   }}
                   actions={[
                     {

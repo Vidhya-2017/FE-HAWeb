@@ -1,15 +1,15 @@
 import React from 'react';
-
+import './scss/Footer.scss';
 class Footer extends React.Component {
 
   render() {
     return (
-      <footer className="py-4 bg-light mt-auto">
+      <footer className="mt-auto">
       <div className="container-fluid">
         <div className="d-flex align-items-center justify-content-between small">
-          <div className="text-muted">Copyright &copy; HCL 2020</div>
+          <div>Copyright &copy; HCL 2020</div>
           <div>
-           DNA Capability
+           Powered by - DNA Capability
           </div>
         </div>
       </div>

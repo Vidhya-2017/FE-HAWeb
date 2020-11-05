@@ -5,6 +5,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Select from 'react-select';
+import moment from 'moment';
+import clients from '../../../common/clients';
 import SelectStyles from '../../../common/SelectStyles';
 import ArrowDown from '../../../common/icons/ArrowDown';
 import ArrowUp from '../../../common/icons/ArrowUp';
@@ -26,11 +28,13 @@ class CandidateUpload extends Component {
       selectedEvent: null,
       selectedEventData: {},
       showSuccessMessage: false,
-      toastMessage: ''
+      toastMessage: '',
+      durationList: []
     }
   }
 
   componentDidMount() {
+    this.getDurationList();
     this.props.getEventList().then(response => {
       if (response && response.arrRes) {
         let eventList = [];
@@ -45,6 +49,12 @@ class CandidateUpload extends Component {
     });
   }
 
+
+  getDurationList = async () => {
+      const response = await clients.axiosAPI.get('/durationList.php');
+      this.setState({ durationList: response.data.arrRes });
+  }
+  
   getFileDetails = (e) => {
     const files = e.target.files;
     if (files && files[0]) {
@@ -227,7 +237,7 @@ class CandidateUpload extends Component {
 
   render() {
     const { file, data, cols, selectedSheet, sheetOptions, showSuccessMessage,
-      showModal, eventList, selectedEvent, selectedEventData, toastMessage } = this.state;
+      showModal, eventList, selectedEvent, selectedEventData, toastMessage, durationList } = this.state;
     const recordPerPageVal = Math.ceil(data.length / 10) * 10;
     const recordPerPageOptions = [
       { text: "10", page: 10 },
@@ -299,7 +309,7 @@ class CandidateUpload extends Component {
       pageButtonRenderer
     };
 
-
+console.log('--selectedEventData---', selectedEventData);
     return (
       <div>
         <h3 className='pageTitle'>Candidate Upload</h3>
@@ -353,22 +363,25 @@ class CandidateUpload extends Component {
             <Modal.Title>Select Event Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Select
-              value={selectedEvent}
-              onChange={this.handleEventChange}
-              options={eventList}
-              styles={SelectStyles()}
-              placeholder='Select the Event'
-            />
+            <div className='eventData'>
+              <span className='eventTitle'>Event Name:</span>
+              <Select
+                value={selectedEvent}
+                onChange={this.handleEventChange}
+                options={eventList}
+                styles={SelectStyles()}
+                placeholder='Select the Event'
+              />
+            </div>
             {selectedEvent &&
               <Fragment>
                 <div className='eventData'>
-                  <span className='eventTitle'>Event ID:</span>
-                  <span className='scoreTextLabel'>{selectedEventData.EventId}</span>
+                  <span className='eventTitle'>Event Date:</span>
+                  <span className='scoreTextLabel'>{moment(selectedEventData.EventDate).format("DD-MM-YYYY")}</span>
                 </div>
                 <div className='eventData'>
-                  <span className='eventTitle'>Event Date:</span>
-                  <span className='scoreTextLabel'>{selectedEventData.EventDate}</span>
+                  <span className='eventTitle'>Duration:</span>
+                  <span className='scoreTextLabel'>{durationList.find(list => list.DurationID === selectedEventData.Duration).Duration}</span>
                 </div>
                 <div className='eventData'>
                   <span className='eventTitle'>Event Skills:</span>
@@ -378,12 +391,8 @@ class CandidateUpload extends Component {
             }
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
-              Close
-          </Button>
-            <Button variant="primary" onClick={this.handleOnSubmit}>
-              Submit
-          </Button>
+            <Button className='file-upload fileUploadBtn btn shadow' onClick={this.handleClose}>Close</Button>
+            <Button className='file-upload fileUploadBtn btn shadow' onClick={this.handleOnSubmit}>Submit</Button>
           </Modal.Footer>
         </Modal>
         {data.length > 0 && <Alert className='noteContainer' variant='secondary'>
