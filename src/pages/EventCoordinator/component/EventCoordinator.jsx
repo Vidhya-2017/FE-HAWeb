@@ -48,7 +48,7 @@ class EventCoordinator extends React.Component {
   }
 
   handleEventChange = (e, eventSelected) => {
-    this.setState({ eventSelected, userList: [], clientName: '' });
+    // this.setState({ eventSelected, clientName: '' });
     let id = eventSelected.value;
     let clientName = '';
     let clientId = '';
@@ -68,14 +68,14 @@ class EventCoordinator extends React.Component {
                   userList = res.arrRes;
                 }
                 this.setState({
-                  clientName, clientId, userList
+                  clientName, clientId, userList, eventSelected
                 });
               })
             }
           })
         }
       } else {
-        this.setState({ toastMsg: "You don't have permission. Please contact Organiser.", showToast: true });
+        this.setState({ toastMsg: "You don't have permission. Please contact Organiser.", showToast: true, userList:[], eventSelected , clientName:''});
       }
     });
   }
@@ -205,6 +205,7 @@ class EventCoordinator extends React.Component {
               </Grid>
               <Grid item xs={7}>
                 <Autocomplete
+                  closeIcon=""
                   options={EventDetailsList}
                   getOptionLabel={option => option.label}
                   value={eventSelected}

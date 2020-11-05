@@ -391,8 +391,8 @@ class EventRegistration extends React.Component {
                   renderInput={params => (
                     <TextField
                       {...params}
-                      label="Event Name"
-                      placeholder="Event Name"
+                      label="Client Name"
+                      placeholder="Client Name"
                       margin="dense"
                       variant="outlined"
                       required
