@@ -1,9 +1,15 @@
 import React from 'react';
 import './css/SkillListMenu.css'
-import clients from '../../common/clients';
 import { Grid, TextField } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import clients from '../../common/clients';
 
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 class SkillListMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -94,13 +100,27 @@ class SkillListMenu extends React.Component {
                 getOptionLabel={option => option.label || option}
                 value={selectedSkillSets}
                 defaultValue={selectedSkillSets}
+                disableCloseOnSelect
+                renderOption={(option, { selected }) => (
+                  <React.Fragment>
+                    <Checkbox
+                      icon={icon}
+                      color="primary"
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.label}
+                  </React.Fragment>
+                )}
                 onChange={this.skillOnChange}
                 disabled={this.props.disabled}
+                limitTags={2}
                 renderInput={params => (
                   <TextField
                     {...params}
                     label="Skill List"
-                    placeholder="Select"
+                    placeholder="Skills"
                     margin="dense"
                     fullWidth
                     variant="outlined"

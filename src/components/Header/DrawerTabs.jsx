@@ -177,12 +177,11 @@ const DrawerTabs = (props) => {
   }
   return (
     <div className={classes.root}>
-      {/* <AppBar position="static" color="default">
+      <AppBar position="static" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
           indicatorColor="primary"
-
           textColor="primary"
           //   variant="fullWidth"
           aria-label="full width tabs example"
@@ -191,7 +190,7 @@ const DrawerTabs = (props) => {
           <Tab wrapped className={classes.tabBtn} label="Demand Supply" {...a11yProps(1)} />
           <Tab wrapped className={classes.tabBtn} label="Training Facilitator" {...a11yProps(2)} />
         </Tabs>
-      </AppBar> */}
+      </AppBar>
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
@@ -251,8 +250,7 @@ const DrawerTabs = (props) => {
         <div value={value} index={1} dir={theme.direction}>
           <List disablePadding>
             {demandPaths.map((item, index) => (
-              <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+              <ListItem style={props.history.location.pathname === item.path ? selectedStyle : {}} button key={item.text} onClick={() => pageRedirect(item.path)}>
                 <ListItemText primary={item.text} />
               </ListItem>
             ))}
@@ -261,8 +259,7 @@ const DrawerTabs = (props) => {
         <div value={value} index={2} dir={theme.direction}>
           <List disablePadding>
             {trainingPaths.map((item, index) => (
-              <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+              <ListItem style={props.history.location.pathname === item.path ? selectedStyle : {}} button key={item.text} onClick={() => pageRedirect(item.path)}>
                 <ListItemText primary={item.text} />
               </ListItem>
             ))}
@@ -274,8 +271,7 @@ const DrawerTabs = (props) => {
             <MuiAccordionDetails className={classes.accDetails}>
               <List disablePadding>
                 {trainingMorePaths.map((item, index) => (
-                  <ListItem button key={item.text} onClick={() => pageRedirect(item.path)}>
-                    {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                  <ListItem style={props.history.location.pathname === item.path ? selectedStyle : {}} button key={item.text} onClick={() => pageRedirect(item.path)}>
                     <ListItemText primary={item.text} />
                   </ListItem>
                 ))}

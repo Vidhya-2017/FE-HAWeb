@@ -4,6 +4,13 @@ import { Grid, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import './css/SkillListMenu.css';
 
+
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 class competancyList extends React.Component {
   constructor(props) {
     super(props);
@@ -99,6 +106,19 @@ class competancyList extends React.Component {
                 defaultValue={selectedCompentencys}
                 onChange={this.compentencyOnChange}
                 disabled={this.props.disabled}
+                disableCloseOnSelect
+                renderOption={(option, { selected }) => (
+                  <React.Fragment>
+                    <Checkbox
+                      icon={icon}
+                      color="primary"
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.label}
+                  </React.Fragment>
+                )}
                 renderInput={params => (
                   <TextField
                     {...params}

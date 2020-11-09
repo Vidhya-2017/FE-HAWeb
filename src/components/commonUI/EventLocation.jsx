@@ -47,14 +47,6 @@ class EventLocation extends React.Component {
     }
   }
 
-
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedValue !== this.state.eventLocationValue) {
-      this.setState({ eventLocationValue: nextProps.selectedValue });
-    }
-  }
-
   durationOnChange = (e, value) => {
     this.props.onEventChange({ target: { ...value, name: 'eventLocation' } });
   }

@@ -6,6 +6,12 @@ import clients from '../../common/clients';
 import { Grid, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 class AssessingParameter extends React.Component {
   constructor(props) {
     super(props);
@@ -68,12 +74,6 @@ class AssessingParameter extends React.Component {
     const che = assessingParameter ? assessingParameter : []
     return (
       <Fragment>
-        {/* <IonLabel></IonLabel>
-        <IonSelect name='assessingParameter' value={assessingParameter} multiple={true} placeholder="Select Parameter" onIonChange={this.assessingPrmtrOnChange}>
-          {assessingParameterList.map((list) =>
-            <IonSelectOption key={list.AssId} value={list.AssId}>{list.AssName}</IonSelectOption>
-          )}
-        </IonSelect> */}
         <Grid container spacing={2}>
           <Grid item xs={5} >
             <span>Assessing Parameter:</span>
@@ -89,6 +89,19 @@ class AssessingParameter extends React.Component {
                 defaultValue={che}
                 onChange={this.assessingPrmtrOnChange}
                 disabled={this.props.disabled}
+                disableCloseOnSelect
+                renderOption={(option, { selected }) => (
+                  <React.Fragment>
+                    <Checkbox
+                      icon={icon}
+                      color="primary"
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.label}
+                  </React.Fragment>
+                )}
                 renderInput={params => (
                   <TextField
                     {...params}

@@ -23,10 +23,8 @@ const styles = (theme) => ({
     marginTop: '15px',
   },
   SpanAlignOne: {
-    width: '100%',
-    marginTop: 0
+    width: '100%'
   },
-
 });
 
 const inputField = {
@@ -339,16 +337,15 @@ class EventRegistration extends React.Component {
               {!editEvent ?
                 <Grid item xs={7}>
                   <TextField
+                    label="Event Name"
                     className={classes.SpanAlignOne}
-                    inputProps={{ style: { height: 5 } }}
-                    id="outlined-multiline-flexible"
+                    id="outlined-size-small"
+                    onChange={this.inputFieldChange}
                     type="text"
                     name="eventName"
-                    variant="outlined"
-                    label="Event Name"
-                    margin="normal"
                     value={registerEvent.eventName.value}
-                    onChange={this.inputFieldChange}
+                    variant="outlined"
+                    size="small"
                   />
                 </Grid> :
                 <Grid item xs={7}>
