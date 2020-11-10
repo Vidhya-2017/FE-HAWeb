@@ -560,7 +560,7 @@ class CandidateFeedback extends React.Component {
               <Toast.Body>{toastMessage}</Toast.Body>
             </Toast>
           }
-          <Modal show={showModal} onHide={this.handleClose}>
+          <Modal show={showModal} onHide={this.handleClose} className="candidateFeedbackModal">
             <Modal.Header closeButton>
               <Modal.Title>Previous FeedBack Details </Modal.Title>
             </Modal.Header>

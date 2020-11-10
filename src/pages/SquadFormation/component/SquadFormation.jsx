@@ -1,6 +1,23 @@
 import React from "react";
 import {
-  Grid, Typography, Button, TextField, withStyles, InputAdornment, Dialog, DialogTitle, Divider, IconButton, ListItem, List, Checkbox, ListItemText, ListItemSecondaryAction, Table,
+  Grid,
+  Typography,
+  Button,
+  TextField,
+  withStyles,
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  Divider,
+  IconButton,
+  DialogContent,
+  DialogActions,
+  ListItem,
+  List,
+  Checkbox,
+  ListItemText,
+  ListItemSecondaryAction,
+  Table,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -52,7 +69,6 @@ const styles = (theme) => ({
     borderColor: "black",
     borderStyle: "solid",
   },
- 
 });
 
 class SquadFormation extends React.Component {
@@ -174,6 +190,7 @@ class SquadFormation extends React.Component {
   };
 
   handleSquadChange = (e, selectedSquad) => {
+    console.log(selectedSquad);
     if (selectedSquad !== null) {
       const { eventSelected } = this.state;
       this.setState({ selectedSquad });
@@ -215,6 +232,10 @@ class SquadFormation extends React.Component {
           });
         }
       });
+    } else {
+      this.setState({
+        candidateList: [],
+      });
     }
   };
 
@@ -223,8 +244,8 @@ class SquadFormation extends React.Component {
     const lowerCaseQuery = query.toLowerCase();
     const searchedData = query
       ? this.candidateList.filter((list) =>
-          list["EmpName"].toLowerCase().includes(lowerCaseQuery)
-        )
+        list["EmpName"].toLowerCase().includes(lowerCaseQuery)
+      )
       : this.candidateList;
     this.setState({ candidateList: searchedData, searchQuery: query });
   };
@@ -258,7 +279,7 @@ class SquadFormation extends React.Component {
           toastMsg: "Squad Registered successfully",
           showToast: true,
           candidateList: [],
-          eventSelected: null,
+          // eventSelected: null,
           selectedSquad: null,
         });
       } else if (response && response.errCode === 404) {
@@ -360,7 +381,7 @@ class SquadFormation extends React.Component {
 
           {candidateList && selectedSquad && (
             <Grid container spacing={2}>
-              <Grid item xs={7}>
+              <Grid item xs={6}>
                 <TextField
                   name="searchcandidate"
                   variant="outlined"
@@ -380,9 +401,9 @@ class SquadFormation extends React.Component {
                   }}
                 />
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={6}>
                 <p style={{ marginTop: "25px" }}>
-                  Candidate List: Count - {this.CandidateIDs.length}
+                  Selected candiate count: {this.CandidateIDs.length}
                 </p>
               </Grid>
             </Grid>
@@ -394,26 +415,24 @@ class SquadFormation extends React.Component {
                 // const labelId = `checkbox-list-secondary-label-${list.EmpName}`;
                 return (
                   <Table className={classes.tableBorder}>
-                    
-                      <ListItem key={list.EmpName} button>
-                        <ListItemText
-                          primary={list.EmpName}
-                          secondary={list.SkillName}
+                    <ListItem key={list.EmpName} button>
+                      <ListItemText
+                        primary={list.EmpName}
+                        secondary={list.SkillName}
+                      />
+                      <ListItemSecondaryAction>
+                        <Checkbox
+                          edge="end"
+                          onChange={(e) =>
+                            this.handleCandidateSelection(e, list)
+                          }
+                          checked={
+                            list.SquadName !== null && list.SquadName !== ""
+                          }
+                          inputProps={{ "aria-labelledby": list.user_id }}
                         />
-                        <ListItemSecondaryAction>
-                          <Checkbox
-                            edge="end"
-                            onChange={(e) =>
-                              this.handleCandidateSelection(e, list)
-                            }
-                            checked={
-                              list.SquadName !== null && list.SquadName !== ""
-                            }
-                            inputProps={{ "aria-labelledby": list.user_id }}
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-           
+                      </ListItemSecondaryAction>
+                    </ListItem>
                   </Table>
                 );
               })}
@@ -432,38 +451,35 @@ class SquadFormation extends React.Component {
           )}
         </div>
         <Dialog
-          fullWidth={true}
-          maxWidth="xs"
           onClose={this.handleClose}
           aria-labelledby="customized-dialog-title"
           open={showUserModal}
         >
-          <div style={{ marginLeft: "5px", marginRight: "5px" }}>
-            <IconButton className={classes.customizedButton}>
-              <CloseIcon onClick={this.handleClose} />
-            </IconButton>
-            <DialogTitle id="simple-dialog-title">Squad Name</DialogTitle>
-            <Divider />
-            <Grid container spacing={-10}>
-              <Grid item xs={8}>
-                <TextField
-                  //  className={classes.textField}
-                  type="CandidateName"
-                  name="candidatename"
-                  required
-                  variant="outlined"
-                  label="Squad Name"
-                  placeholder="Squad Name"
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{ shrink: true }}
-                  inputProps={{ style: { height: 5 } }}
-                  onChange={this.squadNameOnChange}
-                />
-              </Grid>
-            </Grid>
-            <br />
-
+          <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+            Squad Name
+            <CloseIcon
+              style={{ marginLeft: "56%" }}
+              onClick={this.handleClose}
+            />
+          </DialogTitle>
+          <Divider />
+          <DialogContent style={{ margin: 0, width: "380px" }}>
+            <TextField
+              //  className={classes.textField}
+              type="CandidateName"
+              name="candidatename"
+              required
+              variant="outlined"
+              label="Squad Name"
+              placeholder="Squad Name"
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }}
+              inputProps={{ style: { height: 5 } }}
+              onChange={this.squadNameOnChange}
+            />
+          </DialogContent>
+          <DialogActions>
             <Button
               variant="contained"
               color="primary"
@@ -474,9 +490,7 @@ class SquadFormation extends React.Component {
             >
               Submit
             </Button>
-            <br />
-            <br />
-          </div>
+          </DialogActions>
         </Dialog>
 
         {showToast && (

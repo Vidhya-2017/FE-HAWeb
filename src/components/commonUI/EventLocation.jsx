@@ -71,6 +71,7 @@ class EventLocation extends React.Component {
 
           <Grid item xs={7}>
             <Autocomplete
+              closeIcon=""
               options={this.state.eventLocation}
               getOptionLabel={option => option.label || option}
               value={this.state.eventLocationValue}
