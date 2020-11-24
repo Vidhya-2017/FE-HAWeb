@@ -30,7 +30,7 @@
             }
         }
         .fileName {
-            padding-left: 10px;
+            padding: 0 10px;
             color: #000;
             font-weight: 500;
         }
@@ -113,17 +113,15 @@
     margin: 20px;
 }
 
-.eventModal {
-    .eventData{
-        width: 100%;
-        display: flex;
-        .eventTitle {
-            width: 50%;
-        }
-        .scoreTextLabel{
-            font-weight: 500;
-            padding-bottom: 10px;
-        }
+.eventData{
+    width: 100%;
+    display: flex;
+    .eventTitle {
+        width: 50%;
+    }
+    .scoreTextLabel{
+        font-weight: 500;
+        padding-bottom: 10px;
     }
 }
 .arrowDesign{

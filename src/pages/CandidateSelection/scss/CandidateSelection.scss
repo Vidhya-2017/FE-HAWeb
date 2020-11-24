@@ -19,13 +19,19 @@
         padding-left: 10px;
     }
     .memberLabel{
-        margin: 5px 0;
+        margin: 0;
         font-size: 18px;
         font-weight: 500;
+        padding-top: 10px;
     }
     .candidateSelectionForm{
         .fieldName{
             padding: 10px;
+        }
+        .eventLabel{
+            margin: 0;
+            font-size: 18px;
+            padding-top: 10px;
         }
         .inputField{
             height: 38px;
@@ -33,6 +39,13 @@
             border-radius: 5px;
         }
         .checkBoxAll{
+            p{
+                margin:0;
+                padding: 10px 0;
+                span {
+                    font-weight: bold;
+                }
+            }
             display:flex;
             justify-content: space-between;
         }
@@ -40,7 +53,8 @@
     .candidateList{
         max-height: 500px;
         overflow: auto;
-        border: solid 1px #e3e3e3;
+        padding: 0;
+        // border: solid 1px #e3e3e3;
         .userList{
             display: flex;
             justify-content: space-between;

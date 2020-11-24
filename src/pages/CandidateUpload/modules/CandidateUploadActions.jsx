@@ -19,6 +19,15 @@ export const CandidateUploadActions = {
             return (error.response);
         }
     },
+    candidateBulkUpload: async (data) => {
+        try {
+            const response = await clients.axiosAPI.post('/import-excel/importCandidateApi.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
     getEventByUser: async (data) => {
         try {
             const response = await clients.axiosAPI.post('/EventByUserNew.php', data);

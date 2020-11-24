@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import moment from 'moment';
-import '../scss/EventCoordinator.scss';
 import {
-  Grid, TextField, InputAdornment, Checkbox, FormControlLabel, Card, Switch, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  Grid, TextField, FormControlLabel, Card, Switch, Button, Divider,
   Snackbar, List, ListItem, ListItemSecondaryAction, ListItemText
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import SearchIcon from '@material-ui/icons/Search';
-import CloseIcon from '@material-ui/icons/Close';
-import MuiAlert from '@material-ui/lab/Alert';
+import { Alert, AlertTitle, Autocomplete } from '@material-ui/lab';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import AddCoordinator from './AddCoordinator';
+import '../scss/EventCoordinator.scss';
 
 class EventCoordinator extends React.Component {
 
@@ -25,6 +23,7 @@ class EventCoordinator extends React.Component {
       eventSelected: null,
       clientId: '',
       users: [],
+      loading: false,
       showUserModal: false,
       btnDisable: false
     }
@@ -48,34 +47,37 @@ class EventCoordinator extends React.Component {
   }
 
   handleEventChange = (e, eventSelected) => {
-    // this.setState({ eventSelected, clientName: '' });
-    let id = eventSelected.value;
     let clientName = '';
     let clientId = '';
     let userList = [];
-    const user_id = this.props.userDetails.user_id;
-    const isPanelReq = { eventID: id, userID: user_id };
-    this.props.checkIsOrganiser(isPanelReq).then((panelRes) => {
-      if (panelRes && panelRes.ispanel !== '' && !panelRes.ispanel) {
-        const reqObj = { eventId: id };
-        if (id) {
-          this.props.geClientDetailsById(reqObj).then((response) => {
-            if (response && response.arrRes) {
-              clientId = response.arrRes[0].ClientId;
-              clientName = response.arrRes[0].ClientName;
-              this.props.getPanelList(reqObj).then((res) => {
-                if (res.errCode === 200) {
-                  userList = res.arrRes;
+    this.setState({ eventSelected, userList, clientId, clientName, loading: true }, () => {
+      if (eventSelected && eventSelected.value) {
+        let id = eventSelected.value;
+        const user_id = this.props.userDetails.user_id;
+        const isPanelReq = { eventID: id, userID: user_id };
+        this.props.checkIsOrganiser(isPanelReq).then((panelRes) => {
+          if (panelRes && panelRes.ispanel !== '' && !panelRes.ispanel) {
+            const reqObj = { eventId: id };
+            if (id) {
+              this.props.geClientDetailsById(reqObj).then((response) => {
+                if (response && response.arrRes) {
+                  clientId = response.arrRes[0].ClientId;
+                  clientName = response.arrRes[0].ClientName;
+                  this.props.getPanelList(reqObj).then((res) => {
+                    if (res.errCode === 200) {
+                      userList = res.arrRes;
+                    }
+                    this.setState({
+                      clientName, clientId, userList, loading: false
+                    });
+                  })
                 }
-                this.setState({
-                  clientName, clientId, userList, eventSelected
-                });
               })
             }
-          })
-        }
-      } else {
-        this.setState({ toastMsg: "You don't have permission. Please contact Organiser.", showToast: true, userList:[], eventSelected , clientName:''});
+          } else {
+            this.setState({ loading: false, toastMsg: "You don't have permission. Please contact Organiser.", showToast: true, userList: [], eventSelected, clientName: '' });
+          }
+        });
       }
     });
   }
@@ -107,6 +109,13 @@ class EventCoordinator extends React.Component {
     }
   }
 
+  handleModalSubmit = (selectedUsers) => {
+    if(selectedUsers.length > 0) {
+      this.setState({ userList: [...this.state.userList, ...selectedUsers], showUserModal: false });
+    } else {
+      this.setState({ showUserModal: false });
+    }
+  }
   submitPanelReg = () => {
     const user_id = this.props.userDetails.user_id;
     const { eventSelected } = this.state;
@@ -127,7 +136,6 @@ class EventCoordinator extends React.Component {
       UpdatedBy: user_id,
       UpdatedDate: date,
     }
-    this.setState({ loading: true });
     this.props.registerPanel(reqObj).then((response) => {
       if (response.errCode === 200) {
         this.setState({
@@ -153,59 +161,22 @@ class EventCoordinator extends React.Component {
     this.setState({ showUserModal: true });
   }
 
-  handleClose = () => this.setState({ showUserModal: false });
-
-  searchUsers = (e) => {
-    const value = e.target.value;
-    if (value.length >= 3) {
-      const req = { 'searchData': value }
-      this.props.getUserBySearch(req).then((res) => {
-        this.setState({
-          users: res.userList, search: value, btnDisable: true
-        })
-      })
-
-    }
-    if (value.length === 0) {
-      this.setState({ users: [], search: value })
-    }
-  }
-
-
-  handleUserCheckClick = (e, list) => {
-    if (e.target.checked) {
-      const userData = list;
-      userData.ispanel = true;
-      this.updatedUserList = [...this.state.userList, userData];
-    }
-    else {
-      this.updatedUserList = this.state.userList.filter((val) => { return val.ID !== e.target.value.ID })
-    }
-  }
-
-  handleOnSubmit = () => {
-    this.setState({
-      userList: this.updatedUserList, showUserModal: false
-    })
-  }
 
   render() {
-    const { eventSelected, users, EventDetailsList, showUserModal, userList, clientName, showToast, toastMsg } = this.state;
+    const { eventSelected, users, loading, EventDetailsList, search, showUserModal, userList, clientName, showToast, toastMsg } = this.state;
     return (
       <div className='eventCoordWrapper'>
         <div className="pageHeader">
           <h3 className='pageTitle'>Event Coordinators</h3>
-          {eventSelected && <i onClick={this.viewUserList} className="addUser fa fa-user-plus" aria-hidden="true"></i>}
+          {eventSelected &&
+            <PersonAddIcon onClick={this.viewUserList} className="addUser" />}
         </div>
         <div className='eventCoordForm'>
           <div className='paper'>
             <Grid container spacing={2}>
-              <Grid item xs={5}>
-                <span>Event Name:</span>
-              </Grid>
+              <Grid item xs={5}> <span>Event Name:</span> </Grid>
               <Grid item xs={7}>
                 <Autocomplete
-                  closeIcon=""
                   options={EventDetailsList}
                   getOptionLabel={option => option.label}
                   value={eventSelected}
@@ -225,120 +196,53 @@ class EventCoordinator extends React.Component {
               </Grid>
             </Grid>
           </div>
-          {eventSelected && eventSelected.value && clientName &&
-            <p className="clientName">Client: {clientName}</p>
+          {userList && eventSelected && !loading &&
+            <div style={{ display: 'flex' }}>
+              <span className='memberLabel'>Co-Ordinators List:</span>
+            </div>
           }
-          {userList && eventSelected && <p className='memberLabel'>Member List:</p>}
-          {userList && eventSelected && <p className='toggleNote'>Note: Toggle this to become Event Organiser.</p>}
-          {userList && userList.length === 0 && eventSelected &&
-            <TextField
-              fullWidth
-              disabled
-              error
-              label="No records found."
-              variant="outlined"
-              inputProps={{
-                style: { color: '#721c24', backgroundColor: '#f5c6cb' },
-              }}
-            />
+          {/* {userList && eventSelected && !loading && <p className='toggleNote'>Note: Toggle this to become Event Organiser.</p>} */}
+          {userList && userList.length === 0 && eventSelected && !loading &&
+            <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>No records found.
+            </Alert>
           }
           {userList.length > 0 && <Card className="candidateList">
-            <List style={{padding: 0}}>
+            <List style={{ padding: 0 }}>
               {userList && userList.map((list) =>
-                <ListItem key={list.ID} style={{ border: 'solid 1px #e3e3e3'}}>
-                   <ListItemText
-                   id={list.ID}
-                    primary={`${list.first_name} ${list.last_name}`}
-                    secondary={list.ispanel ? 'Panelist' : 'Organiser'}
-                  />
-                  <ListItemSecondaryAction>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          id={list.user_id}
-                          checked={!list.ispanel}
-                          onChange={(e) => this.toggleUserRole(e, list)}
-                          name="checkedB"
-                          color="primary"
-                        />
-                      }
+                <Fragment>
+                  <ListItem key={list.user_id}>
+                    <ListItemText
+                      id={list.user_id}
+                      primary={`${list.first_name} ${list.last_name}`}
+                      secondary={list.ispanel ? 'Panelist' : 'Organiser'}
                     />
-                    <DeleteOutlinedIcon color="secondary" onClick={() => this.removeUser(list)} />
-                  </ListItemSecondaryAction>
-                </ListItem>
+                    <ListItemSecondaryAction>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            id={list.user_id}
+                            checked={!list.ispanel}
+                            onChange={(e) => this.toggleUserRole(e, list)}
+                            color="primary"
+                          />
+                        }
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  <Divider variant="fullWidth" component="li" />
+                </Fragment>
               )}
             </List>
           </Card>}
           {userList && userList.length > 0 &&
             <div className='panelRegCntrlPanel'>
-              <Button className='file-upload fileUploadBtn btn shadow' onClick={this.submitPanel}>Submit</Button>
+              <Button variant="contained" color="primary" onClick={this.submitPanel}>Submit</Button>
             </div>
           }
         </div>
-        <Dialog
-          open={showUserModal}
-          onClose={this.handleClose}
-          aria-labelledby="draggable-dialog-title"
-        >
-          <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-            Add Coordinators
-          <CloseIcon style={{ marginLeft: '43%' }} onClick={this.handleClose} />
-          </DialogTitle>
-          <DialogContent style={{ margin: 0, width: '380px' }}>
-            <TextField
-              id="outlined-multiline-flexible"
-              type="text"
-              name="Search"
-              variant="outlined"
-              label="Search Users"
-              margin="normal"
-              fullWidth
-              onChange={this.searchUsers}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <div className="userListGroup">
-              <List dense  >
-                {users.length > 0 && users.map(list =>
-                  <ListItem key={list.ID} button style={{ height: '65px', border: 'solid 1px #e0e0e0' }} >
-                    <ListItemText id={list.ID} >
-
-                      <h6>{list.first_name} {list.last_name}</h6>
-
-                    </ListItemText>
-                    <ListItemSecondaryAction>
-                      {userList.some((data) => data.user_id === list.user_id) ?
-                        <Checkbox
-                          checked={true}
-                          id={list.user_id}
-                          onChange={(e, user) => this.handleUserCheckClick(e, list)}
-                          color="primary"
-                        /> :
-                        <Checkbox
-                          id={list.user_id}
-                          onChange={(e, user) => this.handleUserCheckClick(e, list)}
-                          color="primary"
-                        />
-                      }
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                )}
-              </List>
-            </div>
-            <DialogContentText>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button variant="contained" color="primary" type="submit" onClick={this.handleOnSubmit} disabled={!this.state.btnDisable}>
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {showUserModal &&
+          <AddCoordinator handleModalSubmit={this.handleModalSubmit} userList={userList} showUserModal={showUserModal} getUserBySearch={this.props.getUserBySearch} />}
         {showToast &&
           <Snackbar
             style={{ width: 320 }}
@@ -350,9 +254,9 @@ class EventCoordinator extends React.Component {
             autoHideDuration={3000}
             onClose={() => this.setState({ showToast: false })}
           >
-            <MuiAlert onClose={() => this.setState({ showToast: false })} severity="success">
+            <Alert onClose={() => this.setState({ showToast: false })} severity="success">
               {toastMsg}
-            </MuiAlert>
+            </Alert>
           </Snackbar>
         }
       </div>
