@@ -1,24 +1,7 @@
-import React from "react";
-import {
-  Grid,
-  Typography,
-  Button,
-  TextField,
-  withStyles,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  Divider,
-  IconButton,
-  DialogContent,
-  DialogActions,
-  ListItem,
-  List,
-  Checkbox,
-  ListItemText,
-  ListItemSecondaryAction,
-  Table,
-} from "@material-ui/core";
+import React, { Fragment } from "react";
+import { Grid, Typography, Button, TextField, withStyles, InputAdornment, Dialog, Paper, DialogTitle, Divider, DialogContent, DialogActions, ListItem, FormControlLabel, List, Checkbox, ListItemText, ListItemSecondaryAction, } from "@material-ui/core";
+import { Alert } from '@material-ui/lab';
+import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from "@material-ui/icons/Close";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchIcon from "@material-ui/icons/Search";
@@ -43,12 +26,6 @@ const styles = (theme) => ({
   gridAlign: {
     padding: "10px 10px -10px -10px !important",
   },
-  // textField: {
-  //   width: "80%",
-  //   paddingTop: "20px",
-  //   paddingBottom: "20px",
-  //   fontWeight: 100,
-  // },
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
@@ -59,9 +36,12 @@ const styles = (theme) => ({
   listCustom: {
     width: "100%",
     maxWidth: 760,
+    maxHeight: '500px',
+    overflow: 'scroll',
+    border: 'solid 1px #e3e3e3',
+    padding: 0,
   },
   tableBorder: {
-    // borderWidth: 1,
     borderRightWidth: 1,
     borderLeftWidth: 1,
     borderTopWidth: 1,
@@ -85,6 +65,8 @@ class SquadFormation extends React.Component {
       newSquadName: "",
       candidateList: [],
       searchQuery: "",
+      apiLoading: false,
+      count: 0
     };
     this.candidateList = [];
   }
@@ -110,8 +92,8 @@ class SquadFormation extends React.Component {
   }
 
   handleEventChange = (e, eventSelected) => {
+    this.setState({ eventSelected, selectedSquad: null, candidateList: [], squadList: [], apiLoading: true });
     if (eventSelected !== null) {
-      this.setState({ eventSelected, selectedSquad: null, candidateList: [] });
       let id = eventSelected.value;
       const user_id = this.props.userDetails.user_id;
       const isPanelReq = { eventID: id, userID: user_id };
@@ -122,6 +104,7 @@ class SquadFormation extends React.Component {
           this.setState({
             toastMsg: "You don't have permission. Please contact Organiser.",
             showToast: true,
+            apiLoading: false
           });
         }
       });
@@ -143,19 +126,21 @@ class SquadFormation extends React.Component {
         let selectedSquad = null;
         if (newSquadName) {
           selectedSquad = squadList.find((list) => list.label === newSquadName);
+          this.handleSquadChange(id, selectedSquad);
           this.setState({
             squadList,
-            selectedSquad,
             showToast: true,
             toastMsg: "Squad Created successfully",
             showUserModal: false,
+            apiLoading: false
           });
         } else {
-          this.setState({ squadList });
+          this.setState({ squadList, apiLoading: false });
         }
       }
     });
   };
+
   createSquadName = () => {
     this.setState({ showUserModal: true });
   };
@@ -190,10 +175,9 @@ class SquadFormation extends React.Component {
   };
 
   handleSquadChange = (e, selectedSquad) => {
-    console.log(selectedSquad);
+    this.setState({ selectedSquad });
     if (selectedSquad !== null) {
       const { eventSelected } = this.state;
-      this.setState({ selectedSquad });
       const req = { event_id: eventSelected.value };
       const request = { squad_id: selectedSquad.value };
       this.props.getSquadCandidateList(request).then((squadRes) => {
@@ -212,7 +196,7 @@ class SquadFormation extends React.Component {
               );
               const candidateList = [...squadCandidates, ...eventCandidates];
               this.candidateList = candidateList;
-              this.setState({ candidateList });
+              this.setState({ candidateList }, () => { this.handleCounter(); });
             } else if (res && res.errCode === 404) {
               this.setState({
                 showToast: true,
@@ -239,8 +223,24 @@ class SquadFormation extends React.Component {
     }
   };
 
-  searchCandidate = (e) => {
-    const query = e.target.value;
+  handleCandidateSelectionAll = (e) => {
+    const { candidateList, selectedSquad } = this.state;
+    const updatedcandidateList = [...candidateList];
+    updatedcandidateList.map(list => (list.SquadName = e.target.checked ? selectedSquad.label : ''))
+    this.setState({
+      candidateList: updatedcandidateList
+    }, () => {this.handleCounter()})
+    
+  }
+
+  handleCounter = () => {
+    console.log(this.state.candidateList, '--this.state.selectedSquad---', this.state.selectedSquad);
+    this.count = this.state.candidateList.filter(value => value.SquadName === this.state.selectedSquad.label).length;
+    this.setState({ count: this.count })
+  }
+
+  searchCandidate = (e = "") => {
+    const query = e.target.value ? e.target.value : '';
     const lowerCaseQuery = query.toLowerCase();
     const searchedData = query
       ? this.candidateList.filter((list) =>
@@ -252,15 +252,15 @@ class SquadFormation extends React.Component {
 
   handleCandidateSelection = (e, list) => {
     const { candidateList, selectedSquad } = this.state;
-    const candidateIndex =
-      candidateList && candidateList.findIndex((lst) => list.ID === lst.ID);
+    const candidateIndex = candidateList && candidateList.findIndex((lst) => list.ID === lst.ID);
     const updatedcandidateList = [...candidateList];
     updatedcandidateList[candidateIndex].SquadName = e.target.checked
-      ? selectedSquad.value
+      ? selectedSquad.label
       : "";
     this.setState({
       candidateList: updatedcandidateList,
-    });
+    }, () => { this.handleCounter()});
+   
   };
 
   insertCandidate = () => {
@@ -301,13 +301,16 @@ class SquadFormation extends React.Component {
     const {
       eventSelected,
       candidateList,
+      count,
       squadList,
       newSquadName,
+      apiLoading,
       selectedSquad,
       EventDetailsList,
       showToast,
       toastMsg,
       showUserModal,
+      searchQuery,
     } = this.state;
     this.CandidateIDs = [];
 
@@ -321,11 +324,10 @@ class SquadFormation extends React.Component {
         <div className="pageHeader">
           <h3 className="pageTitle">Squad Formation</h3>
           {eventSelected && (
-            <i
+            <AddIcon
               onClick={this.createSquadName}
-              className="addUser fa fa-plus"
-              aria-hidden="true"
-            ></i>
+              className="addUser"
+            />
           )}
         </div>
         <div className="eventCoordForm">
@@ -351,7 +353,10 @@ class SquadFormation extends React.Component {
               />
             </Grid>
           </Grid>
-
+          {eventSelected && squadList.length === 0 && !apiLoading && <div>
+            <Alert severity="error" style={{ marginTop: 10, marginBottom: 10 }}>
+              No Squad has been created.
+            </Alert></div>}
           {squadList.length > 0 && (
             <Grid container spacing={2}>
               <Grid item xs={4} style={{ padding: "25px 15px 10px 15px" }}>
@@ -379,64 +384,78 @@ class SquadFormation extends React.Component {
             </Grid>
           )}
 
-          {candidateList && selectedSquad && (
+          {this.candidateList.length > 0 && selectedSquad && (
             <Grid container spacing={2}>
+
+              <Grid item xs={6}>
+                <p style={{ margin: 0 }}>
+                  Candidates Count: {count}
+                </p>
+                <FormControlLabel
+                  value="end"
+                  control={<Checkbox color="primary" checked={candidateList.every(candidate => candidate.SquadName)} />}
+                  onChange={this.handleCandidateSelectionAll}
+                  label="Select All"
+                />
+              </Grid>
               <Grid item xs={6}>
                 <TextField
                   name="searchcandidate"
                   variant="outlined"
-                  id="input-with-icon-textfield"
                   label="Search Candidate"
                   placeholder="Search Candidate"
                   margin="normal"
+                  value={searchQuery}
+                  size="small"
                   onChange={this.searchCandidate}
-                  InputLabelProps={{ shrink: true }}
                   InputProps={{
-                    style: { height: 45 },
                     endAdornment: (
-                      <InputAdornment position="end">
-                        <SearchIcon />
-                      </InputAdornment>
+                      <>
+                        <InputAdornment position="end">
+                          <SearchIcon />
+                        </InputAdornment>
+                        {searchQuery.length > 0 && <InputAdornment onClick={this.searchCandidate} position="end">
+                          <CloseIcon />
+                        </InputAdornment>}
+                      </>
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item xs={6}>
-                <p style={{ marginTop: "25px" }}>
-                  Selected candiate count: {this.CandidateIDs.length}
-                </p>
               </Grid>
             </Grid>
           )}
 
           {candidateList && candidateList.length > 0 && (
-            <List dense className={classes.listCustom}>
-              {candidateList.map((list) => {
-                // const labelId = `checkbox-list-secondary-label-${list.EmpName}`;
-                return (
-                  <Table className={classes.tableBorder}>
-                    <ListItem key={list.EmpName} button>
-                      <ListItemText
-                        primary={list.EmpName}
-                        secondary={list.SkillName}
-                      />
-                      <ListItemSecondaryAction>
-                        <Checkbox
-                          edge="end"
-                          onChange={(e) =>
-                            this.handleCandidateSelection(e, list)
-                          }
-                          checked={
-                            list.SquadName !== null && list.SquadName !== ""
-                          }
-                          inputProps={{ "aria-labelledby": list.user_id }}
+            <Paper elevation={3}>
+              <List dense className={classes.listCustom} >
+                {candidateList.map((list) => {
+                  return (
+                    <Fragment key={list.EmpName}>
+                      <ListItem key={list.EmpName}>
+                        <ListItemText
+                          primary={list.EmpName}
+                          secondary={list.SkillName}
                         />
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  </Table>
-                );
-              })}
-            </List>
+                        <ListItemSecondaryAction>
+                          <Checkbox
+                            edge="end"
+                            color="primary"
+                            onChange={(e) =>
+                              this.handleCandidateSelection(e, list)
+                            }
+                            checked={
+                              list.SquadName !== null && list.SquadName !== ""
+                            }
+                            inputProps={{ "aria-labelledby": list.user_id }}
+                          />
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      <Divider />
+                    </Fragment>
+                  );
+                })}
+              </List>
+            </Paper>
           )}
           {candidateList && candidateList.length > 0 && (
             <div className="panelRegCntrlPanel">
@@ -452,10 +471,9 @@ class SquadFormation extends React.Component {
         </div>
         <Dialog
           onClose={this.handleClose}
-          aria-labelledby="customized-dialog-title"
           open={showUserModal}
         >
-          <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          <DialogTitle>
             Squad Name
             <CloseIcon
               style={{ marginLeft: "56%" }}
@@ -465,7 +483,6 @@ class SquadFormation extends React.Component {
           <Divider />
           <DialogContent style={{ margin: 0, width: "380px" }}>
             <TextField
-              //  className={classes.textField}
               type="CandidateName"
               name="candidatename"
               required
@@ -517,5 +534,4 @@ class SquadFormation extends React.Component {
     );
   }
 }
-// export default SquadFormation;
 export default withStyles(styles, { withTheme: true })(SquadFormation);

@@ -73,11 +73,13 @@ class Dashboard extends React.Component {
         });
         const maxDate = moment.max(dates)
         const latestEvent = response.arrRes.filter(list => list.EventDate === maxDate._i);
-        const selectedEvent = {
-          value: latestEvent[0].EventId,
-          label: latestEvent[0].Name
+        if(latestEvent.length > 0) {
+          const selectedEvent = {
+            value: latestEvent[0].EventId,
+            label: latestEvent[0].Name
+          }
+          this.handleEventChange(selectedEvent);
         }
-        this.handleEventChange(selectedEvent);
         this.setState({ eventData: response.arrRes, eventList });
       }
     });

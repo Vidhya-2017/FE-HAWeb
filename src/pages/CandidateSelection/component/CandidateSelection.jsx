@@ -83,8 +83,8 @@ class CandidateSelection extends React.Component {
     });
   }
 
-  searchCandidate = (e) => {
-    const query = e.target.value;
+  searchCandidate = (e = "") => {
+    const query = e.target.value ? e.target.value : "";
     const lowerCaseQuery = query.toLowerCase();
     const searchedData = (query
       ? this.candidateList.filter((list) =>
@@ -139,11 +139,10 @@ class CandidateSelection extends React.Component {
       candidateList: updatedcandidateList
     })
     this.handleCounter();
-
   }
 
   handleCounter = () => {
-    this.count = this.candidateList.filter(value => value.EventID).length
+    this.count = this.candidateList.filter(value => value.EventID).length;
     this.setState({ count: this.count })
   }
 
@@ -208,7 +207,7 @@ class CandidateSelection extends React.Component {
                           <InputAdornment position="end">
                             <SearchIcon />
                           </InputAdornment>
-                          {searchQuery && <InputAdornment onClick={() => this.setState({ searchQuery: '' })} position="end">
+                          {searchQuery && <InputAdornment onClick={this.searchCandidate} position="end">
                             <CloseIcon />
                           </InputAdornment>}
                         </>
@@ -230,43 +229,43 @@ class CandidateSelection extends React.Component {
           {candidateList && candidateList.length > 0 &&
             <Paper elevation={3}>
               <List className="candidateList" dense >
-              {candidateList.map((list) => {
-                return (
-                  <ListItem key={list.ID} style={{ border: 'solid 1px #e3e3e3' }}>
-                    <ListItemText primary={
-                      <Fragment>
+                {candidateList.map((list) => {
+                  return (
+                    <ListItem key={list.ID} style={{ border: 'solid 1px #e3e3e3' }}>
+                      <ListItemText primary={
+                        <Fragment>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="textPrimary"
+                          >{list.EmpName} {' - '}</Typography>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="textSecondary"
+                          >{list.SkillName}</Typography>
+                        </Fragment>
+                      } secondary={
                         <Typography
-                          component="span"
-                          variant="body2"
-                          color="textPrimary"
-                        >{list.EmpName} {' - '}</Typography>
-                        <Typography
-                          component="span"
+                          component="p"
                           variant="body2"
                           color="textSecondary"
-                        >{list.SkillName}</Typography>
-                      </Fragment>
-                    } secondary={
-                      <Typography
-                        component="p"
-                        variant="body2"
-                        color="textSecondary"
-                      >
-                        {list.EmailId}
-                      </Typography>} />
-                    <ListItemSecondaryAction>
-                      <Checkbox
-                        edge="end"
-                        checked={list.EventID !== null && list.EventID !== ''}
-                        color="primary"
-                        value={list.id}
-                        onChange={(e) => this.handleCandidateSelection(e, list)}
-                      />
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                );
-              })}
-            </List></Paper>}
+                        >
+                          {list.EmailId}
+                        </Typography>} />
+                      <ListItemSecondaryAction>
+                        <Checkbox
+                          edge="end"
+                          checked={list.EventID !== null && list.EventID !== ''}
+                          color="primary"
+                          value={list.id}
+                          onChange={(e) => this.handleCandidateSelection(e, list)}
+                        />
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  );
+                })}
+              </List></Paper>}
           {searchQuery && candidateList.length === 0 &&
             <Typography color="error" align="center">No records found based on Candidate Search</Typography>}
           {candidateList && candidateList.length > 0 && <div className='panelRegCntrlPanel'>

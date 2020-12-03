@@ -174,7 +174,7 @@ class EventCoordinator extends React.Component {
         <div className='eventCoordForm'>
           <div className='paper'>
             <Grid container spacing={2}>
-              <Grid item xs={5}> <span>Event Name:</span> </Grid>
+              <Grid item xs={5}> <p style={{margin: '14px 0'}}>Event Name:</p> </Grid>
               <Grid item xs={7}>
                 <Autocomplete
                   options={EventDetailsList}
@@ -241,8 +241,7 @@ class EventCoordinator extends React.Component {
             </div>
           }
         </div>
-        {showUserModal &&
-          <AddCoordinator handleModalSubmit={this.handleModalSubmit} userList={userList} showUserModal={showUserModal} getUserBySearch={this.props.getUserBySearch} />}
+          <AddCoordinator handleModalSubmit={this.handleModalSubmit} userList={userList} showUserModal={showUserModal} getUserBySearch={this.props.getUserBySearch} />
         {showToast &&
           <Snackbar
             style={{ width: 320 }}
