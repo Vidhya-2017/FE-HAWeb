@@ -28,7 +28,7 @@ class SkillListMenu extends React.Component {
           return {
             value: list.SkillId,
             SkillId: list.SkillId,
-            label: list.Skills
+            label: list.Skills.length > 0 ? list.Skills : '---'
           }
         });
         if (this.props.isCandidateSkill) {
