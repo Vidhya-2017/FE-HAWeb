@@ -1,6 +1,4 @@
 import React from 'react';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import Container from 'react-bootstrap/Container';
 import { Toast } from 'react-bootstrap';
@@ -125,11 +123,11 @@ class EventList extends React.Component {
                       />
                     </div>
                     <div className="pt-5">
-                      <BootstrapTable
+                      {/* <BootstrapTable
                         {...props.baseProps}
                         id="bar"
-                        pagination={paginationFactory(paginationOptions)}
-                      />
+                        // pagination={paginationFactory(paginationOptions)}
+                      /> */}
                     </div>
                   </div>
                 )

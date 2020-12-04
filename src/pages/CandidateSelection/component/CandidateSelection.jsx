@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import { Toast } from 'react-bootstrap';
 import {
   Grid, Typography, ListItemSecondaryAction, List, ListItem, ListItemText,
   TextField, InputAdornment, Checkbox, FormControlLabel,

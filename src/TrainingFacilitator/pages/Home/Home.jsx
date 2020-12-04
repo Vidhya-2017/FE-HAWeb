@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Button, Alert } from 'react-bootstrap';
 import XLSX from 'xlsx';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Select from 'react-select';
 import { MakeColumns } from './MakeColumns';
 import ArrowDown from '../../common/icons/ArrowDown';
@@ -110,12 +107,12 @@ class Home extends Component {
     let filterOptions = [...cols];
     if(e.target.checked) {
       filterOptions = filterOptions.map(item => {
-        item.filter = textFilter({
-            delay: 1000,
-            className: 'filterTextField',
-            placeholder: item.dataField,
-            onClick: e => console.log(e)
-          });
+        // item.filter = textFilter({
+        //     delay: 1000,
+        //     className: 'filterTextField',
+        //     placeholder: item.dataField,
+        //     onClick: e => console.log(e)
+        //   });
           return item;
       });
     } else {
@@ -276,7 +273,7 @@ class Home extends Component {
 
         {data.length > 0 &&
           <div className='candidateListTable'>
-            <BootstrapTable
+            {/* <BootstrapTable
               keyField='id'
               data={data}
               columns={cols}
@@ -285,9 +282,9 @@ class Home extends Component {
               // hover
               rowClasses='rowlist'
               headerClasses="listHeader"
-              pagination={paginationFactory(paginationOptions)}
-              filter={ filterFactory() }
-            />
+              // pagination={paginationFactory(paginationOptions)}
+              // filter={ filterFactory() }
+            /> */}
           </div>
         }
         {data.length > 0 && <Alert className='noteContainer' variant='secondary'>
