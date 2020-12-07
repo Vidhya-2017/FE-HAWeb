@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { SwipeableDrawer, AppBar, Button, Toolbar, Typography, IconButton, MenuItem, Menu } from '@material-ui/core';
+import { SwipeableDrawer, AppBar, Toolbar, Typography, IconButton, MenuItem, Menu } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import DrawerTabs from './DrawerTabs';
@@ -43,14 +43,6 @@ const Header = (props) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-
-  const showSidebar = () => {
-    document.getElementsByClassName('sb-nav-fixed')[0].classList.toggle("sb-sidenav-toggled");
-    const sidebarClassList = document.getElementsByClassName('sb-nav-fixed')[0].className.split(' ').indexOf("sb-sidenav-toggled");
-    document.dispatchEvent(new CustomEvent("sideBarToggled", {
-      detail: { sideBarToggled: sidebarClassList }
-    }))
-  }
 
   const LogOut = () => {
     props.logout();

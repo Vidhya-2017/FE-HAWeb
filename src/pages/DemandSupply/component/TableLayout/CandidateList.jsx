@@ -1,12 +1,11 @@
 import React, { useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Table, TableBody, Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, TableCell, Toolbar, Typography, TableContainer, TablePagination, TableRow, Paper, Checkbox, InputBase } from '@material-ui/core';
+import { Table, TableBody, Button, Dialog, DialogActions, DialogContent, DialogTitle, TableCell, Toolbar, Typography, TableContainer, TablePagination, TableRow, Paper, Checkbox, InputBase } from '@material-ui/core';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ViewColumns from './ViewColumns';
 import EnhancedTableHead from './EnhancedTableHead';
 import ColumnArr from './ColumnFields';
 import CustomiseView from '../CustomiseView/CustomiseView';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from '@material-ui/icons/Search';
 import SinglePagePDFViewer from "../PdfView/PdfView";
 import FileViewer from "react-file-viewer";
@@ -214,8 +213,6 @@ const CandidateList = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowData.length - page * rowsPerPage);
 
-  const resetColHeader = () => { setColumnData(ColumnArr.FullViewFields) }
-
   const onInputChange = (e) => {
     const inputQuery = e.target.value;
     const lowerCaseQuery = inputQuery.toLowerCase();
@@ -362,8 +359,7 @@ const CandidateList = (props) => {
                           )
                         }
                         if (col.field === 'candidate_document' && col.name === 'Resume') {
-                          if (row.candidate_document != '') {
-                            const display = row.candidate_document;
+                          if (row.candidate_document !== '') {
                             return (
                               <TableCell key={colIndex} style={{ padding: 5 }}>
                                 <span onClick={(event) => getCVdetails(event, row.candidate_id)} >View {" "}</span>
@@ -404,7 +400,7 @@ const CandidateList = (props) => {
       <Dialog open={show}>
         <DialogTitle ></DialogTitle>
         <DialogContent>
-        { docType == 'pdf' ? 
+        { docType === 'pdf' ? 
           <SinglePagePDFViewer pdf={samplePDF} />
           : 
           <FileViewer fileType={docType} filePath={samplePDF}  />

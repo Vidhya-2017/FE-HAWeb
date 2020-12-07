@@ -198,7 +198,7 @@ class EventRegistration extends React.Component {
   }
 
   checkValidity(inputValue, rules) {
-    if (inputValue != "" && inputValue) {
+    if (inputValue !== "" && inputValue) {
       const value = inputValue.toString();
       let isValid = true;
       if (!rules) {

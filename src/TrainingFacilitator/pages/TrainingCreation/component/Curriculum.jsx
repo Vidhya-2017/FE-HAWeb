@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { AppBar, Tabs, Tab, Paper, withStyles, Typography, Card, CardContent, CardActions, Button, List, ListItem, ListItemText, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, Grid, DialogTitle, Radio, RadioGroup, FormControlLabel, IconButton, Toolbar, Slide, InputBase, Divider, Box } from '@material-ui/core';
+import { AppBar, Tabs, Tab, Paper, withStyles, Typography, Card, CardContent, Button, List, ListItem, ListItemText, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, Grid, DialogTitle, Radio, RadioGroup, FormControlLabel, IconButton, Toolbar, Slide, InputBase, Divider, Box } from '@material-ui/core';
 import SelectOne from '../../../components/UI_Component/Select/SelectOne';
 import SnackBar from '../../../components/UI_Component/SnackBar/SnackBar';
 import HomeContainer from '../../Home/container/HomeContainer';
@@ -348,15 +348,6 @@ class Curriculum extends React.Component {
                   </Box>}
                 </Typography>
               </CardContent>
-              {/* <CardActions>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  className={classes.button}
-                  onClick={this.handleClickOpen}
-                  aria-label="move selected left"
-                >  Submit </Button>
-              </CardActions> */}
             </Card>
           </Fragment>}
 

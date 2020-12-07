@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { withStyles, Typography, AppBar, Toolbar, Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
+import { withStyles, Typography,  Toolbar, Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ColumnArr from './ColumnFields';
 import CandidateUpload from '../CandidateUpload/CandidateUpload';
-import Search from '../Search/Search';
 import CustomisedMenu from '../StyledMenu/StyledMenu';
 import CandidateList from './CandidateList';
 import { Toast } from 'react-bootstrap';
@@ -181,7 +180,7 @@ export class Layout extends Component {
         if (res.not_insert_arr.length > 0) {
           unUpdatedCandidate = selectedCandidateData.filter(candidate => res.not_insert_arr.includes(candidate.candidate_id)).map(item => item.candidate_name).join(', ');
           await this.props.getCandidateData();
-          message = 'Some of the data have not been updated Kindly check the status: ' + `${unUpdatedCandidate}`;
+          message = `Some of the data have not been updated Kindly check the status: ${unUpdatedCandidate}`;
         }
         if (res.not_insert_arr.length === 0 && res.insert_arr.length > 0) {
           await this.props.getCandidateData();

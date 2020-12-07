@@ -67,7 +67,6 @@ class DemandDashboard extends React.Component {
   }
 
   generateCategory = (category) => {
-    let categoryReport = [];
     let tp1 = [];
     let tp2 = [];
     let fitment = [];
@@ -75,7 +74,6 @@ class DemandDashboard extends React.Component {
     switch (category.label) {
       case 'Selected':
         if (this.demandReport.SelectCandidates) {
-          categoryReport = this.demandReport.SelectCandidates;
           this.demandReport.SelectCandidates.forEach(candidate => {
             if (candidate.status_id === "3") {
               tp1.push(candidate);
@@ -94,7 +92,6 @@ class DemandDashboard extends React.Component {
         break;
       case 'Rejected':
         if (this.demandReport.RejectCandidates) {
-          categoryReport = this.demandReport.RejectCandidates;
           this.demandReport.RejectCandidates.forEach(candidate => {
             if (candidate.status_id === "4") {
               tp1.push(candidate);
@@ -113,7 +110,6 @@ class DemandDashboard extends React.Component {
         break;
       case 'InProgress':
         if (this.demandReport.InprocessCandidates) {
-          categoryReport = this.demandReport.InprocessCandidates;
           this.demandReport.InprocessCandidates.forEach(candidate => {
             if (candidate.status_id === "1" || candidate.status_id === "2") {
               tp1.push(candidate);
@@ -132,7 +128,6 @@ class DemandDashboard extends React.Component {
         break;
       case 'Completed':
         if (this.demandReport.SelectCandidates || this.demandReport.RejectCandidates) {
-          categoryReport = [...this.demandReport.SelectCandidates, ...this.demandReport.RejectCandidates];
           [...this.demandReport.SelectCandidates, ...this.demandReport.RejectCandidates].forEach(candidate => {
             if (candidate.status_id === "3" || candidate.status_id === "4") {
               tp1.push(candidate);

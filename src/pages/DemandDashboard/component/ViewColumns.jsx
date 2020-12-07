@@ -75,7 +75,7 @@ export default function ViewColumns(props) {
       }
       setChecked(selectedColumn);
     })
-  }, []);
+  }, [columnData]);
 
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {

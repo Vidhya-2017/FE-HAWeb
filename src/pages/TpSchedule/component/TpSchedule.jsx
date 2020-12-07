@@ -216,7 +216,7 @@ export class TpSchedule extends Component {
   }
 
   navToCandidate = () => {
-    const { selectedRows, candidateResult } = this.state
+    const { selectedRows } = this.state
     let candidateIds = selectedRows.map((data, i) => {
       return data.candidate_id
     })

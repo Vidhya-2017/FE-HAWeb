@@ -4,6 +4,7 @@ import Select from 'react-select';
 import RangeSlider from 'react-bootstrap-range-slider';
 import SelectStyles from '../../../common/SelectStyles';
 import '../scss/CandidateFeedback.scss';
+import CandidateFeedbackNew from './CandidateFeedbackNew';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 class CandidateFeedback extends React.Component {
@@ -408,6 +409,7 @@ class CandidateFeedback extends React.Component {
     const { selectedEvent, eventList, squadList, selectedSquad, sprintList, candidateList, selectedSprint, selectedCandidate, CompentencyOption, selectedCompetancy, ShowCompentencyOption, finalStatusOption, selectedFinalStatus, OtherAssessmentData, showFinalStatus, fbcomment, showSuccessMessage, toastMessage, showPrevFeedbackButton, showModal, previousFeedbackData, showRatingDiv, formIsValid, role } = this.state;
     return (
       <div className="candidateFeedBackWrapper">
+        {/* <CandidateFeedbackNew /> */}
         <h3 className='pageTitle'>Candidate Feedback</h3>
         <div className='feedbackForm'>
           <Row>

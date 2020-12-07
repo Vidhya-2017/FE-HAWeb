@@ -177,7 +177,7 @@ const DrawerTabs = (props) => {
   }
   return (
     <div className={classes.root}>
-      {/* <AppBar position="static" color="default">
+      <AppBar position="static" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -190,7 +190,7 @@ const DrawerTabs = (props) => {
           <Tab wrapped className={classes.tabBtn} label="Demand Supply" {...a11yProps(1)} />
           <Tab wrapped className={classes.tabBtn} label="Training Facilitator" {...a11yProps(2)} />
         </Tabs>
-      </AppBar> */}
+      </AppBar>
       <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}

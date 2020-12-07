@@ -110,7 +110,7 @@ class EventCoordinator extends React.Component {
   }
 
   handleModalSubmit = (selectedUsers) => {
-    if(selectedUsers.length > 0) {
+    if (selectedUsers.length > 0) {
       this.setState({ userList: [...this.state.userList, ...selectedUsers], showUserModal: false });
     } else {
       this.setState({ showUserModal: false });
@@ -163,7 +163,7 @@ class EventCoordinator extends React.Component {
 
 
   render() {
-    const { eventSelected, users, loading, EventDetailsList, search, showUserModal, userList, clientName, showToast, toastMsg } = this.state;
+    const { eventSelected, loading, EventDetailsList, showUserModal, userList, showToast, toastMsg } = this.state;
     return (
       <div className='eventCoordWrapper'>
         <div className="pageHeader">
@@ -174,7 +174,7 @@ class EventCoordinator extends React.Component {
         <div className='eventCoordForm'>
           <div className='paper'>
             <Grid container spacing={2}>
-              <Grid item xs={5}> <p style={{margin: '14px 0'}}>Event Name:</p> </Grid>
+              <Grid item xs={5}> <p style={{ margin: '14px 0' }}>Event Name:</p> </Grid>
               <Grid item xs={7}>
                 <Autocomplete
                   options={EventDetailsList}
@@ -241,7 +241,7 @@ class EventCoordinator extends React.Component {
             </div>
           }
         </div>
-          <AddCoordinator handleModalSubmit={this.handleModalSubmit} userList={userList} showUserModal={showUserModal} getUserBySearch={this.props.getUserBySearch} />
+        <AddCoordinator handleModalSubmit={this.handleModalSubmit} userList={userList} showUserModal={showUserModal} getUserBySearch={this.props.getUserBySearch} />
         {showToast &&
           <Snackbar
             style={{ width: 320 }}

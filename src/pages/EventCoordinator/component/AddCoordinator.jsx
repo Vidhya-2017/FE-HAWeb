@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';

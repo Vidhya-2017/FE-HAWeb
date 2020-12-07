@@ -30,7 +30,7 @@ const CustomiseView = (props) => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedMenu, setSelectedMenu] = React.useState();
-  const { buttonName, status, setViewType } = props
+  const { status, setViewType } = props;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

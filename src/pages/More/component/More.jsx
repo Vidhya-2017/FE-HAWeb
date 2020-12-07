@@ -435,11 +435,6 @@ class More extends React.Component {
     const { longitude } = this.state;
     const dateTime = new Date();
     const date = moment(dateTime).format("YYYY-MM-DD HH:mm:ss");
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-    });
     const reqObj = {
       "LocName": updatedScale.loc_name, "LocLatitude": latitude,
       "LocLongitude": longitude, "UpdatedDate": date, "UpdatedBy": 1, "LocId": updatedScale.loc_id, "isactive": "true",
@@ -626,10 +621,6 @@ class More extends React.Component {
     const { longitude } = this.state;
     const dateTime = new Date();
     const date = moment(dateTime).format("YYYY-MM-DD HH:mm:ss");
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-    });
     const reqObj = {
       "LocName": formValues1.name1.value, "LocLatitude": latitude,
       "LocLongitude": longitude, "CreatedDate": date, "CreatedBy": 1

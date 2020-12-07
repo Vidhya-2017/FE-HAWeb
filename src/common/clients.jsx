@@ -3,11 +3,11 @@ import Interceptors from './Interceptors';
 
 axios.defaults.timeout = 2500 * 10;
 
-// const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
-const HOSTNAME = 'https://apk.cnc.hclets.com/DiEvAEndpoints/Prod';
+const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
+// const HOSTNAME = 'https://apk.cnc.hclets.com/DiEvAEndpoints/Prod';
 
-// const HACKERANCHOR = '/hackeranchor';
-const HACKERANCHOR = '/hackathon';
+const HACKERANCHOR = '/hackeranchor';
+// const HACKERANCHOR = '/hackathon';
 const DEMANDSUPPLY = '/demand-supply';
 const TRAININGFACILITATOR = '/TrainingFacilitator/';
 

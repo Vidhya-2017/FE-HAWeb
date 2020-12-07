@@ -5,7 +5,6 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Spinner } from 'react-bootstrap';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import SideNavBar from './components/SideNavBar/SideNavBar';
 import LoginContainer from './pages/Login/container/LoginContainer';
 import DashboardContainer from './pages/Dashboard/container/DashboardContainer';
 import CandidateUploadContainer from './pages/CandidateUpload/container/CandidateUploadContainer';
@@ -120,7 +119,6 @@ class Home extends React.Component {
         </div>
         <Header history={this.props.history} />
         <div className='routerContent'>
-          {/* <SideNavBar history={this.props.history} /> */}
           <div style={sideMenuStyles} id="layoutSidenav_content">
             <Switch>
               <Route path="/" exact component={LoginContainer} />
