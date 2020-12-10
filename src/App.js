@@ -35,7 +35,7 @@ const outerTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#1b91e5',
-    },
+    }
   },
 });
 class App extends React.Component {

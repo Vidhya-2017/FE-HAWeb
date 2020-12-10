@@ -409,7 +409,7 @@ class CandidateFeedback extends React.Component {
     const { selectedEvent, eventList, squadList, selectedSquad, sprintList, candidateList, selectedSprint, selectedCandidate, CompentencyOption, selectedCompetancy, ShowCompentencyOption, finalStatusOption, selectedFinalStatus, OtherAssessmentData, showFinalStatus, fbcomment, showSuccessMessage, toastMessage, showPrevFeedbackButton, showModal, previousFeedbackData, showRatingDiv, formIsValid, role } = this.state;
     return (
       <div className="candidateFeedBackWrapper">
-        {/* <CandidateFeedbackNew /> */}
+        <CandidateFeedbackNew />
         <h3 className='pageTitle'>Candidate Feedback</h3>
         <div className='feedbackForm'>
           <Row>

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import moment from 'moment';
 import {
-  Grid, TextField, FormControlLabel, Card, Switch, Button, Divider,
+  Grid, TextField, FormControlLabel, Paper, Switch, Button, Divider,
   Snackbar, List, ListItem, ListItemSecondaryAction, ListItemText
 } from '@material-ui/core';
 import { Alert, AlertTitle, Autocomplete } from '@material-ui/lab';
@@ -207,7 +207,9 @@ class EventCoordinator extends React.Component {
               <AlertTitle>Error</AlertTitle>No records found.
             </Alert>
           }
-          {userList.length > 0 && <Card className="candidateList">
+          {userList.length > 0 && 
+          
+          <Paper elevation={3} className="candidateList">
             <List style={{ padding: 0 }}>
               {userList && userList.map((list) =>
                 <Fragment>
@@ -234,7 +236,7 @@ class EventCoordinator extends React.Component {
                 </Fragment>
               )}
             </List>
-          </Card>}
+          </Paper>}
           {userList && userList.length > 0 &&
             <div className='panelRegCntrlPanel'>
               <Button variant="contained" color="primary" onClick={this.submitPanel}>Submit</Button>

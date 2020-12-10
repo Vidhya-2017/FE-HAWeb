@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import CandidateFeedbackNew from '../component/CandidateFeedbackNew';
 import CandidateFeedback from '../component/CandidateFeedback';
 import { CandidateFeedbackActions } from '../modules/CandidateFeedbackActions';
 
@@ -10,7 +11,8 @@ const mapDispatchToProps = (dispatch) => {
     getEventDetails:CandidateFeedbackActions.getEventDetails,
     candidateFB:CandidateFeedbackActions.candidateFB,
     candidateFeedbackList:CandidateFeedbackActions.candidateFeedbackList,
-    
+    candidateSquadFeedbackList: CandidateFeedbackActions.candidateSquadFeedbackList,
+    candidateSquadWiseFeedback:CandidateFeedbackActions.candidateSquadWiseFeedback,
   };
 };
 
@@ -20,4 +22,4 @@ const mapStateToProps = state => (
   }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(CandidateFeedback);
+export default connect(mapStateToProps, mapDispatchToProps)(CandidateFeedbackNew);

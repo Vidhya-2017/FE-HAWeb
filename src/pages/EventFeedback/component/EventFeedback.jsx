@@ -6,9 +6,16 @@ import {
   TextField,
   withStyles,
 } from "@material-ui/core";
+import PropTypes from 'prop-types';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Rating from "@material-ui/lab/Rating";
 import { Toast } from "react-bootstrap";
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
+import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
+import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+
 import "../scss/EventFeedback.scss";
 
 const styles = (theme) => ({
@@ -21,6 +28,39 @@ const styles = (theme) => ({
     width: "225px",
   },
 });
+
+
+const customIcons = {
+  1: {
+    icon: <SentimentVeryDissatisfiedIcon />,
+    label: 'Very Dissatisfied',
+  },
+  2: {
+    icon: <SentimentDissatisfiedIcon />,
+    label: 'Dissatisfied',
+  },
+  3: {
+    icon: <SentimentSatisfiedIcon />,
+    label: 'Neutral',
+  },
+  4: {
+    icon: <SentimentSatisfiedAltIcon />,
+    label: 'Satisfied',
+  },
+  5: {
+    icon: <SentimentVerySatisfiedIcon />,
+    label: 'Very Satisfied',
+  },
+};
+
+function IconContainer(props) {
+  const { value, ...other } = props;
+  return <span {...other}>{customIcons[value].icon}</span>;
+}
+
+IconContainer.propTypes = {
+  value: PropTypes.number.isRequired,
+};
 
 class EventFeedback extends React.Component {
   constructor(props) {
@@ -234,6 +274,7 @@ class EventFeedback extends React.Component {
                   marginTop: "15px",
                 }}
                 name="rate1"
+                IconContainerComponent={IconContainer}
                 value={rating}
                 onChange={this.onStarClick.bind(this)}
               />
