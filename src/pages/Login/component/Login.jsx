@@ -45,14 +45,16 @@ class Login extends React.Component {
       password: loginDetails.password.value
     }
     this.props.loginAuth(reqObj).then(response => {
-      if (response.errCode === 200) {
+      if (response && response.errCode === 200) {
         if (response.UserSet[0].isAdmin === "1") {
           this.props.history.push('/home');
         } else {
           this.setState({ showToastMessage: true, toastMsg: 'You do not have permission to access this site.' });
         }
-      } else {
+      } else if(response && response.errCode !== 200 ) {
         this.setState({ showToastMessage: true, toastMsg: response.status });
+      } else {
+        this.setState({ showToastMessage: true, toastMsg: "Something went Wrong. Please try again later." });
       }
     })
   }
