@@ -8,6 +8,7 @@ import SnackBar from '../../../components/UI_Component/SnackBar/SnackBar';
 import '../scss/TRCandidateFeedback.scss';
 const BootstrapInput = withStyles((theme) => ({
   root: {
+    minWidth: 100,
     "label + &": {
       marginTop: theme.spacing(3)
     }
@@ -28,6 +29,21 @@ const BootstrapInput = withStyles((theme) => ({
   }
 }))(InputBase);
 
+
+const dropDownValue = [
+  {
+    value: 'red',
+    label: 'RED'
+  },
+  {
+    value: 'amber',
+    label: 'AMBER'
+  },
+  {
+    value: 'green',
+    label: 'GREEN'
+  }
+]
 const styles = (theme) => ({
   formControl: {
     margin: '0 8px 8px',
@@ -199,12 +215,9 @@ class TrainingFeedback extends React.Component {
                         variant="outlined"
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={3}>4</MenuItem>
-                        <MenuItem value={3}>5</MenuItem>
+                        {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -215,12 +228,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                        {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -232,12 +242,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                      {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -249,12 +256,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                       {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -266,12 +270,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                       {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -297,12 +298,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                       {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -314,12 +312,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                       {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >
@@ -331,12 +326,9 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
+                       {dropDownValue.map((item) => 
+                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        )}
                       </Select>
                     </TableCell>
                     <TableCell style={{ padding: 8 }} >

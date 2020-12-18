@@ -24,7 +24,7 @@ import SelectOne from '../../../components/UI_Component/Select/SelectOne';
 import TableContainer from "@material-ui/core/TableContainer";
 import SnackBar from '../../../components/UI_Component/SnackBar/SnackBar';
 import ExportCSV from './ExportCSV';
- 
+
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -50,7 +50,13 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const rows = [
+const prePostAssessmentRows = [
+  { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'remarks', numeric: true, disablePadding: false, label: 'Remarks' },
+
+];
+
+const inProgressRows = [
   { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'attendance', numeric: true, disablePadding: false, label: 'Attendance' },
   { id: 'smesessioninteraction', numeric: true, disablePadding: false, label: 'SME Session Interaction' },
@@ -78,9 +84,8 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, classes } = this.props;
-
-
+    const { onSelectAllClick, order, assessmentType, orderBy, numSelected, rowCount, classes } = this.props;
+    const rows = assessmentType !== 'In-Progress' ? prePostAssessmentRows : inProgressRows;
     return (
       <TableHead>
         <TableRow className={classes.tableheader}>
@@ -95,8 +100,8 @@ class EnhancedTableHead extends React.Component {
           {rows.map(
             row => (
               <TableCell
-              className={row.id === 'first_name' ? classes.stickyColumnHeaderName : ''}
-              style={{ fontSize:"15px", padding: 8 }}
+                className={row.id === 'first_name' ? classes.stickyColumnHeaderName : ''}
+                style={{ fontSize: "15px", padding: 8 }}
                 key={row.id}
                 align={'left'}
                 // padding={row.disablePadding ? 'none' : 'default'}
@@ -141,13 +146,13 @@ const toolbarStyles = theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   spacer: {
     flex: '1 1 100%',
   },
@@ -162,15 +167,15 @@ const toolbarStyles = theme => ({
 let EnhancedTableToolbar = props => {
   const { numSelected, classes, selectedData, userData } = props;
 
-const bulkEdit = () => {
+  const bulkEdit = () => {
 
-let userdata = userData.filter(user => selectedData.includes(user.id))
+    let userdata = userData.filter(user => selectedData.includes(user.id))
 
-  props.history.push({
-    pathname: '/trainingcandidateFeedback',
-    state: { data:userdata }
-   })
-}
+    props.history.push({
+      pathname: '/trainingcandidateFeedback',
+      state: { data: userdata }
+    })
+  }
 
   return (
     <Toolbar
@@ -184,10 +189,10 @@ let userdata = userData.filter(user => selectedData.includes(user.id))
             {numSelected} selected
           </Typography>
         ) : (
-          <Typography variant="h6" id="tableTitle">
-            Candidates List
-          </Typography>
-        )}
+            <Typography variant="h6" id="tableTitle">
+              Candidates List
+            </Typography>
+          )}
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
@@ -231,7 +236,7 @@ const styles = theme => ({
     margin: '0 8px 8px',
     minWidth: 200,
   },
-  tableheader:{
+  tableheader: {
     backgroundColor: '#E0E0E0'
   },
   stickyColumnHeader: { position: 'sticky', left: 0, zIndex: 1, background: '#E0E0E0' },
@@ -240,6 +245,32 @@ const styles = theme => ({
   stickyColumnCellName: { position: 'sticky', left: 46, zIndex: 1, background: '#fff' }
 });
 
+const weekList = [
+  { value: 'Week 1', id: 1, label: 'Week 1' },
+  { value: 'Week 2', id: 1, label: 'Week 2' },
+  { value: 'Week 3', id: 1, label: 'Week 3' },
+  { value: 'Week 4', id: 1, label: 'Week 4' },
+  { value: 'Week 5', id: 1, label: 'Week 5' },
+  { value: 'Week 6', id: 1, label: 'Week 6' },
+]
+
+const assessmentList = [
+  {
+    value: 'Pre-Assessment',
+    id: 1,
+    label: 'Pre-Assessment'
+  },
+  {
+    value: 'Post-Assessment',
+    id: 2,
+    label: 'Post-Assessment'
+  },
+  {
+    value: 'In-Progress',
+    id: 3,
+    label: 'In-Progress'
+  }
+]
 class TrainingFeedback extends React.Component {
   state = {
     order: 'asc',
@@ -249,24 +280,25 @@ class TrainingFeedback extends React.Component {
     excelData: [],
     page: 0,
     rowsPerPage: 10,
-    trainingListVal:[],
-    selectedTraining:null,
-    filteredFeedback:[],
-    training_id:'',
-    pushData:[],
+    trainingListVal: [],
+    selectedTraining: null,
+    selectedWeek: null,
+    selectedAssessment: null,
+    filteredFeedback: [],
+    training_id: '',
+    pushData: [],
     snackvariant: '',
     updated_by: '',
     snackmsg: '',
   };
-
   componentDidMount() {
     this.props.getTrainingList().then((response) => {
       if (response && response.errCode === 200) {
         const trainingListVal = response.arrRes.map(list => {
           return {
-              value: list.id,
-              id: list.id,
-              label: list.training_name
+            value: list.id,
+            id: list.id,
+            label: list.training_name
           }
         });
         this.setState({
@@ -281,7 +313,7 @@ class TrainingFeedback extends React.Component {
         })
       }
     });
-    
+
   }
 
   onCloseSnackBar = () => {
@@ -302,13 +334,13 @@ class TrainingFeedback extends React.Component {
   handleSelectAllClick = event => {
     console.log(event.target.checked);
     if (event.target.checked) {
-      const {data} = this.state;
+      const { data } = this.state;
       // const feedbackFalse = data.filter(item=> item.feedback_given === false);
-           this.setState(state => ({ selected: data.map(n =>  n.id ) }));
+      this.setState(state => ({ selected: data.map(n => n.id) }));
       // return;
-      
+
     } else {
-     this.setState({ selected: [] });
+      this.setState({ selected: [] });
     }
   };
 
@@ -316,7 +348,7 @@ class TrainingFeedback extends React.Component {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-    
+
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -330,7 +362,7 @@ class TrainingFeedback extends React.Component {
         selected.slice(selectedIndex + 1),
       );
     }
-    
+
     this.setState({ selected: newSelected });
   };
 
@@ -344,39 +376,52 @@ class TrainingFeedback extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+
+  handleAssessmentChange = (e) => {
+    this.setState({
+      selectedAssessment: e.target,
+    })
+  }
+
+  handleWeekChange = (e) => {
+    this.setState({
+      selectedWeek: e.target,
+    })
+  }
+
   handleTrainingChange = (e) => {
     const reqObj = {
-      training_id : e.target.value,
-      user_id : 1,
-    }  
+      training_id: e.target.value,
+      user_id: 1,
+    }
 
     this.props.getCandidateList(reqObj).then((response) => {
-      
-      if (response && response.errCode === 200) {
-        const nonfeedback_levels = {"training_id":e.target.value,"attendance":0,"sme_session_interaction":0,"theory":0,"hands_on":0,"hands_on_performance":0,"assessment":'0',"assessment_schedule_compliance":0,"overall":0,"sme_interaction":0,"sme_name":response.sme.sme_name,"remarks":'',"training_completed":'Yes',"training_completed_date":'',"certification":'Foundation',"final_assessment_score":0,"percentage_complete":'0',"spoc":response.programManager.program_manager_name,"default_end_date":true,"actual_training_completed_date":response.sme.enddate,"feedback_given":false,"rowclicked":false} 
-          
-        const feedback_levels = {"default_end_date":false,"actual_training_completed_date":response.sme.enddate,"feedback_given":true,"rowclicked":false} 
 
-        const feedback_given_list =  response.feedback_given_list.map(list1 => {
-          return { ...list1, ...feedback_levels } 
+      if (response && response.errCode === 200) {
+        const nonfeedback_levels = { "training_id": e.target.value, "attendance": 0, "sme_session_interaction": 0, "theory": 0, "hands_on": 0, "hands_on_performance": 0, "assessment": '0', "assessment_schedule_compliance": 0, "overall": 0, "sme_interaction": 0, "sme_name": response.sme.sme_name, "remarks": '', "training_completed": 'Yes', "training_completed_date": '', "certification": 'Foundation', "final_assessment_score": 0, "percentage_complete": '0', "spoc": response.programManager.program_manager_name, "default_end_date": true, "actual_training_completed_date": response.sme.enddate, "feedback_given": false, "rowclicked": false }
+
+        const feedback_levels = { "default_end_date": false, "actual_training_completed_date": response.sme.enddate, "feedback_given": true, "rowclicked": false }
+
+        const feedback_given_list = response.feedback_given_list.map(list1 => {
+          return { ...list1, ...feedback_levels }
         })
-       
-        const feedback_notgiven_list =  response.no_feedback_given_list.map(list => {
-          return { ...list, ...nonfeedback_levels } 
+
+        const feedback_notgiven_list = response.no_feedback_given_list.map(list => {
+          return { ...list, ...nonfeedback_levels }
         })
-        
+
 
         const newdata = [...feedback_notgiven_list, ...feedback_given_list]
         console.log(newdata);
-        const excelDataArray =  newdata.map(list => {
-          return {"Training Name":e.target.label,"First Name":list.first_name,"Last Name":list.last_name,"SAP ID":list.sap_id,"Contact No":list.phone_number,"Email Id":list.email,"SME Name":list.sme_name,"SPOC":list.spoc,"Training Completed Date":list.training_completed_date,"Training Completed":list.training_completed,"Remarks":list.remarks,"SME Interaction":list.sme_interaction,"SME Session Interaction":list.sme_session_interaction,"Theory":list.theory,"Hands On":list.hands_on,"Hands On Performance":list.hands_on_performance,"Certification":list.certification,"Attendance":list.attendance,"Assessment %":list.assessment,"Assessment Schedule Compliance":list.assessment_schedule_compliance,"OverAll %":list.overall,"% Completed":list.percentage_complete}
+        const excelDataArray = newdata.map(list => {
+          return { "Training Name": e.target.label, "First Name": list.first_name, "Last Name": list.last_name, "SAP ID": list.sap_id, "Contact No": list.phone_number, "Email Id": list.email, "SME Name": list.sme_name, "SPOC": list.spoc, "Training Completed Date": list.training_completed_date, "Training Completed": list.training_completed, "Remarks": list.remarks, "SME Interaction": list.sme_interaction, "SME Session Interaction": list.sme_session_interaction, "Theory": list.theory, "Hands On": list.hands_on, "Hands On Performance": list.hands_on_performance, "Certification": list.certification, "Attendance": list.attendance, "Assessment %": list.assessment, "Assessment Schedule Compliance": list.assessment_schedule_compliance, "OverAll %": list.overall, "% Completed": list.percentage_complete }
         })
-       
+
         this.setState({
           data: newdata,
-          excelData:excelDataArray,
+          excelData: excelDataArray,
           selected: [],
-          training_id:e.target.value, 
+          training_id: e.target.value,
           selectedTraining: e.target,
           snackvariant: 'success',
           snackBarOpen: true,
@@ -386,7 +431,7 @@ class TrainingFeedback extends React.Component {
         this.setState({
           data: [],
           selected: [],
-          training_id:'',
+          training_id: '',
           selectedTraining: null,
           snackvariant: 'error',
           snackBarOpen: true,
@@ -394,125 +439,201 @@ class TrainingFeedback extends React.Component {
         })
       }
     });
-   
+
   }
 
   render() {
     const { classes } = this.props;
-    const { data, excelData, order, orderBy, selected, rowsPerPage, page, trainingListVal, selectedTraining, snackvariant, snackBarOpen, snackmsg } = this.state;
+    const { data, excelData, order, selectedWeek, selectedAssessment, orderBy, selected, rowsPerPage, page, trainingListVal, selectedTraining, snackvariant, snackBarOpen, snackmsg } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div className="TrainingFeedback_container">
 
-      <Paper className={classes.paperRoot} elevation={3}>
-      <Grid container spacing={3} >
-      <Grid item md={4}>
-        <FormControl variant="outlined" className={classes.formControl}>
-            <label>Training List</label>
-            <SelectOne
-              value={selectedTraining ? selectedTraining : null}
-              id="training"
-              name="training"
-              placeholder='Select Training'
-              options={trainingListVal}
-              onChange={this.handleTrainingChange}
-            />
-
-          </FormControl>
+        <Paper className={classes.paperRoot} elevation={3}>
+          <Typography variant="h4" className="text-center" gutterBottom>
+            Candidate Feedback
+            </Typography>
+          <Grid container spacing={3} >
+            <Grid item md={3}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <label>Training List</label>
+                <SelectOne
+                  value={selectedTraining ? selectedTraining : null}
+                  id="training"
+                  name="training"
+                  placeholder='Select Training'
+                  options={trainingListVal}
+                  onChange={this.handleTrainingChange}
+                />
+              </FormControl>
+            </Grid>
+            {selectedTraining && <Grid item md={3}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <label>Assessment Type</label>
+                <SelectOne
+                  value={selectedAssessment ? selectedAssessment : null}
+                  id="training"
+                  name="training"
+                  placeholder='Select Assessment'
+                  options={assessmentList}
+                  onChange={this.handleAssessmentChange}
+                />
+              </FormControl>
+            </Grid>}
+            {selectedTraining && selectedAssessment && selectedAssessment.value === 'In-Progress' && <Grid item md={3}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <label>Weeks</label>
+                <SelectOne
+                  value={selectedWeek ? selectedWeek : null}
+                  id="training"
+                  name="training"
+                  placeholder='Select Week'
+                  options={weekList}
+                  onChange={this.handleWeekChange}
+                />
+              </FormControl>
+            </Grid>}
+            {excelData !== '' && selectedTraining && selectedAssessment &&
+              <Grid item md={selectedAssessment.value !== 'In-Progress' ? 6 : 3}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0' }}>
+                  <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
+                </div>
+              </Grid>
+            }
           </Grid>
-          { excelData !== '' && 
-          <Grid item md={8}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0'}}>
-            <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
-            </div>
-          </Grid>
-          }
-           </Grid>
-          <TableContainer component={Paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
-              classes={classes}
-            />
-            <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      className={classes.stickyColumnCellName}
-                      hover
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
+          {selectedAssessment && selectedAssessment.value !== 'In-Progress' &&
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-labelledby="tableTitle">
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  assessmentType={selectedAssessment.value}
+                  orderBy={orderBy}
+                  onSelectAllClick={this.handleSelectAllClick}
+                  onRequestSort={this.handleRequestSort}
+                  rowCount={data.length}
+                  classes={classes}
+                />
 
-                      <TableCell padding="checkbox" className={classes.stickyColumnCell}>
-                        <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
-                      </TableCell>
-                    
-                      <TableCell style={{padding: 8}} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
-                        {n.first_name}
-                      </TableCell>
-                      <TableCell style={{padding: 8}}>{n.attendance}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.sme_session_interaction}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.theory}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.hands_on}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.hands_on_performance}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.assessment}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.assessment_schedule_compliance}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.overall}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.sme_interaction}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.sme_name}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.remarks}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.training_completed}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.training_completed_date}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.certification}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.final_assessment_score}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.percentage_complete}</TableCell>
-                      <TableCell style={{padding: 8}}>{n.spoc}</TableCell>
+                <TableBody>
+                  {stableSort(data, getSorting(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map(n => {
+                      const isSelected = this.isSelected(n.id);
+                      return (
+                        <TableRow
+                          className={classes.stickyColumnCellName}
+                          hover
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={-1}
+                          key={n.id}
+                          selected={isSelected}
+                        >
+                          <TableCell padding="checkbox" className={classes.stickyColumnCell}>
+                            <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
+                          </TableCell>
 
+                          <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
+                            {n.first_name}
+                          </TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }} 
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-        </TableContainer>
-        {snackBarOpen &&
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          }
+          {selectedWeek && <TableContainer component={Paper}>
+            <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+            <div className={classes.tableWrapper}>
+              <Table className={classes.table} aria-labelledby="tableTitle">
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  assessmentType={selectedAssessment.value}
+                  orderBy={orderBy}
+                  onSelectAllClick={this.handleSelectAllClick}
+                  onRequestSort={this.handleRequestSort}
+                  rowCount={data.length}
+                  classes={classes}
+                />
+                <TableBody>
+                  {stableSort(data, getSorting(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map(n => {
+                      const isSelected = this.isSelected(n.id);
+                      return (
+                        <TableRow
+                          className={classes.stickyColumnCellName}
+                          hover
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={-1}
+                          key={n.id}
+                          selected={isSelected}
+                        >
+                          <TableCell padding="checkbox" className={classes.stickyColumnCell}>
+                            <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
+                          </TableCell>
+
+                          <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
+                            {n.first_name}
+                          </TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.attendance}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.sme_session_interaction}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.theory}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.hands_on}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.hands_on_performance}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.assessment}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.assessment_schedule_compliance}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.overall}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.sme_interaction}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.sme_name}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.training_completed}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.training_completed_date}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.certification}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.final_assessment_score}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.percentage_complete}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.spoc}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {/* {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )} */}
+                </TableBody>
+              </Table>
+            </div>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={data.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                'aria-label': 'Previous Page',
+              }}
+              nextIconButtonProps={{
+                'aria-label': 'Next Page',
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
+          </TableContainer>}
+          {snackBarOpen &&
             <SnackBar onCloseSnackBar={this.onCloseSnackBar} snackBarOpen={snackBarOpen} snackmsg={snackmsg} snackvariant={snackvariant} />}
-      </Paper>
+        </Paper>
       </div>
     );
   }
@@ -522,4 +643,4 @@ TrainingFeedback.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles,withRouter)(TrainingFeedback);
+export default withStyles(styles, withRouter)(TrainingFeedback);

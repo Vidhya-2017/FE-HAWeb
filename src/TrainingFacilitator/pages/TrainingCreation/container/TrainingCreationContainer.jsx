@@ -22,6 +22,11 @@ const mapDispatchToProps = (dispatch) => {
     submitCurriculum: TrainingCreationAction.submitCurriculum,
     getEditTrainingData: TrainingCreationAction.getEditTrainingData,
     EditTrainingList: TrainingCreationAction.EditTrainingList,
+    getTrainingList: TrainingCreationAction.getTrainingList,
+    trainingListDetails:TrainingCreationAction.trainingListDetails,
+    getCurriculumBySkill:TrainingCreationAction.getCurriculumBySkill,
+    insertCurriculamData: TrainingCreationAction.insertCurriculamData,
+    getSmeCoveredList: TrainingCreationAction.getSmeCoveredList,
   };
 };
 
