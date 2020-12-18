@@ -255,8 +255,8 @@ class EventFeedback extends React.Component {
             <Grid item xs={8}>
               <TextField
                 className={classes.textArea}
-                aria-label="minimum height"
                 rows={3}
+                value={this.state.comment}
                 onChange={this.inputFieldChange}
                 multiline
                 variant="outlined"

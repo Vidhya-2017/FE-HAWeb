@@ -59,7 +59,7 @@ class CandidateFeedbackNew extends React.Component {
               label: list.SquadName
             }
           });
-          this.setState({ squadList, selectedEvent, showCandidateList: false });
+          this.setState({ squadList, selectedEvent, showCandidateList: false, selectedSquad: null, selectedSprint: null });
         }
       });
     } else {
@@ -208,8 +208,8 @@ class CandidateFeedbackNew extends React.Component {
     this.props.candidateSquadWiseFeedback(reqObj).then((response) => {
       if (response && response.errCode === 200) {
         this.setState({
-          selectedEvent: null,
-          selectedSquad: null,
+          // selectedEvent: null,
+          // selectedSquad: null,
           selectedSprint: null,
           showCandidateList: false,
           showSnackbar: true,
