@@ -96,7 +96,13 @@ class SideNavBar extends React.Component {
       pathname: '/eventList',
       value: 'eventList',
       id: '2'
-    }, {
+    },
+    {
+      pathname: '/trainingDashboard',
+      value: 'trainingDashboard',
+      id: '3'
+    },
+    {
       pathname: '/trainingCreation',
       value: 'trainingCreation',
       id: '3'
@@ -299,6 +305,10 @@ class SideNavBar extends React.Component {
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey="4">
                       <Fragment>
+                        <Button className={`${activeNav === "trainingCreation"} nav-link`} onClick={() => this.pageRedirect('/trainingDashboard', 'trainingDashboard')}>
+                          <div className={`sb-nav-link-icon ${activeNav === "trainingDashboard"}`}><i className="fa fa-tachometer"></i></div>
+                          Training Dashboard
+                        </Button>
                         <Button className={`${activeNav === "trainingCreation"} nav-link`} onClick={() => this.pageRedirect('/trainingCreation', 'trainingCreation')}>
                           <div className={`sb-nav-link-icon ${activeNav === "trainingCreation"}`}><i className="fa fa-tachometer"></i></div>
                           Training Registration
@@ -307,7 +317,7 @@ class SideNavBar extends React.Component {
                           <div className={`sb-nav-link-icon ${activeNav === "TFCandidateSelection"}`}><i className="fa fa-table"></i></div>
                           Candidate Selection
                         </Button>
-                        
+
                         <Button className={`${activeNav === "smeTopicsCovered"} nav-link`} onClick={() => this.pageRedirect('/smeTopicsCovered', 'smeTopicsCovered')}>
                           <div className={`sb-nav-link-icon ${activeNav === "smeTopicsCovered"}`}><i className="fa fa-table"></i></div>
                           SME Topics Covered
@@ -342,7 +352,7 @@ class SideNavBar extends React.Component {
                         </Button>
                         <Button className={`${activeNav === "lob"} nav-link`} onClick={() => this.pageRedirect('/lob', 'lob')}>
                           <div className={`sb-nav-link-icon ${activeNav === "lob"}`}><i className="fa fa-table"></i></div>
-                          LOB 
+                          LOB
                         </Button>
                       </Fragment>
                     </Accordion.Collapse>
@@ -377,4 +387,3 @@ const mapStateToProps = state => (
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideNavBar);
-

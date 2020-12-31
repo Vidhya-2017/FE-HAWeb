@@ -126,6 +126,7 @@ const demandPaths = [
 ];
 
 const trainingPaths = [
+  { text: 'Training Dashboard', path: '/trainingDashboard' },
   { text: 'Training Registration', path: '/trainingCreation' },
   { text: 'Candidate Selection', path: '/TFCandidateSelection' },
   { text: 'SME Covered Topics', path: '/smeTopicsCovered' },

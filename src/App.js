@@ -20,7 +20,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, combineReducers)
 const composeEnhancers = compose;
 
-// let store = createStore(persistedReducer, 
+// let store = createStore(persistedReducer,
 //   applyMiddleware(thunk)
 // );
 

@@ -52,6 +52,7 @@ import TrainingFeedbackContainer from './TrainingFacilitator/pages/TrainingFeedb
 import TRCandidateFeedbackContainer from './TrainingFacilitator/pages/TRCandidateFeedback/container/TRCandidateFeedbackContainer';
 // import Home from './TrainingFacilitator/pages/Home/container/HomeContainer';
 import './App.scss';
+import TrainingDashboard from './TrainingFacilitator/pages/TrainingDashboard/TrainingDashboard';
 
 const outerTheme = createMuiTheme({
   palette: {
@@ -147,6 +148,7 @@ class Home extends React.Component {
               <Route path="/demandDashboard" render={(props) => <MuiPickersUtilsProvider utils={MomentUtils}><DemandDBContainer {...props} /></MuiPickersUtilsProvider>} />
 
               {/* Training Facilitator Route */}
+              <Route path="/trainingDashboard" component={TrainingDashboard} />
               <Route path="/trainingCreation" component={TrainingCreationContainer} />
               <Route path="/user" component={SMEListContainer} />
               <Route path="/skill" component={SkillListContainer} />
