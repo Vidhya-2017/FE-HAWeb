@@ -79,7 +79,7 @@ class Curriculum extends React.Component {
             id: list.id,
             label: list.training_name,
             skillsID: list.skills,
-            skill_name: list.skill_name.split(','),
+            skill_name: list?.skill_name?.split(','),
             sme_name: list.sme_name,
             smeID: list.sme,
             skillData: list.skills_array,
@@ -95,7 +95,7 @@ class Curriculum extends React.Component {
 
 
   selectTrainingChange = (selectedTraining) => {
-    const skillDetails = selectedTraining.target.skillData.map((list, index) => {
+    const skillDetails = selectedTraining.target.skillData?.map((list, index) => {
       return {
         skillname: list.skill_name,
         skillId: list.id

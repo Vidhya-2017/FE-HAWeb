@@ -111,7 +111,9 @@ class BatchFormation extends Component {
       selectall: false,
       left: [],
       right: [],
+      mentorList: [],
       batchSelected: null,
+      selectedMentor: null,
       showAddBatchModal: false,
       newBatchName: '',
       newBatchCount: '',
@@ -144,10 +146,26 @@ class BatchFormation extends Component {
   }
 
   selectTrainingChange = (selectedTraining) => {
-
     this.setState({ selectedTraining: selectedTraining.target, candidatesList: [], batchSelected: null });
     this.getBatchList(selectedTraining.target.value);
+    this.getMentorList(selectedTraining.target.value);
     this.checkAllFieldsValidbatch();
+  }
+  getMentorList = (training_id) => {
+    const reqObj = { training_id };
+    this.props.getMentorList(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        const mentorList = response.arrRes.map(list => {
+          return {
+            value: list.batch_id,
+            label: list.batch_name
+          }
+        });
+        this.setState({ mentorList: mentorList });
+      } else {
+        this.setState({ mentorList: [], snackBarOpen: true, snackmsg: 'No Mentors Found', snackvariant: "error" })
+      }
+    })
   }
 
   getBatchList = (training_id) => {
@@ -166,6 +184,11 @@ class BatchFormation extends Component {
       }
     })
   }
+
+  onChangeMentor = (mentor) => {
+    this.setState({ selectedMentor: mentor.target });
+  }
+
   onChangeBatch = (batchSelected) => {
 
     this.setState({ batchSelected: batchSelected.target });
@@ -208,7 +231,7 @@ class BatchFormation extends Component {
 
 
   insertCandidates = () => {
-    const { right, batchSelected } = this.state;
+    const { right, batchSelected, selectedMentor } = this.state;
     const candidateIDs = [];
     right.forEach((candidate) => {
       if (candidate.id !== '' && candidate.id !== null) {
@@ -220,6 +243,7 @@ class BatchFormation extends Component {
         batch_id: batchSelected.value,
         candidate_ids: candidateIDs,
         created_by: 1,
+        mentor_id: selectedMentor.value
       }
       return this.props.insertCandidateBatchMap(reqObj).then((response) => {
         if (response && response.errCode === 200) {
@@ -311,7 +335,6 @@ class BatchFormation extends Component {
   };
 
   handleCheckedRight = () => {
-
     this.leftChecked[0].training_id = this.state.selectedTraining.value;
     this.setState({
       right: this.state.right.concat(this.leftChecked),
@@ -422,7 +445,7 @@ class BatchFormation extends Component {
   render() {
     const { classes } = this.props;
     const { trainingList, selectedTraining, candidatesList, snackBarOpen, snackmsg,
-      snackvariant, query, checked, left, right, batchSelected,
+      snackvariant, query, checked, left, right, batchSelected, mentorList, selectedMentor,
       batchDetailsList, showAddBatchModal, newBatchName, newBatchCount } = this.state;
     this.leftChecked = this.intersection(checked, left);
     this.rightChecked = this.intersection(checked, right);
@@ -453,6 +476,7 @@ class BatchFormation extends Component {
               value={batchSelected}
               onChange={this.onChangeBatch}
               options={batchDetailsList}
+              addBatch={this.addBatch}
               defaultValue={batchSelected}
               placeholder="Select Batch"
               aria-label="batch"
@@ -461,27 +485,40 @@ class BatchFormation extends Component {
               name="batch"
             />
           </Grid>}
-          <Grid item md className={classes.searchAddGrid}>
-            {selectedTraining && <Button variant="contained" className={classes.addBtn} onClick={this.addBatch} color="primary">
-              Add
-            </Button>}
+          {selectedTraining && <Grid item md={4}>
+            <SelectOne
+              fieldLabel="Mentor list"
+              value={selectedMentor}
+              onChange={this.onChangeMentor}
+              options={mentorList}
+              defaultValue={selectedMentor}
+              placeholder="Select Mentor"
+              aria-label="mentor"
+              aria-describedby="mentor"
+              id="mentor"
+              name="mentor"
+            />
+          </Grid>}
+          <Grid item md >
+            {/* {selectedTraining && <Button variant="contained" className={classes.addBtn} onClick={this.addBatch} color="primary">
+              Recommendation
+            </Button>} */}
           </Grid>
-        </Grid>
-        <Grid item md className={classes.searchAddGrid}>
-
-          {(this.left.length > 0 || this.right.length > 0) &&
-            <Paper component="form" className={classes.searchRoot}>
-              <InputBase
-                className={classes.input}
-                placeholder="Search "
-                onChange={this.searchCandidate}
-                value={query}
-              />
-              <IconButton disabled className={classes.iconButton} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-            </Paper>
-          }
+          <Grid item md={3}>
+            {(this.left.length > 0 || this.right.length > 0) &&
+              <Paper component="form" className={classes.searchRoot}>
+                <InputBase
+                  className={classes.input}
+                  placeholder="Search "
+                  onChange={this.searchCandidate}
+                  value={query}
+                />
+                <IconButton disabled className={classes.iconButton} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+            }
+          </Grid>
         </Grid>
         {selectedTraining && batchSelected &&
           <Grid

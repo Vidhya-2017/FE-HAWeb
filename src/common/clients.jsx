@@ -3,13 +3,18 @@ import Interceptors from './Interceptors';
 
 axios.defaults.timeout = 2500 * 10;
 
-const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
-// const HOSTNAME = 'https://apk.cnc.hclets.com/DiEvAEndpoints/Prod';
+// const HOSTNAME = 'http://proctor.eastus.cloudapp.azure.com';
+// const HOSTNAME = 'https://apk.cnc.hclets.com/DiEvAEndpoints/Prod'; // Production
+const HOSTNAME = 'https://apk.cnc.hclets.com/DiEvAEndpoints/dev'; // DEV
 
-const HACKERANCHOR = '/hackeranchor';
-// const HACKERANCHOR = '/hackathon';
+
+
+// https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training
+// const HACKERANCHOR = '/hackeranchor';
+const HACKERANCHOR = '/hackathon';
 const DEMANDSUPPLY = '/demand-supply';
-const TRAININGFACILITATOR = '/TrainingFacilitator/';
+// const TRAININGFACILITATOR = '/TrainingFacilitator/';
+const TRAININGFACILITATOR = '/training/';
 
 const TFAxiosAPI = axios.create({
     baseURL: `${HOSTNAME}${TRAININGFACILITATOR}`,

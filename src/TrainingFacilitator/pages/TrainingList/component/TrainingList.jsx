@@ -62,6 +62,17 @@ class TrainingList extends React.Component {
 
       },
       {
+        title: "TEX Training ID",
+        field: "tex_trainingid",
+        validate: rowData => rowData.tex_trainingid !== '',
+      },
+      {
+        title: "Mode",
+        field: "training_mode",
+        validate: rowData => rowData.training_mode !== '',
+      },
+      
+      {
         title: "Location",
         field: "location_name",
         editComponent:props=>{
@@ -81,6 +92,11 @@ class TrainingList extends React.Component {
         title: "Duration",
         field: "duration",
         validate: rowData => rowData.duration !== '',
+      },
+      {
+        title: "LOB",
+        field: "lob_name",
+        validate: rowData => rowData.lob_name !== '',
       },
       {
         title: "Count",
@@ -292,8 +308,14 @@ class TrainingList extends React.Component {
   getTrainingData = () => {
     this.props.getTrainingList().then((response) => {
       if (response && response.errCode === 200) {
+        const trainingListVal = response.arrRes.map((res) => {
+          return {
+            ...res,
+            duration: `${res.duration} ${res.duration_type}`
+          }
+        })
         this.setState({
-          trainingListVal: response.arrRes,
+          trainingListVal: trainingListVal,
           snackBarOpen: true,
           snackmsg: "Data loaded successfully",
           snackvariant: "success"

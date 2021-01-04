@@ -39,11 +39,22 @@ const inputField = {
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
+const durationTypeList = [
+  { value: 'Month', id: 'Month', label: 'Month' },
+  { value: 'Week', id: 'Week', label: 'Week' },
+  { value: 'Days', id: 'Days', label: 'Days' }
+]
+const trainingModeList = [
+  { value: 'ILT', id: 'ILT', label: 'ILT' },
+  { value: 'VILT', id: 'VILT', label: 'VILT' }
+]
 const trainingRegForm = {
   trainingName: { ...inputField },
+  texTrainingID: { ...inputField },
+  trainingMode: { ...inputField },
   trainingType: { ...inputField },
   duration: { ...inputField },
+  durationType: { ...inputField },
   location: { ...inputField },
   account: { ...inputField },
   count: { ...inputField },
@@ -114,12 +125,15 @@ class TrainingCreation extends React.Component {
       locationList: [],
       accountList: [],
       selectedSkill: [],
+      isEditMode: false,
       selectedSME: [],
       EventDetailsList: [],
       trainingTypeList: [],
       eventSelected: null,
       selectedAccount: null,
       selectedTrainingType: null,
+      selectedTrainingMode: null,
+      selectedDurationType: null,
       selectedProgramManager: null,
       selectedlocation: null,
       batchDetailsList: [],
@@ -133,11 +147,13 @@ class TrainingCreation extends React.Component {
       snackBarOpen: false,
       snackmsg: "",
       snackvariant: "",
+      lobList: [],
       editTrainingId: null,
       editRegForm: {},
+      selectedLOB: null,
       BFFormIsValid: false,
       CFFormIsValid: false,
-      TPFormIsValid:false
+      TPFormIsValid: false
     };
     this.candidateRegRef = React.createRef();
     this.batchFormationRef = React.createRef();
@@ -157,6 +173,7 @@ class TrainingCreation extends React.Component {
       this.getSkillList(),
       this.getSmeList(),
       this.getProgramManager(),
+      this.getLobList(),
     ]).then((result) => {
       if (result[0].length > 0) {
         this.setState({ accountList: result[0] });
@@ -181,6 +198,9 @@ class TrainingCreation extends React.Component {
       if (result[5].length > 0) {
         this.setState({ programManagerList: result[5] });
       }
+      if (result[6].length > 0) {
+        this.setState({ lobList: result[6] });
+      }
 
       if (
         result[0].length > 0 &&
@@ -188,7 +208,8 @@ class TrainingCreation extends React.Component {
         result[2].length > 0 &&
         result[3].length > 0 &&
         result[4].length > 0 &&
-        result[5].length > 0
+        result[5].length > 0 &&
+        result[6].length > 0
       ) {
         if (queryStr.tId > 0) {
           this.getEditTrainingData(queryStr.tId);
@@ -205,6 +226,22 @@ class TrainingCreation extends React.Component {
     });
   }
 
+  getLobList = async () => {
+    const result = await this.props.getLobList();
+    if (result && result.errCode === 200) {
+      const lobList = result.arrRes.map((list) => {
+        return {
+          value: list.id,
+          LobId: list.id,
+          label: list.lob_name
+        };
+      });
+      return lobList;
+    } else {
+      const errorArr = [];
+      return errorArr;
+    }
+  }
   getAccount = async () => {
     const result = await this.props.getAccount();
     if (result && result.errCode === 200) {
@@ -285,24 +322,6 @@ class TrainingCreation extends React.Component {
       const errorArr = [];
       return errorArr;
     }
-    /* 
-    this.props.getTrainingType().then(response => {
-      if (response && response.errCode === 200) {
-        const trainingTypeList = response.arrRes.map(list => {
-          return {
-            value: list.id,
-            id: list.id,
-            label: list.type
-          }
-        });
-        this.setState({ trainingTypeList,
-          snackBarOpen: true,
-          snackmsg: "Data loaded successfully",
-          snackvariant:"success" });
-      } else {
-        this.setState({ snackBarOpen: true, snackmsg: 'Something went Wrong. Please try again later.', snackvariant:"error" })
-      }
-    }) */
   };
 
   getSkillList = async () => {
@@ -320,23 +339,6 @@ class TrainingCreation extends React.Component {
       const errorArr = [];
       return errorArr;
     }
-    /* this.props.getSkillList().then(response => {
-      if (response && response.errCode === 200) {
-        const skillList = response.arrRes.map(list => {
-          return {
-            value: list.id,
-            id: list.id,
-            label: list.skill_name
-          }
-        });
-        this.setState({ skillList,
-          snackBarOpen: true,
-          snackmsg: "Data loaded successfully",
-          snackvariant:"success" });
-      } else {
-        this.setState({ snackBarOpen: true, snackmsg: 'Something went Wrong. Please try again later.',snackvariant:"error" })
-      }
-    }) */
   };
   getSmeList = async () => {
     const result = await this.props.getSmeList();
@@ -415,6 +417,19 @@ class TrainingCreation extends React.Component {
           label: trainingData.type,
           name: "trainingType",
         };
+        const selectedTrMode = {
+          value: trainingData?.training_mode,
+          id: trainingData?.training_mode,
+          label: trainingData?.training_mode,
+          name: "trainingMode",
+        };
+
+        const selectedDrType = {
+          value: trainingData?.duration_type,
+          id: trainingData?.duration_type,
+          label: trainingData?.duration_type,
+          name: "durationType",
+        };
         const selectAcc = {
           value: trainingData.account,
           id: trainingData.account,
@@ -427,6 +442,15 @@ class TrainingCreation extends React.Component {
           label: trainingData.location_name,
           name: "location",
         };
+
+        const selectedLOB = {
+          value: trainingData.lob,
+          id: trainingData.lob,
+          label: trainingData.lob_name,
+          name: "lob",
+        };
+
+
         const selectProgramManager = {
           value: trainingData.program_manager_id,
           id: trainingData.program_manager_id,
@@ -438,9 +462,17 @@ class TrainingCreation extends React.Component {
 
         RegForm.trainingName.value = trainingData.training_name;
         RegForm.trainingName.valid = true;
+        RegForm.texTrainingID.value = trainingData.tex_trainingid;
+        RegForm.texTrainingID.valid = true;
 
         RegForm.trainingType.value = trainingData.training_type;
         RegForm.trainingType.valid = true;
+
+        RegForm.trainingMode.value = trainingData.trainingMode;
+        RegForm.trainingMode.valid = true;
+
+        RegForm.durationType.value = trainingData.durationType;
+        RegForm.durationType.valid = true;
 
         RegForm.location.value = trainingData.location;
         RegForm.location.valid = true;
@@ -488,11 +520,15 @@ class TrainingCreation extends React.Component {
         this.setState({
           formValues: RegForm,
           selectedTrainingType: selectttype,
+          selectedTrainingMode: selectedTrMode,
+          selectedDurationType: selectedDrType,
+          selectedLOB: selectedLOB,
           selectedLocation: selectLoc,
           selectedProgramManager: selectProgramManager,
           selectedAccount: selectAcc,
           smesListOption: trainingData.smes,
           snackBarOpen: true,
+          isEditMode: true,
           snackmsg: "Data loaded successfully",
           snackvariant: "success",
         });
@@ -563,10 +599,14 @@ class TrainingCreation extends React.Component {
       ),
       actualStDate: moment(formData.actualStDate).format("YYYY-MM-DD HH:mm:ss"),
       trainingName: formData.trainingName,
+      texTrainingId: formData.texTrainingID,
       count: formData.count,
       duration: formData.duration,
       location: formData.location,
+      lob: formData.lob,
       trainingType: formData.trainingType,
+      trainingMode: formData.trainingMode,
+      durationType: formData.durationType,
       plannedEndDate: moment(formData.plannedEndDate).format(
         "YYYY-MM-DD HH:mm:ss"
       ),
@@ -589,6 +629,9 @@ class TrainingCreation extends React.Component {
             formValues: { ...trainingRegForm },
             selectedAccount: null,
             selectedTrainingType: null,
+            selectedTrainingMode: null,
+            selectedDurationType: null,
+            selectedLOB: null,
             selectedProgramManager: null,
             selectedLocation: null,
             selectedSkill: null,
@@ -602,6 +645,9 @@ class TrainingCreation extends React.Component {
             formValues: { ...trainingRegForm },
             selectedAccount: null,
             selectedTrainingType: null,
+            selectedTrainingMode: null,
+            selectedDurationType: null,
+            selectedLOB: null,
             selectedProgramManager: null,
             selectedLocation: null,
             selectedSkill: null,
@@ -627,7 +673,10 @@ class TrainingCreation extends React.Component {
           this.setState({
             formValues: { ...trainingRegForm },
             selectedAccount: null,
+            selectedTrainingMode: null,
             selectedTrainingType: null,
+            selectedDurationType: null,
+            selectedLOB: null,
             selectedProgramManager: null,
             selectedLocation: null,
             selectedSkill: null,
@@ -651,8 +700,18 @@ class TrainingCreation extends React.Component {
     if (e.target.name === "trainingType") {
       this.setState({ selectedTrainingType: e.target });
     }
+    if (e.target.name === "trainingMode") {
+      this.setState({ selectedTrainingMode: e.target });
+    }
+
+    if (e.target.name === "durationType") {
+      this.setState({ selectedDurationType: e.target });
+    }
     if (e.target.name === "programManager") {
       this.setState({ selectedProgramManager: e.target });
+    }
+    if (e.target.name === "lob") {
+      this.setState({ selectedLOB: e.target });
     }
     if (e.target.name === "skills") {
       this.setState({ smesListOption: [] }, () => {
@@ -675,7 +734,6 @@ class TrainingCreation extends React.Component {
         this.setState({ smesListOption: TemSme });
       });
     }
-
     this.inputFieldChange(e);
   };
 
@@ -722,7 +780,7 @@ class TrainingCreation extends React.Component {
       });
     } else if (this.state.activeStep === 3) {
       this.curriculumRef.current.handleClickOpen();
-    } else if(this.state.activeStep === 4){
+    } else if (this.state.activeStep === 4) {
       this.trainingCompletedRef.current.handleSubmit();
     }
     else if (this.state.activeStep < 4) {
@@ -813,12 +871,14 @@ class TrainingCreation extends React.Component {
     const { classes } = this.props;
     const {
       skillList,
+      isEditMode,
       activeStep,
       showCandidateUpload,
       CRFormIsValid,
       selectedProgramManager,
       selectedTrainingType,
-      selectedAccount,
+      selectedTrainingMode,
+      selectedDurationType,
       selectedLocation,
       locationList,
       programManagerList,
@@ -831,6 +891,8 @@ class TrainingCreation extends React.Component {
       snackvariant,
       editTrainingId,
       formIsValid,
+      lobList,
+      selectedLOB,
       BFFormIsValid,
       CFFormIsValid,
       // TPFormIsValid
@@ -883,6 +945,20 @@ class TrainingCreation extends React.Component {
                   name="trainingName"
                   onChange={this.inputFieldChange}
                 />
+                <Textbox
+                  value={formValues.texTrainingID.value}
+                  fieldLabel="TEX Training ID"
+                  id="texTrainingID"
+                  type="text"
+                  placeholder="TEX Training ID"
+                  errorMessage={
+                    this.state.errors.texTrainingID === ""
+                      ? null
+                      : this.state.errors.texTrainingID
+                  }
+                  name="texTrainingID"
+                  onChange={this.inputFieldChange}
+                />
                 <SelectOne
                   fieldLabel="Training Type"
                   id="trainingType"
@@ -892,9 +968,23 @@ class TrainingCreation extends React.Component {
                   options={trainingTypeList}
                   onChange={this.selectFieldChange}
                   errorMessage={
-                    this.state.errors.location === ""
+                    this.state.errors.trainingType === ""
                       ? null
-                      : this.state.errors.location
+                      : this.state.errors.trainingType
+                  }
+                />
+                <SelectOne
+                  fieldLabel="Mode of Training"
+                  id="trainingMode"
+                  name="trainingMode"
+                  placeholder="Mode of Training"
+                  value={selectedTrainingMode}
+                  options={trainingModeList}
+                  onChange={this.selectFieldChange}
+                  errorMessage={
+                    this.state.errors.trainingMode === ""
+                      ? null
+                      : this.state.errors.trainingMode
                   }
                 />
                 <SelectOne
@@ -911,11 +1001,25 @@ class TrainingCreation extends React.Component {
                       : this.state.errors.location
                   }
                 />
+                <SelectOne
+                  fieldLabel="Duration Type"
+                  id="durationType"
+                  name="durationType"
+                  placeholder="Duration Type"
+                  value={selectedDurationType}
+                  options={durationTypeList}
+                  onChange={this.selectFieldChange}
+                  errorMessage={
+                    this.state.errors.durationType === ""
+                      ? null
+                      : this.state.errors.durationType
+                  }
+                />
                 <Textbox
                   fieldLabel="Duration"
                   value={formValues.duration.value}
                   id="duration"
-                  type="text"
+                  type="number"
                   placeholder="Duration"
                   errorMessage={
                     this.state.errors.duration === ""
@@ -929,7 +1033,9 @@ class TrainingCreation extends React.Component {
                   fieldLabel="Account"
                   id="account"
                   name="account"
-                  value={selectedAccount}
+                  isMulti={true}
+                  value={formValues.account && formValues.account.value}
+                  // value={selectedAccount}
                   placeholder="Account"
                   options={accountList}
                   onChange={this.selectFieldChange}
@@ -937,6 +1043,20 @@ class TrainingCreation extends React.Component {
                     this.state.errors.account === ""
                       ? null
                       : this.state.errors.account
+                  }
+                />
+                <SelectOne
+                  fieldLabel="LOB"
+                  id="lob"
+                  name="lob"
+                  placeholder="LOB"
+                  value={selectedLOB}
+                  options={lobList}
+                  onChange={this.selectFieldChange}
+                  errorMessage={
+                    this.state.errors.lob === ""
+                      ? null
+                      : this.state.errors.lob
                   }
                 />
                 <Textbox
@@ -953,37 +1073,38 @@ class TrainingCreation extends React.Component {
                   name="count"
                   onChange={this.inputFieldChange}
                 />
-                <Textbox
-                  fieldLabel="Requested By"
-                  value={formValues.requestBy.value}
-                  id="requestBy"
-                  type="text"
-                  placeholder="Requested By"
-                  errorMessage={
-                    this.state.errors.requestBy === ""
-                      ? null
-                      : this.state.errors.requestBy
-                  }
-                  name="requestBy"
-                  onChange={this.inputFieldChange}
-                />
-                <Textbox
-                  fieldLabel="Requested By SAP ID"
-                  value={formValues.requestBySapid.value}
-                  id="requestBySapid"
-                  type="text"
-                  placeholder="Requested By SAP ID"
-                  errorMessage={
-                    this.state.errors.requestBySapid === ""
-                      ? null
-                      : this.state.errors.requestBySapid
-                  }
-                  name="requestBySapid"
-                  onChange={this.inputFieldChange}
-                />
               </div>
             </Grid>
             <Grid item xs={12} sm={6}>
+
+              <Textbox
+                fieldLabel="Requested By"
+                value={formValues.requestBy.value}
+                id="requestBy"
+                type="text"
+                placeholder="Requested By"
+                errorMessage={
+                  this.state.errors.requestBy === ""
+                    ? null
+                    : this.state.errors.requestBy
+                }
+                name="requestBy"
+                onChange={this.inputFieldChange}
+              />
+              <Textbox
+                fieldLabel="Requested By SAP ID"
+                value={formValues.requestBySapid.value}
+                id="requestBySapid"
+                type="text"
+                placeholder="Requested By SAP ID"
+                errorMessage={
+                  this.state.errors.requestBySapid === ""
+                    ? null
+                    : this.state.errors.requestBySapid
+                }
+                name="requestBySapid"
+                onChange={this.inputFieldChange}
+              />
               <SelectOne
                 fieldLabel="Program Manager"
                 id="programManager"
@@ -1034,6 +1155,7 @@ class TrainingCreation extends React.Component {
                 value={formValues.plannedStDate.value}
                 name="plannedStDate"
                 minDate={new Date()}
+                disabled={isEditMode}
                 onChange={this.inputFieldChange}
               />
               <DateTimePicker
@@ -1041,6 +1163,7 @@ class TrainingCreation extends React.Component {
                 fieldLabel="Planned End Date"
                 name="plannedEndDate"
                 disabled={
+                  isEditMode ||
                   formValues.plannedStDate.value === "" ||
                   formValues.plannedStDate.value === null
                 }
@@ -1119,6 +1242,7 @@ class TrainingCreation extends React.Component {
             <BatchFormation
               getTrainingList={this.props.getTrainingList}
               getBatchList={this.props.getBatchList}
+              getMentorList={this.props.getMentorList}
               addBatchName={this.props.addBatchName}
               getCandidateMapList={this.props.getCandidateMapList}
               insertCandidateBatchMap={this.props.insertCandidateBatchMap}
@@ -1152,8 +1276,8 @@ class TrainingCreation extends React.Component {
               trainingListDetails={this.props.trainingListDetails}
               getSmeCoveredList={this.props.getSmeCoveredList}
               insertCurriculamData={this.props.insertCurriculamData}
-              // checkAllFieldsValidTP={this.checkAllFieldsValidTP}
-           />
+            // checkAllFieldsValidTP={this.checkAllFieldsValidTP}
+            />
           </Grid>
         )}
         <div className={classes.bottomBtn}>

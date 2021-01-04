@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
+import { Typography, IconButton } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Select from 'react-select';
 import SelectStyles from './SelectStyles';
 
@@ -86,9 +87,18 @@ class SelectOne extends React.Component {
 	render() {
 		const { options, value } = this.state;
 		return (
-			<div style={{minHeight: 75}}>
+			<div style={{ minHeight: 75 }}>
 				<Typography variant="caption" display="block" gutterBottom>
 					{this.props.fieldLabel}
+
+					{this.props.fieldLabel === "Batch list" &&
+						// 	<Button variant="contained"  onClick={this.props.addBatch} color="primary">
+						// 			Add
+						//   </Button>
+						<IconButton edge="end" style={{ padding: 0, marginLeft: 10, fontSize: 19, height: 19, width: 19 }} size="small" aria-label="Add Batch" onClick={this.props.addBatch} color="primary">
+							<AddCircleOutlineIcon />
+						</IconButton>
+					}
 				</Typography>
 				<Select
 					placeholder={this.props.placeholder}
@@ -122,6 +132,7 @@ SelectOne.propTypes = {
 SelectOne.defaultProps = {
 	isDisabled: false,
 	isMulti: false,
+	addBatch: () => { },
 	ariaDescribedBy: '',
 	ariaLabel: '',
 	placeholder: '',

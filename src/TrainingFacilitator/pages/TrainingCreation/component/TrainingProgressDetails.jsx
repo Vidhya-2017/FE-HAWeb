@@ -550,7 +550,7 @@ class TrainingProgressDetails extends React.Component {
                 id="panel1a-header"
               >
                 <Typography className={classes.heading}>
-                  SME Covered Topics
+                  Execution Progress
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>

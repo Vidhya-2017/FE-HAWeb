@@ -142,28 +142,28 @@ class TrainingFeedback extends React.Component {
   submitForm = (e) => {
     const { data } = this.state;
     const realdata = data.filter(item => item.rowclicked === true);
-    
+
     let reqObj = {
       data: realdata,
       created_by: 1,
     }
-      this.props.insertCandidateFeedback(reqObj).then((response) => {
-        if (response && response.errCode === 200) {
-          this.setState({
-            snackvariant: 'success',
-            snackBarOpen: true,
-            snackmsg: "Candidates Feedback Added Successfully"
-          })
-          this.props.history.push('/candidateFeedbackList');
-        } else {
-          this.setState({
-            snackvariant: 'error',
-            snackBarOpen: true,
-            snackmsg: "Error in Loading Data"
-          })
-          this.props.history.push('/candidateFeedbackList');
-        }
-      })
+    this.props.insertCandidateFeedback(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        this.setState({
+          snackvariant: 'success',
+          snackBarOpen: true,
+          snackmsg: "Candidates Feedback Added Successfully"
+        })
+        this.props.history.push('/candidateFeedbackList');
+      } else {
+        this.setState({
+          snackvariant: 'error',
+          snackBarOpen: true,
+          snackmsg: "Error in Loading Data"
+        })
+        this.props.history.push('/candidateFeedbackList');
+      }
+    })
   }
 
   CancelAction = () => {
@@ -174,7 +174,7 @@ class TrainingFeedback extends React.Component {
     const { data } = this.state;
     const findIndex = data.findIndex(user => list.id === user.id);
     const updatedUserData = [...data];
-    updatedUserData[findIndex]['default_end_date'] = !updatedUserData[findIndex]['default_end_date'];updatedUserData[findIndex]['rowclicked'] = !updatedUserData[findIndex]['rowclicked'];
+    updatedUserData[findIndex]['default_end_date'] = !updatedUserData[findIndex]['default_end_date']; updatedUserData[findIndex]['rowclicked'] = !updatedUserData[findIndex]['rowclicked'];
     this.setState({ data: updatedUserData });
   };
 
@@ -188,22 +188,22 @@ class TrainingFeedback extends React.Component {
             Candidate Feedback
             </Typography>
           <Typography variant="h6" className="text-left" gutterBottom>
-          <b>SME Name:</b> {data.length > 0 ? data[0].sme_name : '-'} &emsp; &emsp;  <b>SPOC: </b> {data.length > 0 ? data[0].spoc : '-'}
+            <b>SME Name:</b> {data.length > 0 ? data[0].sme_name : '-'} &emsp; &emsp;  <b>SPOC: </b> {data.length > 0 ? data[0].spoc : '-'}
           </Typography>
-         
+
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
               <TableHead className={classes.tableheader} >
                 <TableRow >
                   {['Name', 'Attendance', 'SME session Interaction', 'Theory', 'Hands-on', 'Hands-on Performance', 'Assessment %', 'Assessment Schedule Compliance', 'Overall', 'SMEs Interaction', 'Remarks', 'Completed', 'Completed On Time', 'Certification', 'Final Score', '% complete'].map((val, index) =>
-                    <TableCell key={val} style={{ padding: 8, fontSize:"15px" }}  className={index === 0 ? classes.stickyColumnCell : ''}>{val}</TableCell>
+                    <TableCell key={val} style={{ padding: 8, fontSize: "15px" }} className={index === 0 ? classes.stickyColumnCell : ''}>{val}</TableCell>
                   )}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell style={{ padding: 8, fontSize:"13px" }} component="th" scope="row" className={classes.stickyColumnCellName}>
+                    <TableCell style={{ padding: 8, fontSize: "13px" }} component="th" scope="row" className={classes.stickyColumnCellName}>
                       {row.first_name}
                     </TableCell>
                     <TableCell style={{ padding: 8 }} className={classes.fontsize}>
@@ -215,8 +215,8 @@ class TrainingFeedback extends React.Component {
                         variant="outlined"
                         input={<BootstrapInput />}
                       >
-                        {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -228,8 +228,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                        {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -242,8 +242,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                      {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -256,8 +256,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                       {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -270,8 +270,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                       {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -298,8 +298,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                       {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -312,8 +312,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                       {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -326,8 +326,8 @@ class TrainingFeedback extends React.Component {
                         onChange={(e) => this.onRatingChange(e, row)}
                         input={<BootstrapInput />}
                       >
-                       {dropDownValue.map((item) => 
-                        <MenuItem value={item.value}>{item.label}</MenuItem>
+                        {dropDownValue.map((item) =>
+                          <MenuItem value={item.value}>{item.label}</MenuItem>
                         )}
                       </Select>
                     </TableCell>
@@ -377,7 +377,7 @@ class TrainingFeedback extends React.Component {
                           />
                         }
                         {row.default_end_date === false &&
-                        
+
                           <DateTimePicker
                             value={row.training_completed_date === '' ? '' : new Date(row.training_completed_date)}
                             maxDays={90}
@@ -434,9 +434,9 @@ class TrainingFeedback extends React.Component {
               </TableBody>
             </Table>
           </TableContainer>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0'}}>
-          <Button variant="contained" style={{ margin: 5}} onClick={this.submitForm} color="primary">Submit</Button>
-          <Button variant="contained" style={{ margin: 5}} onClick={this.CancelAction}>Cancel</Button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0' }}>
+            <Button variant="contained" style={{ margin: 5 }} onClick={this.submitForm} color="primary">Submit</Button>
+            <Button variant="contained" style={{ margin: 5 }} onClick={this.CancelAction}>Cancel</Button>
           </div>
           {snackBarOpen &&
             <SnackBar onCloseSnackBar={this.onCloseSnackBar} snackBarOpen={snackBarOpen} snackmsg={snackmsg} snackvariant={snackvariant} />}

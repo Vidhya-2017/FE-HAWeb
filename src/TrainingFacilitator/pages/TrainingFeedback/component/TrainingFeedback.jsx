@@ -50,12 +50,23 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const prePostAssessmentRows = [
+const initialAssessmentRows = [
   { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'remarks', numeric: true, disablePadding: false, label: 'Remarks' },
-
 ];
+const postAssessmentRows = [
+  { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'dryfice_rating', numeric: false, disablePadding: true, label: 'Dryfice' },
+  { id: 'remarks', numeric: false, disablePadding: true, label: 'Comments' },
+  { id: 'isCertified', numeric: false, disablePadding: true, label: 'Can be Certified' },
+]
+const preAssessmentRows = [
+  { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'score', numeric: false, disablePadding: true, label: 'Score' },
+  { id: 'final_conclusion', numeric: false, disablePadding: true, label: 'Final Conclusion' },
+  { id: 'remarks', numeric: false, disablePadding: true, label: 'Comments' },
 
+]
 const inProgressRows = [
   { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'attendance', numeric: true, disablePadding: false, label: 'Attendance' },
@@ -85,7 +96,16 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const { onSelectAllClick, order, assessmentType, orderBy, numSelected, rowCount, classes } = this.props;
-    const rows = assessmentType !== 'In-Progress' ? prePostAssessmentRows : inProgressRows;
+    let rows = [];
+    if (assessmentType === 'Interim') {
+      rows = inProgressRows;
+    } else if (assessmentType === 'Pre-Assessment') {
+      rows = preAssessmentRows;
+    } else if (assessmentType === 'Post-Assessment') {
+      rows = postAssessmentRows;
+    } else if (assessmentType === 'Initial Assessment') {
+      rows = initialAssessmentRows;
+    }
     return (
       <TableHead>
         <TableRow className={classes.tableheader}>
@@ -146,8 +166,8 @@ const toolbarStyles = theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        color: '#000000',
+        backgroundColor: '#B3E5FC',
       }
       : {
         color: theme.palette.text.primary,
@@ -168,9 +188,7 @@ let EnhancedTableToolbar = props => {
   const { numSelected, classes, selectedData, userData } = props;
 
   const bulkEdit = () => {
-
     let userdata = userData.filter(user => selectedData.includes(user.id))
-
     props.history.push({
       pathname: '/trainingcandidateFeedback',
       state: { data: userdata }
@@ -256,19 +274,24 @@ const weekList = [
 
 const assessmentList = [
   {
+    value: 'Initial Assessment',
+    id: 0,
+    label: 'Initial Assessment'
+  },
+  {
     value: 'Pre-Assessment',
     id: 1,
     label: 'Pre-Assessment'
   },
   {
+    value: 'Interim',
+    id: 3,
+    label: 'Interim'
+  },
+  {
     value: 'Post-Assessment',
     id: 2,
     label: 'Post-Assessment'
-  },
-  {
-    value: 'In-Progress',
-    id: 3,
-    label: 'In-Progress'
   }
 ]
 class TrainingFeedback extends React.Component {
@@ -380,6 +403,8 @@ class TrainingFeedback extends React.Component {
   handleAssessmentChange = (e) => {
     this.setState({
       selectedAssessment: e.target,
+      selected: [],
+      selectedWeek: null
     })
   }
 
@@ -481,7 +506,7 @@ class TrainingFeedback extends React.Component {
                 />
               </FormControl>
             </Grid>}
-            {selectedTraining && selectedAssessment && selectedAssessment.value === 'In-Progress' && <Grid item md={3}>
+            {selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' && <Grid item md={3}>
               <FormControl variant="outlined" className={classes.formControl}>
                 <label>Weeks</label>
                 <SelectOne
@@ -495,16 +520,18 @@ class TrainingFeedback extends React.Component {
               </FormControl>
             </Grid>}
             {excelData !== '' && selectedTraining && selectedAssessment &&
-              <Grid item md={selectedAssessment.value !== 'In-Progress' ? 6 : 3}>
+              <Grid item md={selectedAssessment.value !== 'Interim' ? 6 : 3}>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0' }}>
                   <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
                 </div>
               </Grid>
             }
           </Grid>
-          {selectedAssessment && selectedAssessment.value !== 'In-Progress' &&
+          {selectedAssessment && selectedAssessment.value === 'Initial Assessment' &&
             <TableContainer component={Paper}>
-              <Table className={classes.table} aria-labelledby="tableTitle">
+              {/* <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} /> */}
+              <div className={classes.tableWrapper}>
+              <Table className={classes.table}>
                 <EnhancedTableHead
                   numSelected={selected.length}
                   order={order}
@@ -515,7 +542,52 @@ class TrainingFeedback extends React.Component {
                   rowCount={data.length}
                   classes={classes}
                 />
+                <TableBody>
+                  {stableSort(data, getSorting(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map(n => {
+                      const isSelected = this.isSelected(n.id);
+                      return (
+                        <TableRow
+                          className={classes.stickyColumnCellName}
+                          hover
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={-1}
+                          key={n.id}
+                          // selected={isSelected}
+                        >
+                          <TableCell padding="checkbox" className={classes.stickyColumnCell}>
+                            <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
+                          </TableCell>
 
+                          <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
+                            {n.first_name}
+                          </TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+              </div>
+            </TableContainer>
+          }
+          {selectedAssessment && selectedAssessment.value === 'Post-Assessment' &&
+            <TableContainer component={Paper}>
+               <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+              <div className={classes.tableWrapper}>
+              <Table className={classes.table}>
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  assessmentType={selectedAssessment.value}
+                  orderBy={orderBy}
+                  onSelectAllClick={this.handleSelectAllClick}
+                  onRequestSort={this.handleRequestSort}
+                  rowCount={data.length}
+                  classes={classes}
+                />
                 <TableBody>
                   {stableSort(data, getSorting(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -538,20 +610,68 @@ class TrainingFeedback extends React.Component {
                           <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
                             {n.first_name}
                           </TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.dryfice_rating ? n.dryfice_rating : '---'}</TableCell>
                           <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                          <TableCell style={{ padding: 8 }}>{n.isCertified ? n.isCertified : '---'}</TableCell>
                         </TableRow>
                       );
                     })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
                 </TableBody>
               </Table>
+           
+              </div>
+               </TableContainer>
+          }
+          {selectedAssessment && selectedAssessment.value === 'Pre-Assessment' &&
+
+            <TableContainer component={Paper}>
+              <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+              <div className={classes.tableWrapper}>
+                <Table className={classes.table}>
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    assessmentType={selectedAssessment.value}
+                    orderBy={orderBy}
+                    onSelectAllClick={this.handleSelectAllClick}
+                    onRequestSort={this.handleRequestSort}
+                    rowCount={data.length}
+                    classes={classes}
+                  />
+                  <TableBody>
+                    {stableSort(data, getSorting(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map(n => {
+                        const isSelected = this.isSelected(n.id);
+                        return (
+                          <TableRow
+                            className={classes.stickyColumnCellName}
+                            hover
+                            role="checkbox"
+                            aria-checked={isSelected}
+                            tabIndex={-1}
+                            key={n.id}
+                            selected={isSelected}
+                          >
+                            <TableCell padding="checkbox" className={classes.stickyColumnCell}>
+                              <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
+                            </TableCell>
+
+                            <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
+                              {n.first_name}
+                            </TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.score ? n.score : 0}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.final_conclusion ? n.final_conclusion : 0}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+              </div>
             </TableContainer>
           }
-          {selectedWeek && <TableContainer component={Paper}>
+          {selectedWeek && selectedAssessment && selectedAssessment.value === 'Interim' && <TableContainer component={Paper}>
             <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
             <div className={classes.tableWrapper}>
               <Table className={classes.table} aria-labelledby="tableTitle">
@@ -607,11 +727,6 @@ class TrainingFeedback extends React.Component {
                         </TableRow>
                       );
                     })}
-                  {/* {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )} */}
                 </TableBody>
               </Table>
             </div>

@@ -65,6 +65,15 @@ export const TrainingCreationAction = {
             return (error.response);
         }
     },
+    getMentorList: async (data) => {
+        try {
+            const response = await clients.TFAxiosAPI.post('mentorList.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+    },
     getTrainingType: async () => {
         try {
             const response = await clients.TFAxiosAPI.post('ListTrainingType.php');
