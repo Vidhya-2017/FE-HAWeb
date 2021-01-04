@@ -1,44 +1,59 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import { Col, ListGroup, Row, Table, Form } from 'react-bootstrap';
+import Axios from 'axios';
 
 const Curriculum = props => {
   const [current, setCurrent] = useState(0);
+  const [curriculum, setCurriculum] = useState([]);
+
+  const fetchCurriculum = async (skill, index) => {
+    setCurrent(index);
+
+    const { data } = await Axios.post('https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training/CurriculumDetailsAPI.php', {
+      training_id: props.id,
+      skill_id: skill.id
+    });
+
+    if (data.status) {
+      setCurriculum(data.coveredTopic);
+    }
+  }
+
+  const getFirstCurriculum = () => {
+    fetchCurriculum(props.skills_array[0], 0)
+  };
+
+  useEffect(getFirstCurriculum, [])
 
   return (
     <Row className="w-100">
       <Col sm={3}>
         <ListGroup variant="flush">
-          <ListGroup.Item active={current === 0} onClick={() => setCurrent(0)}>Curriculum 1</ListGroup.Item>
-          <ListGroup.Item active={current === 1} onClick={() => setCurrent(1)}>Curriculum 2</ListGroup.Item>
-          <ListGroup.Item active={current === 2} onClick={() => setCurrent(2)}>Curriculum 3</ListGroup.Item>
+          {props.skills_array.map((skill, i) => (
+            <ListGroup.Item active={current === i} key={skill.id} onClick={() => fetchCurriculum(skill, i)}>{skill.skill_name}</ListGroup.Item>
+          ))}
         </ListGroup>
       </Col>
       <Col sm={9}>
         <Table striped bordered>
           <thead>
             <tr>
-              <th>Completed</th>
+              <th>#</th>
+              <th>Covered</th>
               <th>Name</th>
-              <th>Completion Date</th>
+              <th>Covered Week</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><Form.Check type="checkbox" checked disabled /></td>
-              <td>Topic 1</td>
-              <td>12th April 2020</td>
-            </tr>
-            <tr>
-              <td><Form.Check type="checkbox" checked disabled /></td>
-              <td>Topic 2</td>
-              <td>12th April 2020</td>
-            </tr>
-            <tr>
-              <td><Form.Check type="checkbox" disabled /></td>
-              <td>Topic 3 Not complete</td>
-              <td></td>
-            </tr>
+            {curriculum.map(c => (
+              <tr>
+                <td>{c.skill_id}</td>
+                <td><Form.Check type="checkbox" checked={c.coveredStatus === 'yes'} disabled /></td>
+                <td>{c.name}</td>
+                <td>{c.coveredWeek}</td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </Col>

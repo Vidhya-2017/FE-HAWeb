@@ -77,7 +77,7 @@ const TrainingDashboard = () => {
         </Row>
         {current === 'info' && <TrainingInfo {...currentTraining} />}
         {current === 'batches' && <Batches />}
-        {current === 'curriculum' && <Curriculum />}
+        {current === 'curriculum' && <Curriculum {...currentTraining} />}
         {current === 'feedback' && <Feedback />}
       </section>
     </div>
