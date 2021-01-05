@@ -24,7 +24,7 @@ const Curriculum = props => {
     fetchCurriculum(props.skills_array[0], 0)
   };
 
-  useEffect(getFirstCurriculum, [])
+  useEffect(getFirstCurriculum, [props.id])
 
   return (
     <Row className="w-100">

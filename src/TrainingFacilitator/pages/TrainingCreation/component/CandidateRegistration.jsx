@@ -330,7 +330,6 @@ class CandidateRegistration extends React.Component {
     render() {
         const { classes } = this.props
         const { trainingList, selectedTraining, locationList, selectedLocation, selectedLob, lobList, selectedAccount, accountList, selectedMonth, formValues, formDisable, snackBarOpen, snackmsg, snackvariant } = this.state;
-        console.log(formValues);
         return (
             <Grid container spacing={3} className={classes.gridRoot}>
                 <Grid item xs={12} sm={6}>

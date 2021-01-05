@@ -4,7 +4,7 @@ import clients from '../../../../common/clients';
 export const TrainingListAction = {
     getTrainingList: async () => {
         try {
-            const response = await clients.TFAxiosAPI.post('/TrainingListAll.php');
+            const response = await clients.TFAxiosAPI.get('/TrainingListAll.php');
             return (response.data);
         }
         catch (error) {

@@ -46,7 +46,9 @@ const durationTypeList = [
 ]
 const trainingModeList = [
   { value: 'ILT', id: 'ILT', label: 'ILT' },
-  { value: 'VILT', id: 'VILT', label: 'VILT' }
+  { value: 'VILT', id: 'VILT', label: 'VILT' },
+  { value: 'E-Learning', id: 'E-Learning', label: 'E-Learning' },
+  { value: 'SME Session', id: 'SME Session', label: 'SME Session' }
 ]
 const trainingRegForm = {
   trainingName: { ...inputField },
@@ -56,6 +58,7 @@ const trainingRegForm = {
   duration: { ...inputField },
   durationType: { ...inputField },
   location: { ...inputField },
+  lob: { ...inputField },
   account: { ...inputField },
   count: { ...inputField },
   skills: { ...inputField },
@@ -357,26 +360,6 @@ class TrainingCreation extends React.Component {
       const errorArr = [];
       return errorArr;
     }
-    /*  this.props.getSmeList().then(response => {
-       if (response && response.errCode === 200) {
-         const smesList = response.arrRes.map(list => {
-           return {
-             value: list.id,
-             id: list.id,
-             label: list.name,
-             skill: list.SkillName,
-             skillsId: list.skill_ids
-           }
-         });
-         console.log(smesList);
-         this.setState({ smesList,
-           snackBarOpen: true,
-           snackmsg: "Data loaded successfully",
-           snackvariant:"success" });
-       } else {
-         this.setState({ snackBarOpen: true, snackmsg: 'Something went Wrong. Please try again later.',  snackvariant:"error"})
-       }
-     }) */
   };
 
   getTrainingList = () => {
@@ -409,7 +392,6 @@ class TrainingCreation extends React.Component {
     this.props.getEditTrainingData(reqObj).then((response) => {
       if (response && response.errCode === 200) {
         const trainingData = response.arrRes[0];
-        //console.log("----TrainingList---",trainingData);
         const RegForm = Object.assign({ ...trainingRegForm });
         const selectttype = {
           value: trainingData.training_type,
@@ -444,19 +426,18 @@ class TrainingCreation extends React.Component {
         };
 
         const selectedLOB = {
-          value: trainingData.lob,
+          value: trainingData.lob_name,
           id: trainingData.lob,
           label: trainingData.lob_name,
           name: "lob",
         };
-
 
         const selectProgramManager = {
           value: trainingData.program_manager_id,
           id: trainingData.program_manager_id,
           label: trainingData.program_manager
             .concat(" - ")
-            .concat(trainingData.program_manager_sapid),
+            .concat(trainingData.program_mngr_sapid),
           name: "programManager",
         };
 
@@ -468,10 +449,13 @@ class TrainingCreation extends React.Component {
         RegForm.trainingType.value = trainingData.training_type;
         RegForm.trainingType.valid = true;
 
-        RegForm.trainingMode.value = trainingData.trainingMode;
+        RegForm.trainingMode.value = trainingData.training_mode;
         RegForm.trainingMode.valid = true;
 
-        RegForm.durationType.value = trainingData.durationType;
+        RegForm.lob.value = trainingData.lob;
+        RegForm.lob.valid = true;
+
+        RegForm.durationType.value = trainingData.duration_type;
         RegForm.durationType.valid = true;
 
         RegForm.location.value = trainingData.location;
@@ -517,6 +501,16 @@ class TrainingCreation extends React.Component {
         RegForm.actualEndDate.valid = true;
 
         console.log(RegForm);
+        console.log('-trainingData--', trainingData);
+        const smeList = trainingData.smes.map(list => {
+          return {
+            id: list.id,
+            label: `${list.label} - ${list.skill}`,
+            skill: list.skill,
+            skills: list.skills,
+            value: list.value,
+          }
+        })
         this.setState({
           formValues: RegForm,
           selectedTrainingType: selectttype,
@@ -526,7 +520,7 @@ class TrainingCreation extends React.Component {
           selectedLocation: selectLoc,
           selectedProgramManager: selectProgramManager,
           selectedAccount: selectAcc,
-          smesListOption: trainingData.smes,
+          smesListOption: smeList,
           snackBarOpen: true,
           isEditMode: true,
           snackmsg: "Data loaded successfully",
@@ -662,31 +656,32 @@ class TrainingCreation extends React.Component {
       reqObj.id = editTrainingId;
       reqObj.smes = reqObj.smeIds;
 
-      this.props.EditTrainingList(reqObj).then((result) => {
-        if (result && result.errCode === 200) {
-          this.setState({
-            snackBarOpen: true,
-            snackmsg: "Data loaded successfully",
-            snackvariant: "success",
-          });
-        } else {
-          this.setState({
-            formValues: { ...trainingRegForm },
-            selectedAccount: null,
-            selectedTrainingMode: null,
-            selectedTrainingType: null,
-            selectedDurationType: null,
-            selectedLOB: null,
-            selectedProgramManager: null,
-            selectedLocation: null,
-            selectedSkill: null,
-            selectedSME: null,
-            snackBarOpen: true,
-            snackmsg: "Update Failure",
-            snackvariant: "error",
-          });
-        }
-      });
+      console.log('-reqObj--', reqObj);
+      // this.props.EditTrainingList(reqObj).then((result) => {
+      //   if (result && result.errCode === 200) {
+      //     this.setState({
+      //       snackBarOpen: true,
+      //       snackmsg: "Data loaded successfully",
+      //       snackvariant: "success",
+      //     });
+      //   } else {
+      //     this.setState({
+      //       formValues: { ...trainingRegForm },
+      //       selectedAccount: null,
+      //       selectedTrainingMode: null,
+      //       selectedTrainingType: null,
+      //       selectedDurationType: null,
+      //       selectedLOB: null,
+      //       selectedProgramManager: null,
+      //       selectedLocation: null,
+      //       selectedSkill: null,
+      //       selectedSME: null,
+      //       snackBarOpen: true,
+      //       snackmsg: "Update Failure",
+      //       snackvariant: "error",
+      //     });
+      //   }
+      // });
     }
   };
 
@@ -716,6 +711,7 @@ class TrainingCreation extends React.Component {
     if (e.target.name === "skills") {
       this.setState({ smesListOption: [] }, () => {
         const { smesList } = this.state;
+        console.log('-----skill changes----')
         const TemSme = [];
         const onchangeSkill = e.target.value;
         smesList.forEach((list, index) => {
@@ -742,7 +738,7 @@ class TrainingCreation extends React.Component {
     "Candidate Registration",
     "Batch Creation",
     "Curriculum",
-    "Training Progress Details"
+    "Training Execution"
   ];
 
   handleStep = (index) => {
@@ -1020,6 +1016,7 @@ class TrainingCreation extends React.Component {
                   value={formValues.duration.value}
                   id="duration"
                   type="number"
+                  isDisabled={selectedDurationType === null}
                   placeholder="Duration"
                   errorMessage={
                     this.state.errors.duration === ""

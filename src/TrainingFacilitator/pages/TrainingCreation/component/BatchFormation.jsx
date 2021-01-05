@@ -146,7 +146,7 @@ class BatchFormation extends Component {
   }
 
   selectTrainingChange = (selectedTraining) => {
-    this.setState({ selectedTraining: selectedTraining.target, candidatesList: [], batchSelected: null });
+    this.setState({ selectedTraining: selectedTraining.target, candidatesList: [],selectedMentor: null, batchSelected: null });
     this.getBatchList(selectedTraining.target.value);
     this.getMentorList(selectedTraining.target.value);
     this.checkAllFieldsValidbatch();
@@ -157,8 +157,9 @@ class BatchFormation extends Component {
       if (response && response.errCode === 200) {
         const mentorList = response.arrRes.map(list => {
           return {
-            value: list.batch_id,
-            label: list.batch_name
+            value: `${list.name} - ${list.sap_id}`,
+            id: list.id,
+            label: `${list.name} - ${list.sap_id}`,
           }
         });
         this.setState({ mentorList: mentorList });
@@ -243,7 +244,7 @@ class BatchFormation extends Component {
         batch_id: batchSelected.value,
         candidate_ids: candidateIDs,
         created_by: 1,
-        mentor_id: selectedMentor.value
+        mentor: selectedMentor.id
       }
       return this.props.insertCandidateBatchMap(reqObj).then((response) => {
         if (response && response.errCode === 200) {

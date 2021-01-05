@@ -67,7 +67,7 @@ export const TrainingCreationAction = {
     },
     getMentorList: async (data) => {
         try {
-            const response = await clients.TFAxiosAPI.post('mentorList.php', data);
+            const response = await clients.TFAxiosAPI.post('SMEListByTraining.php', data);
             return (response.data);
         }
         catch (error) {
@@ -174,15 +174,15 @@ export const TrainingCreationAction = {
             return (error.response);
         }
       },
-      getTrainingList: async () => {
-        try {
-            const response = await clients.TFAxiosAPI.post('/TrainingList.php');
-            return (response.data);
-        }
-        catch (error) {
-            return (error.response);
-        }
-    }, 
+    //   getTrainingList: async () => {
+    //     try {
+    //         const response = await clients.TFAxiosAPI.post('/TrainingList.php');
+    //         return (response.data);
+    //     }
+    //     catch (error) {
+    //         return (error.response);
+    //     }
+    // }, 
     trainingListDetails: async (data) => {
       try {
           const response = await clients.TFAxiosAPI.post('/TrainingListDetails.php', data);

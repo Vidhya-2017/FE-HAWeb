@@ -30,9 +30,9 @@ class Textbox extends React.Component {
     render() {
         return (
             <div>
-                <Typography variant="caption" display="block" gutterBottom>
+                {this.props.fieldLabel && <Typography variant="caption" display="block" gutterBottom>
                     {this.props.fieldLabel}
-                </Typography>
+                </Typography>}
                 <TextField
                     id={this.props.id}
                     className={this.props.classes.textField}

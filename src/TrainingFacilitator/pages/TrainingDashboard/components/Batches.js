@@ -5,12 +5,12 @@ import Axios from 'axios';
 
 const Batches = props => {
   const  [batches, setBatches] = useState([]);
-
+  const  [batchesFetched, setBatchesFetched] = useState(false);
   const fetchCandidates = async () => {
-    const { data } = await Axios.post('https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training/BatchMasterList.php', { training_id: 1 });
-
+    const { data } = await Axios.post('https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training/BatchMasterList.php', { training_id: props.id });
     if (data?.status) {
       setBatches(data.arrRes);
+      setBatchesFetched(true)
     }
   }
 
@@ -18,10 +18,15 @@ const Batches = props => {
     fetchCandidates()
   };
 
-  useEffect(getCandidates, []);
+  useEffect(getCandidates, [props.id]);
 
   return (
     <Row className="mb-4 eventStatusContainer w-100 justify-content-center">
+      {batchesFetched && batches.length === 0 && 
+      <Col sm={3}>
+        No Batched found.
+      </Col>
+      }
       {batches.map(b => (
         <Col sm={3}>
           <div className="eventStatus">

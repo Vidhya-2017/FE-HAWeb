@@ -79,10 +79,6 @@ const TrainingInfo = props => {
                     <td>{props.planned_start_date}</td>
                   </tr>
                   <tr>
-                    <th>Planned Start Date</th>
-                    <td>{props.planned_start_date}</td>
-                  </tr>
-                  <tr>
                     <th>Planned End Date</th>
                     <td>{props.planned_end_date}</td>
                   </tr>
@@ -112,7 +108,7 @@ const TrainingInfo = props => {
             </tr>
           </thead>
           <tbody>
-            {candidates.map(c => (
+            {candidates && candidates.map(c => (
               <tr key={c.id}>
                 <td>{c.batch_id}</td>
                 <td>{c.sap_id}</td>

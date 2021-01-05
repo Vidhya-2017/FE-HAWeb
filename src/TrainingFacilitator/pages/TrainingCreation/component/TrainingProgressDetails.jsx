@@ -529,12 +529,12 @@ class TrainingProgressDetails extends React.Component {
 
             {left.length > 0 && selectedTraining && selectedSkill && (
               <Grid item md={4}>
-                <label> Day/Week </label>
+                <label> Day/Week/Date </label>
                 <Textbox
                   value={newDay}
                   id="day"
                   type="text"
-                  placeholder="Day/Week"
+                  placeholder="Day/Week/Date"
                   name="day"
                   onChange={this.dayOnChange}
                 />
