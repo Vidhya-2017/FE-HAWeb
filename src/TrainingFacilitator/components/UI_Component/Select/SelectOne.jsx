@@ -87,7 +87,7 @@ class SelectOne extends React.Component {
 	render() {
 		const { options, value } = this.state;
 		return (
-			<div style={{ minHeight: 75 }}>
+			<div >
 				<Typography variant="caption" display="block" gutterBottom>
 					{this.props.fieldLabel}
 

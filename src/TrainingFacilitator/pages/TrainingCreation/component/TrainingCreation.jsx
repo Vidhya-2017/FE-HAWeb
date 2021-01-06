@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import queryString from "query-string";
+import _ from 'lodash';
 import moment from "moment";
 import {
   Paper,
@@ -121,7 +122,7 @@ class TrainingCreation extends React.Component {
     this.state = {
       activeStep: 0,
       errors: {},
-      formValues: { ...trainingRegForm },
+      formValues: _.clone({ ...trainingRegForm }),
       programManagerList: [],
       skillList: [],
       smesList: [],
@@ -392,7 +393,7 @@ class TrainingCreation extends React.Component {
     this.props.getEditTrainingData(reqObj).then((response) => {
       if (response && response.errCode === 200) {
         const trainingData = response.arrRes[0];
-        const RegForm = Object.assign({ ...trainingRegForm });
+        const RegForm = _.clone({ ...trainingRegForm });
         const selectttype = {
           value: trainingData.training_type,
           id: trainingData.training_type,
@@ -499,20 +500,23 @@ class TrainingCreation extends React.Component {
 
         RegForm.actualEndDate.value = new Date(trainingData.actual_end_date);
         RegForm.actualEndDate.valid = true;
-
-        console.log(RegForm);
-        console.log('-trainingData--', trainingData);
         const smeList = trainingData.smes.map(list => {
           return {
-            id: list.id,
+            ...list,
             label: `${list.label} - ${list.skill}`,
-            skill: list.skill,
-            skills: list.skills,
-            value: list.value,
           }
         })
+        for (const [key] of Object.entries(trainingRegForm)) {
+          trainingRegForm[key] = {
+            value: "",
+            validation: {
+              required: true,
+            },
+            valid: false,
+          }
+        }
         this.setState({
-          formValues: RegForm,
+          formValues: _.clone({ ...RegForm }),
           selectedTrainingType: selectttype,
           selectedTrainingMode: selectedTrMode,
           selectedDurationType: selectedDrType,
@@ -620,7 +624,7 @@ class TrainingCreation extends React.Component {
       this.props.registerTraining(reqObj).then((result) => {
         if (result && result.errCode === 200) {
           this.setState({
-            formValues: { ...trainingRegForm },
+            formValues: _.clone({ ...trainingRegForm }),
             selectedAccount: null,
             selectedTrainingType: null,
             selectedTrainingMode: null,
@@ -636,7 +640,7 @@ class TrainingCreation extends React.Component {
           });
         } else {
           this.setState({
-            formValues: { ...trainingRegForm },
+            formValues: _.clone({ ...trainingRegForm }),
             selectedAccount: null,
             selectedTrainingType: null,
             selectedTrainingMode: null,
@@ -656,32 +660,42 @@ class TrainingCreation extends React.Component {
       reqObj.id = editTrainingId;
       reqObj.smes = reqObj.smeIds;
 
-      console.log('-reqObj--', reqObj);
-      // this.props.EditTrainingList(reqObj).then((result) => {
-      //   if (result && result.errCode === 200) {
-      //     this.setState({
-      //       snackBarOpen: true,
-      //       snackmsg: "Data loaded successfully",
-      //       snackvariant: "success",
-      //     });
-      //   } else {
-      //     this.setState({
-      //       formValues: { ...trainingRegForm },
-      //       selectedAccount: null,
-      //       selectedTrainingMode: null,
-      //       selectedTrainingType: null,
-      //       selectedDurationType: null,
-      //       selectedLOB: null,
-      //       selectedProgramManager: null,
-      //       selectedLocation: null,
-      //       selectedSkill: null,
-      //       selectedSME: null,
-      //       snackBarOpen: true,
-      //       snackmsg: "Update Failure",
-      //       snackvariant: "error",
-      //     });
-      //   }
-      // });
+      this.props.EditTrainingList(reqObj).then((result) => {
+        if (result && result.errCode === 200) {
+          this.props.history.push('/trainingCreation');
+          this.setState({
+            formValues: _.clone({ ...trainingRegForm }),
+            selectedAccount: null,
+            selectedTrainingMode: null,
+            selectedTrainingType: null,
+            selectedDurationType: null,
+            selectedLOB: null,
+            selectedProgramManager: null,
+            selectedLocation: null,
+            selectedSkill: null,
+            selectedSME: null,
+            snackBarOpen: true,
+            snackmsg: "Data loaded successfully",
+            snackvariant: "success",
+          });
+        } else {
+          this.setState({
+            formValues: _.clone({ ...trainingRegForm }),
+            selectedAccount: null,
+            selectedTrainingMode: null,
+            selectedTrainingType: null,
+            selectedDurationType: null,
+            selectedLOB: null,
+            selectedProgramManager: null,
+            selectedLocation: null,
+            selectedSkill: null,
+            selectedSME: null,
+            snackBarOpen: true,
+            snackmsg: "Update Failure",
+            snackvariant: "error",
+          });
+        }
+      });
     }
   };
 

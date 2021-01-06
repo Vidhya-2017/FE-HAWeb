@@ -272,6 +272,12 @@ const weekList = [
   { value: 'Week 6', id: 1, label: 'Week 6' },
 ]
 
+const durationTypeList = [
+  { value: 'Month', id: 'Month', label: 'Month' },
+  { value: 'Week', id: 'Week', label: 'Week' },
+  { value: 'Days', id: 'Days', label: 'Days' }
+]
+
 const assessmentList = [
   {
     value: 'Initial Assessment',
@@ -306,6 +312,7 @@ class TrainingFeedback extends React.Component {
     trainingListVal: [],
     selectedTraining: null,
     selectedWeek: null,
+    selectedDrType: null,
     selectedAssessment: null,
     filteredFeedback: [],
     training_id: '',
@@ -404,7 +411,14 @@ class TrainingFeedback extends React.Component {
     this.setState({
       selectedAssessment: e.target,
       selected: [],
-      selectedWeek: null
+      selectedWeek: null,
+      selectedDrType: null
+    })
+  }
+
+  handleDrTypeChange = (e) => {
+    this.setState({
+      selectedDrType: e.target,
     })
   }
 
@@ -469,7 +483,7 @@ class TrainingFeedback extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, excelData, order, selectedWeek, selectedAssessment, orderBy, selected, rowsPerPage, page, trainingListVal, selectedTraining, snackvariant, snackBarOpen, snackmsg } = this.state;
+    const { data, excelData, order, selectedWeek, selectedDrType, selectedAssessment, orderBy, selected, rowsPerPage, page, trainingListVal, selectedTraining, snackvariant, snackBarOpen, snackmsg } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
@@ -479,21 +493,19 @@ class TrainingFeedback extends React.Component {
           <Typography variant="h4" className="text-center" gutterBottom>
             Candidate Feedback
             </Typography>
-          <Grid container spacing={3} >
-            <Grid item md={3}>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <label>Training List</label>
-                <SelectOne
-                  value={selectedTraining ? selectedTraining : null}
-                  id="training"
-                  name="training"
-                  placeholder='Select Training'
-                  options={trainingListVal}
-                  onChange={this.handleTrainingChange}
-                />
-              </FormControl>
-            </Grid>
-            {selectedTraining && <Grid item md={3}>
+          <Grid container spacing={1} >
+            <FormControl variant="outlined" className={classes.formControl}>
+              <label>Training List</label>
+              <SelectOne
+                value={selectedTraining ? selectedTraining : null}
+                id="training"
+                name="training"
+                placeholder='Select Training'
+                options={trainingListVal}
+                onChange={this.handleTrainingChange}
+              />
+            </FormControl>
+            {selectedTraining &&
               <FormControl variant="outlined" className={classes.formControl}>
                 <label>Assessment Type</label>
                 <SelectOne
@@ -505,8 +517,21 @@ class TrainingFeedback extends React.Component {
                   onChange={this.handleAssessmentChange}
                 />
               </FormControl>
-            </Grid>}
-            {selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' && <Grid item md={3}>
+            }
+            {selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
+              <FormControl variant="outlined" className={classes.formControl}>
+                <label>Duration Type</label>
+                <SelectOne
+                  value={selectedDrType ? selectedDrType : null}
+                  id="durationType"
+                  name="durationType"
+                  placeholder='Select Duration Type'
+                  options={durationTypeList}
+                  onChange={this.handleDrTypeChange}
+                />
+              </FormControl>
+            }
+            {selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
               <FormControl variant="outlined" className={classes.formControl}>
                 <label>Weeks</label>
                 <SelectOne
@@ -518,109 +543,107 @@ class TrainingFeedback extends React.Component {
                   onChange={this.handleWeekChange}
                 />
               </FormControl>
-            </Grid>}
-            {excelData !== '' && selectedTraining && selectedAssessment &&
-              <Grid item md={selectedAssessment.value !== 'Interim' ? 6 : 3}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0' }}>
-                  <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
-                </div>
-              </Grid>
+            }
+            {excelData !== '' && selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
+              <div style={{ display: 'flex', height: 50, marginTop: 30, justifyContent: 'flex-end', padding: '10px 0' }}>
+                <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
+              </div>
             }
           </Grid>
           {selectedAssessment && selectedAssessment.value === 'Initial Assessment' &&
             <TableContainer component={Paper}>
               {/* <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} /> */}
               <div className={classes.tableWrapper}>
-              <Table className={classes.table}>
-                <EnhancedTableHead
-                  numSelected={selected.length}
-                  order={order}
-                  assessmentType={selectedAssessment.value}
-                  orderBy={orderBy}
-                  onSelectAllClick={this.handleSelectAllClick}
-                  onRequestSort={this.handleRequestSort}
-                  rowCount={data.length}
-                  classes={classes}
-                />
-                <TableBody>
-                  {stableSort(data, getSorting(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(n => {
-                      const isSelected = this.isSelected(n.id);
-                      return (
-                        <TableRow
-                          className={classes.stickyColumnCellName}
-                          hover
-                          role="checkbox"
-                          aria-checked={isSelected}
-                          tabIndex={-1}
-                          key={n.id}
+                <Table className={classes.table}>
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    assessmentType={selectedAssessment.value}
+                    orderBy={orderBy}
+                    onSelectAllClick={this.handleSelectAllClick}
+                    onRequestSort={this.handleRequestSort}
+                    rowCount={data.length}
+                    classes={classes}
+                  />
+                  <TableBody>
+                    {stableSort(data, getSorting(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map(n => {
+                        const isSelected = this.isSelected(n.id);
+                        return (
+                          <TableRow
+                            className={classes.stickyColumnCellName}
+                            hover
+                            role="checkbox"
+                            aria-checked={isSelected}
+                            tabIndex={-1}
+                            key={n.id}
                           // selected={isSelected}
-                        >
-                          <TableCell padding="checkbox" className={classes.stickyColumnCell}>
-                            <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
-                          </TableCell>
+                          >
+                            <TableCell padding="checkbox" className={classes.stickyColumnCell}>
+                              <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
+                            </TableCell>
 
-                          <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
-                            {n.first_name}
-                          </TableCell>
-                          <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
+                            <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
+                              {n.first_name}
+                            </TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
               </div>
             </TableContainer>
           }
           {selectedAssessment && selectedAssessment.value === 'Post-Assessment' &&
             <TableContainer component={Paper}>
-               <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+              <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
               <div className={classes.tableWrapper}>
-              <Table className={classes.table}>
-                <EnhancedTableHead
-                  numSelected={selected.length}
-                  order={order}
-                  assessmentType={selectedAssessment.value}
-                  orderBy={orderBy}
-                  onSelectAllClick={this.handleSelectAllClick}
-                  onRequestSort={this.handleRequestSort}
-                  rowCount={data.length}
-                  classes={classes}
-                />
-                <TableBody>
-                  {stableSort(data, getSorting(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(n => {
-                      const isSelected = this.isSelected(n.id);
-                      return (
-                        <TableRow
-                          className={classes.stickyColumnCellName}
-                          hover
-                          role="checkbox"
-                          aria-checked={isSelected}
-                          tabIndex={-1}
-                          key={n.id}
-                          selected={isSelected}
-                        >
-                          <TableCell padding="checkbox" className={classes.stickyColumnCell}>
-                            <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
-                          </TableCell>
+                <Table className={classes.table}>
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    assessmentType={selectedAssessment.value}
+                    orderBy={orderBy}
+                    onSelectAllClick={this.handleSelectAllClick}
+                    onRequestSort={this.handleRequestSort}
+                    rowCount={data.length}
+                    classes={classes}
+                  />
+                  <TableBody>
+                    {stableSort(data, getSorting(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map(n => {
+                        const isSelected = this.isSelected(n.id);
+                        return (
+                          <TableRow
+                            className={classes.stickyColumnCellName}
+                            hover
+                            role="checkbox"
+                            aria-checked={isSelected}
+                            tabIndex={-1}
+                            key={n.id}
+                            selected={isSelected}
+                          >
+                            <TableCell padding="checkbox" className={classes.stickyColumnCell}>
+                              <Checkbox color="primary" checked={isSelected} onClick={event => this.handleClick(event, n.id, n.first_name)} />
+                            </TableCell>
 
-                          <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
-                            {n.first_name}
-                          </TableCell>
-                          <TableCell style={{ padding: 8 }}>{n.dryfice_rating ? n.dryfice_rating : '---'}</TableCell>
-                          <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
-                          <TableCell style={{ padding: 8 }}>{n.isCertified ? n.isCertified : '---'}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-           
+                            <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
+                              {n.first_name}
+                            </TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.dryfice_rating ? n.dryfice_rating : '---'}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.isCertified ? n.isCertified : '---'}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+
               </div>
-               </TableContainer>
+            </TableContainer>
           }
           {selectedAssessment && selectedAssessment.value === 'Pre-Assessment' &&
 
@@ -671,7 +694,7 @@ class TrainingFeedback extends React.Component {
               </div>
             </TableContainer>
           }
-          {selectedWeek && selectedAssessment && selectedAssessment.value === 'Interim' && <TableContainer component={Paper}>
+          {selectedWeek && selectedDrType && selectedAssessment && selectedAssessment.value === 'Interim' && <TableContainer component={Paper}>
             <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
             <div className={classes.tableWrapper}>
               <Table className={classes.table} aria-labelledby="tableTitle">

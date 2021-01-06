@@ -1,18 +1,22 @@
 import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 import {
   Paper,
   withStyles,
   Typography,
   IconButton,
   ListItem,
+  Button,
   Grid,
   List,
   Checkbox,
   ListItemIcon,
   ListItemText,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from "@material-ui/core";
 // import "../scss/SMECompletedTopics.scss";
-import Button from "@material-ui/core/Button";
+import TocIcon from '@material-ui/icons/Toc';
 import Buttons from "../../../components/UI_Component/Buttons/Buttons";
 import Textbox from "../../../components/UI_Component/Textbox/Textbox";
 import SelectOne from "../../../components/UI_Component/Select/SelectOne";
@@ -24,11 +28,8 @@ import green from "@material-ui/core/colors/green";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorIcon from "@material-ui/icons/Error";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
-import PropTypes from "prop-types";
-import classNames from "classnames";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
-
 import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -104,26 +105,14 @@ MySnackbarContent.propTypes = {
 const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
 
 const styles = (theme) => ({
-  // iconRoot: {
-  //   color: "#6b6b6b",
-  // },
   paperRoot: {
     width: "100%",
     padding: '10px 15px'
   },
-  // input: {
-  //   marginLeft: 8,
-  //   flex: 1,
-  //   // border: 'solid 1px lightgrey'
-  // },
-  // cardHeader: {
-  //   padding: theme.spacing(1, 2),
-  // },
   listAcc: {
     width: "250px",
   },
   list: {
-    // width: 200,
     height: 230,
     backgroundColor: theme.palette.background.paper,
     overflow: "auto",
@@ -136,12 +125,6 @@ const styles = (theme) => ({
     display: "flex",
     marginTop: 10,
   },
-  // widthAccordion:{
-  //   width:"20%"
-  // },
-  // gridRoot: {
-  //   flexGrow: 1,
-  // },
   searchRoot: {
     padding: "4px",
     display: "flex",
@@ -166,12 +149,32 @@ const styles = (theme) => ({
     },
     paddingBottom: 10,
   },
+  tableRoot: {
+    height: 250
+  },
+  table: {
+    minWidth: 650,
+  },
+  tableHead: {
+    fontWeight: "600",
+  }
 });
 
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
 class TrainingProgressDetails extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       trainingList: [],
       selectedTraining: null,
@@ -272,9 +275,12 @@ class TrainingProgressDetails extends React.Component {
     });
     this.props.getSmeCoveredList(reqObj).then((response) => {
       if (response.errCode === 200) {
-        this.covered = [];
         this.setState({
           covered: response.arrRes,
+        });
+      } else {
+        this.setState({
+          covered: [],
         });
       }
     });
@@ -402,7 +408,7 @@ class TrainingProgressDetails extends React.Component {
     const { checked } = this.state;
 
     return (
-      <Card>
+      <Card style={{border: '1px solid #eee'}} >
         <CardHeader
           className={classes.cardHeader}
           avatar={
@@ -456,19 +462,16 @@ class TrainingProgressDetails extends React.Component {
   searchCurriculum = (e) => {
     const query = e.target.value;
     const lowerCaseQuery = query.toLowerCase();
-    console.log(this.left);
-    console.log(this.right);
-
     const searchedData = query
       ? this.left.filter((list) =>
-          list["name"].toLowerCase().includes(lowerCaseQuery)
-        )
+        list["name"].toLowerCase().includes(lowerCaseQuery)
+      )
       : this.left;
 
     const searchedRightData = query
       ? this.right.filter((list) =>
-          list["name"].toLowerCase().includes(lowerCaseQuery)
-        )
+        list["name"].toLowerCase().includes(lowerCaseQuery)
+      )
       : this.right;
 
     this.setState({ left: searchedData, right: searchedRightData, query });
@@ -493,166 +496,167 @@ class TrainingProgressDetails extends React.Component {
 
     this.leftChecked = this.intersection(checked, left);
     this.rightChecked = this.intersection(checked, right);
-
     const { classes } = this.props;
     return (
-        <Paper className={classes.paperRoot} elevation={0}>
-          <Grid container spacing={3}>
-            <Grid item md={4}>
-              <label>Training List</label>
-              <SelectOne
+      <Paper className={classes.paperRoot} elevation={0}>
+        <Grid container spacing={3}>
+          <Grid item md={4}>
+            <label>Training List</label>
+            <SelectOne
               // fieldLabel="Training List"
-                value={selectedTraining}
-                onChange={this.onChangeTraining}
-                options={trainingList}
-                placeholder="Select Training"
-                aria-label="training"
-                aria-describedby="training"
-                id="training"
+              value={selectedTraining}
+              onChange={this.onChangeTraining}
+              options={trainingList}
+              placeholder="Select Training"
+              aria-label="training"
+              aria-describedby="training"
+              id="training"
+            />
+          </Grid>
+
+          {selectedTraining && (
+            <Grid item md={4}>
+              <label> Skill list </label>
+              <SelectOne
+                value={selectedSkill}
+                onChange={this.onChangeSkill}
+                options={skillList}
+                placeholder="Select Skill"
+                aria-label="skill"
+                aria-describedby="skill"
+                id="skill"
               />
             </Grid>
-
-            {selectedTraining && (
-              <Grid item md={4}>
-                <label> Skill list </label>
-                <SelectOne
-                  value={selectedSkill}
-                  onChange={this.onChangeSkill}
-                  options={skillList}
-                  placeholder="Select Skill"
-                  aria-label="skill"
-                  aria-describedby="skill"
-                  id="skill"
-                />
-              </Grid>
-            )}
-
-            {left.length > 0 && selectedTraining && selectedSkill && (
-              <Grid item md={4}>
-                <label> Day/Week/Date </label>
-                <Textbox
-                  value={newDay}
-                  id="day"
-                  type="text"
-                  placeholder="Day/Week/Date"
-                  name="day"
-                  onChange={this.dayOnChange}
-                />
-              </Grid>
-            )}
-          </Grid>
-
-          {selectedTraining && selectedSkill && (
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography className={classes.heading}>
-                  Execution Progress
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {covered && covered.length === 0 ? (
-                  <Grid item md={5}>
-                    <Typography color="error"> No Topics Covered </Typography>
-                  </Grid>
-                ) : (
-                  <List
-                    className={classes.listAcc}
-                    dense
-                    component="div"
-                    role="list"
-                  >
-                    {covered.map((value) => {
-                      const labelId = `transfer-list-all-item-${value}-label`;
-                      return (
-                        <ListItem key={value.id} role="listitem">
-                          <ListItemText
-                            id={labelId}
-                            primary={value.training_day}
-                            secondary={value.curriculam_name}
-                          />
-                        </ListItem>
-                      );
-                    })}
-                    <ListItem />
-                  </List>
-                )}
-              </AccordionDetails>
-            </Accordion>
           )}
-
-          {left.length === 0 &&
-            right.length === 0 &&
-            selectedTraining &&
-            selectedSkill && (
-              <Grid item md={5}>
-                <Typography color="error"> No Curriculum Found </Typography>
-              </Grid>
-            )}
-
-          <Grid item md className={classes.searchAddGrid}>
-            {selectedTraining && selectedSkill && (
-              <Paper component="form" className={classes.searchRoot}>
-                <InputBase
-                  className={classes.input}
-                  placeholder="Search "
-                  onChange={this.searchCurriculum}
-                  value={query}
-                />
-                <IconButton
-                  disabled
-                  className={classes.iconButton}
-                  aria-label="search"
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Paper>
-            )}
-          </Grid>
-          {selectedTraining && selectedSkill && (
-            <Grid
-              container
-              spacing={2}
-              justify="center"
-              alignItems="center"
-              className={classes.gridRoot}
-            >
-              <Grid item xs={12} sm={5}>
-                {this.customList("To be covered", left)}
-              </Grid>
-              <Grid item xs={12} sm={2}>
-                <Grid container direction="column" alignItems="center">
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    className={classes.button}
-                    onClick={this.handleCheckedRight}
-                    disabled={this.leftChecked.length === 0}
-                    aria-label="move selected right"
-                  >
-                    &gt;
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    className={classes.button}
-                    onClick={this.handleCheckedLeft}
-                    disabled={this.rightChecked.length === 0}
-                    aria-label="move selected left"
-                  >
-                    &lt;
-                  </Button>
-                </Grid>
-              </Grid>
-              <Grid style={{ paddingTop: 0 }} item xs={12} sm={5}>
-                {this.customList("Covered", right)}
-              </Grid>
+          {left.length > 0 && selectedTraining && selectedSkill && (
+            <Grid item md={3}>
+              <label> Day/Week/Date </label>
+              <Textbox
+                value={newDay}
+                id="day"
+                type="text"
+                placeholder="Day/Week/Date"
+                name="day"
+                onChange={this.dayOnChange}
+              />
             </Grid>
           )}
-          {/* <div className={classes.bottomBtn}>
+        </Grid>
+
+
+
+
+
+
+        {selectedTraining && selectedSkill && (
+          <Accordion style={{marginTop: 10, marginBottom: 10 }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.heading}>
+                Execution Progress
+                </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              {covered && covered.length === 0 ? (
+                <Grid item md={5}>
+                  <Typography color="error"> No Topics Covered </Typography>
+                </Grid>
+              ) : (
+                  <TableContainer className={classes.tableRoot} component={Paper}>
+                    <Table className={classes.table} size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell className={classes.tableHead}>Day/Week/Date</TableCell>
+                          <TableCell className={classes.tableHead}>Topics Covered</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {covered.map((row) => (
+                          <TableRow key={row.curriculam_id}>
+                            <TableCell > {row.training_day ?row.training_day : '--'}</TableCell>
+                            <TableCell component="th" scope="row">{row.curriculam_name}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
+            </AccordionDetails>
+          </Accordion>
+        )}
+
+        {left.length === 0 &&
+          right.length === 0 &&
+          selectedTraining &&
+          selectedSkill && (
+            <Grid item md={5}>
+              <Typography color="error"> No Curriculum Found </Typography>
+            </Grid>
+          )}
+
+        <Grid item md className={classes.searchAddGrid}>
+          {selectedTraining && selectedSkill && (
+            <Paper component="form" className={classes.searchRoot}>
+              <InputBase
+                className={classes.input}
+                placeholder="Search "
+                onChange={this.searchCurriculum}
+                value={query}
+              />
+              <IconButton
+                disabled
+                className={classes.iconButton}
+                aria-label="search"
+              >
+                <SearchIcon />
+              </IconButton>
+            </Paper>
+          )}
+        </Grid>
+        {selectedTraining && selectedSkill && (
+          <Grid
+            container
+            spacing={2}
+            justify="center"
+            alignItems="center"
+            className={classes.gridRoot}
+          >
+            <Grid item xs={12} sm={5}>
+              {this.customList("To be covered", left)}
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <Grid container direction="column" alignItems="center">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  className={classes.button}
+                  onClick={this.handleCheckedRight}
+                  disabled={this.leftChecked.length === 0}
+                  aria-label="move selected right"
+                >
+                  &gt;
+                  </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  className={classes.button}
+                  onClick={this.handleCheckedLeft}
+                  disabled={this.rightChecked.length === 0}
+                  aria-label="move selected left"
+                >
+                  &lt;
+                  </Button>
+              </Grid>
+            </Grid>
+            <Grid style={{ paddingTop: 0 }} item xs={12} sm={5}>
+              {this.customList("Covered", right)}
+            </Grid>
+          </Grid>
+        )}
+        {/* <div className={classes.bottomBtn}>
             <Buttons
               className="submitBtn float-right"
               value="Submit"
@@ -661,22 +665,22 @@ class TrainingProgressDetails extends React.Component {
             />
           </div> */}
 
-          <Snackbar
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            open={snackbaropen}
-            autoHideDuration={3000}
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          open={snackbaropen}
+          autoHideDuration={3000}
+          onClose={this.handleClose}
+        >
+          <MySnackbarContentWrapper
             onClose={this.handleClose}
-          >
-            <MySnackbarContentWrapper
-              onClose={this.handleClose}
-              variant={snackvariant}
-              message={snackmsg}
-            />
-          </Snackbar>
-        </Paper>
+            variant={snackvariant}
+            message={snackmsg}
+          />
+        </Snackbar>
+      </Paper>
     );
   }
 }
