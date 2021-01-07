@@ -12,7 +12,10 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-    return {}
+    return {
+    userDetails: state.loginReducer.userDetails
+
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LOBList);

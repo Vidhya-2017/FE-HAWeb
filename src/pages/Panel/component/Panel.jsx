@@ -384,8 +384,8 @@ class Panel extends React.Component {
       panel_category: panelCat.value,
       appointmentDetails: appointmentDetails,
       panel_id: panelid,
-      updated_by: "1",
-      created_by: "1"
+      updated_by: this.props.userDetails.user_id,
+      created_by: this.props.userDetails.user_id
     }
     this.props.editPanel(reqObj).then(response => {
       Object.entries(panelForm).map(([key, value]) => {
@@ -489,7 +489,7 @@ class Panel extends React.Component {
       email_id: formValues.email.value,
       panel_category: panelCat.value,
       appointmentDetails: appointmentDetails,
-      created_by: "1"
+      created_by: this.props.userDetails.user_id
     }
     skills.map(item => item.label);
     this.props.addPanel(reqObj).then(response => {

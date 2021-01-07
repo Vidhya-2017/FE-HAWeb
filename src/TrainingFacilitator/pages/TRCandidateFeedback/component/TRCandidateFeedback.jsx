@@ -104,7 +104,6 @@ class TrainingFeedback extends React.Component {
       this.props.history.push('/candidateFeedbackList')
     } else {
       const users = this.props.location.state.data;
-      console.log(users);
       this.setState({ data: users })
     }
   }
@@ -145,7 +144,7 @@ class TrainingFeedback extends React.Component {
 
     let reqObj = {
       data: realdata,
-      created_by: 1,
+      created_by: this.props.userDetails.user_id,
     }
     this.props.insertCandidateFeedback(reqObj).then((response) => {
       if (response && response.errCode === 200) {

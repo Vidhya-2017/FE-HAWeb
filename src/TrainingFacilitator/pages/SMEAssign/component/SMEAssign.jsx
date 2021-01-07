@@ -56,7 +56,6 @@ class SMEAssign extends React.Component {
     if (value.length >= 3) {
       const req = { 'searchData': value }
       this.props.getSMEBySearch(req).then((res) => {
-        console.log(res);
         this.setState({
           users: res.arrRes, search: value
         })
@@ -108,7 +107,6 @@ class SMEAssign extends React.Component {
   submitForm = () => {
     const user_id = 1;
     const { selectedTraining } = this.state;
-    console.log(this.state.userList);
     const userList = this.state.userList.map((list) => {
       return {
         id: list.id,
@@ -123,7 +121,6 @@ class SMEAssign extends React.Component {
 
     this.setState({ loading: true });
     this.props.insertSME(reqObj).then((response) => {
-      console.log(response);
       if (response.errCode === 200) {
         this.setState({
           selectedTraining: null,

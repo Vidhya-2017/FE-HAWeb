@@ -255,7 +255,7 @@ class BatchFormation extends Component {
       const reqObj = {
         batch_id: batchSelected.value,
         candidate_ids: candidateIDs,
-        created_by: 1,
+        created_by: this.props.userDetails.user_id,
       }
       this.props.insertCandidateBatchMap(reqObj).then((response) => {
         if (response && response.errCode === 200) {
@@ -271,9 +271,6 @@ class BatchFormation extends Component {
   }
 
   searchCandidate = (e) => {
-    console.log('searchLeft---', this.left);
-    console.log('searchRight---', this.right);
-
     const query = e.target.value;
     const lowerCaseQuery = query.toLowerCase();
     const searchedLeftData = (query

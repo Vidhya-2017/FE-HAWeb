@@ -179,6 +179,7 @@ export class Dashboard extends React.Component {
             tp2scheduleUpdate={this.tp2scheduleUpdate}
             SendTP1CandidatePrimarySkillId={this.SendTP1CandidatePrimarySkillId}
             panels={this.state.panelList}
+            userDetails={this.props.userDetails}
             editCandidate={this.props.editCandidate}
             getPrimarySkillsReport={this.props.getPrimarySkillsReport}
             getListLocation={this.props.getListLocation}

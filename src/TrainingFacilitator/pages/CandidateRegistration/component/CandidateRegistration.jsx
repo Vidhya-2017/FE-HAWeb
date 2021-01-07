@@ -209,7 +209,6 @@ class CandidateRegistration extends React.Component {
 
   submitForm = (e) => {
     this.setState({ showToast: false })
-    console.log("submit");
     const formData = {};
     const { formValues } = this.state;
     const resetRegisterCandidate = {
@@ -229,7 +228,7 @@ class CandidateRegistration extends React.Component {
       location_id: formData.location,
       lob_id: formData.lob,
       account_id: formData.account,
-      created_by: 1,
+      created_by: this.props.userDetails.user_id,
     }
 
     if(this.state.selectedTraining.trainingType === '1') {
@@ -243,10 +242,8 @@ class CandidateRegistration extends React.Component {
           expected_joining_date: ''
         }
     }
-    console.log('----formData--', reqObj);
 
     this.props.insertCandidate(reqObj).then(response => {
-      console.log(response);
       if (response && response.errCode === 200) {
 
         this.setState({

@@ -78,7 +78,6 @@ class Home extends Component {
 
   getSkillList = () => {
     this.props.getSkillList().then(response => {
-      console.log(response);
       if (response && response.arrRes) {
         const skillList = response.arrRes.map(list => {
           return {
@@ -130,14 +129,12 @@ class Home extends Component {
       } else {
         const reqObj = {
           details: data,
-          created_by: 1,
-          updated_by: 1,
+          created_by: this.props.userDetails.user_id,
+          updated_by: this.props.userDetails.user_id,
           skill_id: selectedSkill.value,
           skill_curriculum_upload: 1
         }
-        console.log(reqObj);
         this.props.insertCurriculum(reqObj).then((response) => {
-          console.log(response);
           if (response && response.errCode === 200) {
 
             this.setState({ sheetOptions: [], file: {}, data: [], selectedSkill: null, snackBarOpen: true, snackmsg: 'Curriculum Uploaded Successfully', snackvariant: "success" });
@@ -157,16 +154,14 @@ class Home extends Component {
       } else {
         const reqObj = {
           details: data,
-          created_by: 1,
+          created_by: this.props.userDetails.user_id,
           training_id: selectedTraining.value,
-          updated_by: 1,
+          updated_by: this.props.userDetails.user_id,
           skill_id: selectedSkill.value,
           skill_curriculum_upload: 0
         }
-        console.log(reqObj);
         this.props.insertCurriculum(reqObj).then((response) => {
 
-          console.log(response);
           if (response && response.errCode === 200) {
 
             this.setState({ sheetOptions: [], file: {}, data: [], selectedTraining: null, selectedSkill: null, snackBarOpen: true, snackmsg: 'Curriculum Uploaded Successfully', snackvariant: "success" });
@@ -190,10 +185,10 @@ class Home extends Component {
           const reqObj = {
             // mime: file.type,
             details: data,
-            created_by: 1,
+            created_by: this.props.userDetails.user_id,
             training_id: selectedTraining.value,
             // sheetname : this.state.selectedSheet.label,
-            updated_by: 1
+            updated_by: this.props.userDetails.user_id
           }
 
           this.props.insertCandidates(reqObj).then((response) => {
@@ -229,7 +224,6 @@ class Home extends Component {
         defval: '',
         blankrows: false
       });
-      console.log(sheetData);
       if (sheetData.length > 0) {
         columns = sheetData[0].map(col => {
 
@@ -250,7 +244,6 @@ class Home extends Component {
         });
       }
       const data = XLSX.utils.sheet_to_json(ws, { raw: false });
-      console.log(data);
       /* Object.keys(data[0]).forEach((key, index) => { */
       sheetData[0].forEach((key, index) => {
         if (key === 'Expected Joining Date') {
@@ -278,7 +271,6 @@ class Home extends Component {
               title: key,
               field: key,
               editComponent: props => {
-                console.log(props);
                 const defaultLabel = (typeof props.rowData["Joining Month"] === 'string') ? props.rowData["Joining Month"] : props.rowData["Joining Month"].label;
                 return (
                   <Select
@@ -316,10 +308,8 @@ class Home extends Component {
 
 
   editSubmit = (newData, oldData) => {
-    console.log(oldData);
     const data = [...this.state.data];
     data[data.indexOf(oldData)] = newData;
-    console.log(this.state.curriculumUpload);
     if (this.state.curriculumUpload !== true && this.state.skillcurriculumUpload !== true) {
       this.setState(prevState => ({
         data: prevState.data.map(
@@ -519,7 +509,6 @@ class Home extends Component {
                   new Promise((resolve) => {
                     resolve();
                     if (oldData) {
-                      console.log('--oldData-', oldData);
                       this.editSubmit(newData, oldData);
                     }
                   }),

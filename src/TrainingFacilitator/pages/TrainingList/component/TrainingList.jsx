@@ -469,7 +469,7 @@ class TrainingList extends React.Component {
       requestBySapid:updatedData.requestedby_sapid,
       programManager:updatedData.program_manager,
       programManagerSapid:updatedData.program_mngr_sapid,
-      UpdatedBy: 1
+      UpdatedBy: this.props.userDetails.user_id
     }
     this.props.EditTrainingList(reqObj).then(response => {
       if (response && response.errCode === 200) {
@@ -499,7 +499,6 @@ class TrainingList extends React.Component {
   }
 
   editRowRedirect = (updatedRow) => {
-    console.log(updatedRow.id);   
     this.props.history.push(`/trainingCreation?tId=${updatedRow.id}`)
   }
  

@@ -160,7 +160,7 @@ class Curriculum extends React.Component {
     const reqObj = {
       training_id: selectedTraining.value,
       curriculumData: finalTopic,
-      created_by: 1,
+      created_by: this.props.userDetails.user_id,
       skill_id: selectedTraining.skillsID
     }
     this.submitCurriculum(reqObj);
@@ -170,7 +170,6 @@ class Curriculum extends React.Component {
   submitCurriculum = (reqObj) => {
     this.props.submitCurriculum(reqObj).then((response) => {
       if (response && response.errCode === 200) {
-        console.log(response);
         this.setState({ openDialog: false, selectedRadio: null, trainingCurriculumlist: [], selectedTraining: null, skillList: [], snackBarOpen: true, snackmsg: 'Curriculum has been incorprated successfully ', snackvariant: "success", isFormValid: false });
       } else {
         this.setState({ snackBarOpen: true, snackmsg: 'Something went Wrong. Please try again later', snackvariant: "error" })

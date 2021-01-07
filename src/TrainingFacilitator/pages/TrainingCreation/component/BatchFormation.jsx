@@ -243,7 +243,7 @@ class BatchFormation extends Component {
       const reqObj = {
         batch_id: batchSelected.value,
         candidate_ids: candidateIDs,
-        created_by: 1,
+        created_by: this.props.userDetails.user_id,
         mentor: selectedMentor.id
       }
       return this.props.insertCandidateBatchMap(reqObj).then((response) => {
@@ -423,7 +423,7 @@ class BatchFormation extends Component {
       training_id: selectedTraining.value,
       batch_name: newBatchName,
       batch_count: newBatchCount,
-      created_by: 1
+      created_by: this.props.userDetails.user_id
     }
     this.props.addBatchName(reqObj).then((response) => {
       if (response && response.errCode === 200) {

@@ -80,8 +80,8 @@ class TrainingType extends React.Component {
     const date = moment().format("YYYY-MM-DD");
     const reqObj = {
       training_type: newTrainingType,
-      created_by: 1,
-      updated_by: 1,
+      created_by: this.props.userDetails.user_id,
+      updated_by: this.props.userDetails.user_id,
       created_date: date
     }
     this.props.addTrainingType(reqObj).then(response => {
@@ -126,7 +126,7 @@ class TrainingType extends React.Component {
       const reqObj = {
         id: updatedTrainingtype.id,
         training_type: updatedTrainingtype.type,
-        updated_by: 1
+        updated_by: this.props.userDetails.user_id
       }
       this.props.editTrainingType(reqObj).then(response => {
         if (response && response.errCode === 200) {
@@ -161,7 +161,7 @@ class TrainingType extends React.Component {
   handleDelete = (oldData) => {
     const reqObj = {
       id: oldData.id,
-      updated_by: 1
+      updated_by: this.props.userDetails.user_id
     }
     this.props.deleteTrainingType(reqObj).then(response => {
       if (response && response.errCode === 200) {

@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return{
-    TrainingList: state.TrainingListReducer
+    userDetails: state.loginReducer.userDetails
   } 
 }
 

@@ -114,7 +114,7 @@ export class Layout extends Component {
       "recruiter": newData.recruiter_id,
       "primary_skill": newData.primary_skill_id,
       "secondary_skill": newData.secondary_skill_id.toString(),
-      "updated_by": '0',
+      "updated_by": this.props.userDetails.user_id,
       "updated_date": new Date()
     }
     await this.props.editCandidate(request)
@@ -166,7 +166,7 @@ export class Layout extends Component {
         interview_schedule_dt: "",
         interview_comment: "",
         interview_status: status.id,
-        created_by: 1
+        created_by: this.props.userDetails.user_id
       }
       this.updatTp1ScheduleDetails(tp1Status, filteredDataone);
     }
@@ -234,7 +234,7 @@ export class Layout extends Component {
         interview_schedule_dt: "",
         interview_comment: "",
         interview_status: status.id,
-        created_by: 1
+        created_by: this.props.userDetails.user_id
       }
       this.updatTp1ScheduleDetails(tp2Status, filtertp2Data);
     }
@@ -344,7 +344,7 @@ export class Layout extends Component {
       <React.Fragment>
         <Toolbar variant="dense" disableGutters>
           <Typography variant="h4" style={{ flex: 1 }} > Candidate Listings </Typography>
-          <CandidateUpload sendCandidateList={this.getCandidateDetails} />
+          <CandidateUpload userDetails={this.props.userDetails} sendCandidateList={this.getCandidateDetails} />
         </Toolbar>
         <Button
           variant="contained"
@@ -380,6 +380,7 @@ export class Layout extends Component {
         <CustomisedMenu buttonName='TP1 Status'
           status={this.tp1Status}
           classes={classes}
+          userDetails={this.props.userDetails}
           onSendPress={this.getCandiddateStatus}
           SendStatus={this.props.SendStatus}
           disabled={!enableDeleteIcon}
@@ -389,17 +390,20 @@ export class Layout extends Component {
           status={this.tp2Status}
           onSendPress={this.getTp2StatusModal}
           classes={classes}
+          userDetails={this.props.userDetails}
           disabled={!enableDeleteIcon}
         />
 
         <CustomisedMenu buttonName='Fitment Status'
           status={this.fitmentStatus}
           classes={classes}
+          userDetails={this.props.userDetails}
           onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
         <CustomisedMenu buttonName='Offer Status'
           status={this.offerStatus}
+          userDetails={this.props.userDetails}
           onSendPress={this.getCandiddateStatus}
           classes={classes}
           disabled={!enableDeleteIcon}
@@ -407,10 +411,11 @@ export class Layout extends Component {
         <CustomisedMenu buttonName='Drop Status'
           status={this.dropStatus}
           classes={classes}
+          userDetails={this.props.userDetails}
           onSendPress={this.getCandiddateStatus}
           disabled={!enableDeleteIcon}
         />
-        <CandidateList getcandidateDoc ={this.getcandidateDoc} selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData} candidateCvDetails={candidateCvDetails}/>
+        <CandidateList userDetails={this.props.userDetails} getcandidateDoc ={this.getcandidateDoc} selectCandidate={this.selectCandidate} columns={columnFields} rowData={actualData} candidateCvDetails={candidateCvDetails}/>
         <Dialog open={showModal1}>
           <DialogTitle >{"Alert"}</DialogTitle>
           <DialogContent>

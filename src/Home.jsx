@@ -50,6 +50,8 @@ import LOBListContainer from './TrainingFacilitator/pages/LOB/container/LOBListC
 import AccountMasterContainer from './TrainingFacilitator/pages/AccountMaster/container/AccountMasterContainer';
 import TrainingFeedbackContainer from './TrainingFacilitator/pages/TrainingFeedback/container/TrainingFeedbackContainer';
 import TRCandidateFeedbackContainer from './TrainingFacilitator/pages/TRCandidateFeedback/container/TRCandidateFeedbackContainer';
+import PostAssessmentFeedbackContainer from './TrainingFacilitator/pages/PostAssessmentFeedback/container/PostAssessmentFeedbackContainer';
+import PreAssessmentFeedbackContainer from './TrainingFacilitator/pages/PreAssessmentFeedback/container/PreAssessmentFeedbackContainer';
 // import Home from './TrainingFacilitator/pages/Home/container/HomeContainer';
 import './App.scss';
 import TrainingDashboard from './TrainingFacilitator/pages/TrainingDashboard/TrainingDashboard';
@@ -168,6 +170,8 @@ class Home extends React.Component {
               <Route path="/smeTopicsCovered" component={SMECompletedTopicsContainer} />
               <Route path="/candidateFeedbackList" component={TrainingFeedbackContainer} />
               <Route path="/trainingcandidateFeedback" component={TRCandidateFeedbackContainer} />
+              <Route path="/preAssessmentFeedback" component={PreAssessmentFeedbackContainer} />
+              <Route path="/postAssessmentFeedback" component={PostAssessmentFeedbackContainer} />
 
             </Switch>
             <Footer />

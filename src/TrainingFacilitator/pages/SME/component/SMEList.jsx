@@ -282,7 +282,7 @@ class SMEList extends React.Component {
         const filteredItems = this.state.smeListVal.filter((item) => item.id !== id);
         const reqObj = {
             id: id,
-            updated_by: 1
+            updated_by: this.props.userDetails.user_id
         }
 
         this.props.deleteSMEList(reqObj).then(response => {
@@ -325,7 +325,7 @@ class SMEList extends React.Component {
             skills: skillIds,
             phone_number: newData.phone_number,
             role: newData.role_name.id ? newData.role_name.id : newData.role,
-            updated_by: "1"
+            updated_by: this.props.userDetails.user_id
         }
         const filteredItems = this.state.skillList.filter(skill => reqObj.skills.includes(skill.id))
         const skillNames  = filteredItems.map(item => item.label);
@@ -420,8 +420,8 @@ class SMEList extends React.Component {
             skills: formValues.skills.value,
             email: formValues.emailId.value,
             password: formValues.password.value,
-            created_by: 1,
-            updated_by: 1
+            created_by: this.props.userDetails.user_id,
+            updated_by: this.props.userDetails.user_id
         }
 
         const filteredItems = this.state.skillList.filter(skill => reqObj.skills.includes(skill.id))

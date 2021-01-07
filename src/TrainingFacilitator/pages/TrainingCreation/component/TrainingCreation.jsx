@@ -617,8 +617,8 @@ class TrainingCreation extends React.Component {
       //  programManagerSapid: formData.programManagerSapid,
       requestBy: formData.requestBy,
       requestBySapid: formData.requestBySapid,
-      CreatedBy: 1,
-      UpdatedBy: 1,
+      CreatedBy: this.props.userDetails.user_id ,
+      UpdatedBy: this.props.userDetails.user_id ,
     };
     if (!editTrainingId) {
       this.props.registerTraining(reqObj).then((result) => {
@@ -725,7 +725,6 @@ class TrainingCreation extends React.Component {
     if (e.target.name === "skills") {
       this.setState({ smesListOption: [] }, () => {
         const { smesList } = this.state;
-        console.log('-----skill changes----')
         const TemSme = [];
         const onchangeSkill = e.target.value;
         smesList.forEach((list, index) => {
@@ -1242,6 +1241,7 @@ class TrainingCreation extends React.Component {
               getAccount={this.props.getAccount}
               getLobList={this.props.getLobList}
               getLocation={this.props.getLocation}
+              userDetails={this.props.userDetails}
               getProgramManager={this.props.getProgramManager}
               insertCandidate={this.props.insertCandidate}
               checkAllFieldsValid={this.checkAllFieldsValid}
@@ -1256,6 +1256,7 @@ class TrainingCreation extends React.Component {
               getMentorList={this.props.getMentorList}
               addBatchName={this.props.addBatchName}
               getCandidateMapList={this.props.getCandidateMapList}
+              userDetails={this.props.userDetails}
               insertCandidateBatchMap={this.props.insertCandidateBatchMap}
               ref={this.batchFormationRef}
               checkAllFieldsValidBF={this.checkAllFieldsValidBF}
@@ -1270,6 +1271,7 @@ class TrainingCreation extends React.Component {
               getTrainingList={this.props.getTrainingList}
               getTopicList={this.props.getTopicList}
               submitCurriculum={this.props.submitCurriculum}
+              userDetails={this.props.userDetails}
               checkAllFieldsValidCF={this.checkAllFieldsValidCF}
             />
           </Grid>
@@ -1281,6 +1283,7 @@ class TrainingCreation extends React.Component {
               getTrainingList={this.props.getTrainingList}
               onChangeTraining={this.props.onChangeTraining}
               onChangeSkill={this.props.onChangeSkill}
+              userDetails={this.props.userDetails}
               dayOnChange={this.props.dayOnChange}
               searchCurriculum={this.props.searchCurriculum}
               getCurriculumBySkill={this.props.getCurriculumBySkill}

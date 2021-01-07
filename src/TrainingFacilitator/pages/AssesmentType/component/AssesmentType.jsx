@@ -62,7 +62,6 @@ class AssesmentType extends React.Component {
           snackvariant: 'success',
           snackmsg: "Assessment Data loaded successfully"
         })
-        console.log(this.state.assessmentListVal);
       } else {
         this.setState({
           assessmentListVal: [],
@@ -82,7 +81,7 @@ class AssesmentType extends React.Component {
     const filteredItems = this.state.assessmentListVal.filter((item) => item.id !== id);
     const reqObj = {
       id: id,
-      updated_by: 1
+      updated_by: this.props.userDetails.user_id
     }
     this.props.DeleteAssesmentTypeList(reqObj).then(response => {
       if (response === undefined) {
@@ -114,7 +113,7 @@ class AssesmentType extends React.Component {
     const reqObj = {
       id: updatedScale.id,
       assesment_type_name: updatedScale.assesment_type_name,
-      updated_by: "1"
+      updated_by: this.props.userDetails.user_id
     }
     this.props.EditAssesmentTypeList(reqObj).then(response => {
       if (response === undefined) {
@@ -162,8 +161,8 @@ class AssesmentType extends React.Component {
     const date = moment().format("YYYY-MM-DD");
     const reqObj = {
       assesment_type_name: newAssessmentScale,
-      created_by: 1,
-      updated_by: 1,
+      created_by: this.props.userDetails.user_id,
+      updated_by: this.props.userDetails.user_id,
       created_date: date
     }
     this.props.setAddAssesmentTypeList(reqObj).then(response => {
@@ -175,7 +174,6 @@ class AssesmentType extends React.Component {
         })
       }
       else if (response && response.errCode === 200) {
-        console.log(response);
         const myObj = {
           id: response.AssessmentTypeId,
           assesment_type_name: response.AssessmentTypeName

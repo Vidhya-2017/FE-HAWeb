@@ -84,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 export default function CandidateFeedbackNew(props) {
-  console.log('---props---', props);
   const classes = useStyles();
   const [eventList, seteventList] = React.useState([]);
   const [selectedEvent, setselectedEvent] = React.useState();
@@ -110,7 +109,6 @@ export default function CandidateFeedbackNew(props) {
   }, [])
   
   const handleEventChange = useCallback((selectedEvent) => {
-    console.log('handleEventChange---', selectedEvent);
     setselectedEvent(selectedEvent);
     const reqObj = { eventID: selectedEvent.value }
     props.getSquadList(reqObj).then(response => {
@@ -139,7 +137,6 @@ export default function CandidateFeedbackNew(props) {
             setOtherAssessmentData(OtherAssessmentData);
             // this.setState({ CompetancyData: eventResponse.arrRes[0].CompetancyData, OtherAssessmentData });
             const user_id = props.userDetails.user_id;
-            console.log('-user_id--', user_id);
             const organiserIDs = eventResponse.arrRes[0].OrganisersId;
             const panelistIDs = eventResponse.arrRes[0].PanelData;
             const isOrganiser = organiserIDs.find((id) => id.userID === user_id);

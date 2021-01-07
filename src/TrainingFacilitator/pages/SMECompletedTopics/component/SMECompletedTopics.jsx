@@ -411,8 +411,6 @@ class SMECompletedTopics extends React.Component {
   searchCurriculum = (e) => {
     const query = e.target.value;
     const lowerCaseQuery = query.toLowerCase();
-    console.log(this.left);
-    console.log(this.right);
 
     const searchedData = (query
       ? this.left.filter((list) =>

@@ -187,8 +187,6 @@ class CandidateRegistration extends React.Component {
         const targetName = e.target.name;
         const targetValue = e.target.value;
 
-        console.log(targetValue);
-
         if (targetName === 'trainingid' && targetValue !== '') {
             this.setState({ formDisable: true });
         }
@@ -280,7 +278,7 @@ class CandidateRegistration extends React.Component {
             location_id: formData.location,
             lob_id: formData.lob,
             account_id: formData.account,
-            created_by: 1,
+            created_by: this.props.userDetails.user_id,
         }
         if (this.state.selectedTraining.trainingType === '1') {
             reqObj = {

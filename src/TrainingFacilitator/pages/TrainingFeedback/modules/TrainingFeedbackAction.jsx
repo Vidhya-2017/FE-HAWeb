@@ -30,6 +30,31 @@ export const TrainingFeedbackAction = {
             return (error.response);
         }
       }, 
-   
-
+      getPreAssessmentList: async (data) => {
+        try {
+            const response = await clients.TFAxiosAPI.post('/pre-assessmentFeedback-list.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+      }, 
+      getPostAssessmentList: async (data) => {
+        try {
+            const response = await clients.TFAxiosAPI.post('/post-assessmentFeedback-list.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+      }, 
+      trainingRecomendations: async (data) => {
+        try {
+            const response = await clients.TFAxiosAPI.post('/recommendAdd.php', data);
+            return (response.data);
+        }
+        catch (error) {
+            return (error.response);
+        }
+      }, 
 }

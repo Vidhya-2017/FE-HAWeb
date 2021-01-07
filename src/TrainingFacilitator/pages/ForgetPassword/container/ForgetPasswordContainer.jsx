@@ -6,6 +6,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => (
   {
+    userDetails: state.loginReducer.userDetails
   }
 );
 

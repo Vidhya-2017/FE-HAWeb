@@ -203,7 +203,6 @@ class More extends React.Component {
     this.props.getLocation().then((response) => {
 
       if (response && response.arrRes) {
-        // console.log(response);
         this.setState({
           locationListVal: response.arrRes,
           showToast: true,
@@ -539,7 +538,7 @@ class More extends React.Component {
       AssessName: updatedScale.AssName,
       AssessValue: updatedScale.AssVal,
       AssessId: updatedScale.AssId,
-      updatedBy: 1
+      updatedBy: this.props.userDetails.user_id
     }
     this.props.editAssessment(reqObj).then(response => {
       if (response && response.errCode === 201) {
@@ -759,8 +758,7 @@ class More extends React.Component {
       AssessName: formValues4.name4.value,
       AssessValue: formValues4.name5.value,
       AssessmentStatus: 1,
-      "createdBy": 1
-      //  "createdBy": this.props.userDetails.user_id 
+      createdBy: this.props.userDetails.user_id 
     }
     this.props.addAssessment(reqObj).then(response => {
       if (response && response.errCode === 201) {

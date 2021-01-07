@@ -168,8 +168,8 @@ class SignUp extends React.Component {
       UserMobile: formData.contactNo,
       UserPassword: formData.password,
       CreatedDate: date,
-      CreatedBy: '1',
-      UpdatedBy: '1',
+      CreatedBy: this.props.userDetails.user_id ,
+      UpdatedBy: this.props.userDetails.user_id ,
       UpdatedDate: date,
       FPDetails
     };

@@ -72,7 +72,7 @@ class DurationMaster extends React.Component {
     const filteredItems = this.state.durationMasterListVal.filter((item) => item.id !== id);
     const reqObj = {
       id: id,
-      updated_by: 1
+      updated_by: this.props.userDetails.user_id
     }
     this.props.deleteDurationMasterList(reqObj).then(response => {
       if (response === undefined) {
@@ -105,7 +105,7 @@ class DurationMaster extends React.Component {
     const reqObj = {
       id: newData.id,
       duration: newData.duration,
-      updated_by: "1"
+      updated_by: this.props.userDetails.user_id
     }
     this.props.editDurationMasterList(reqObj).then(response => {
       if (response === undefined) {
@@ -159,8 +159,8 @@ class DurationMaster extends React.Component {
     const { newDurationMaster } = this.state;
     const reqObj = {
       duration: newDurationMaster,
-      created_by: 1,
-      updated_by: 1,
+      created_by: this.props.userDetails.user_id,
+      updated_by: this.props.userDetails.user_id,
     }
     this.props.addDurationMasterList(reqObj).then(response => {
       if (response === undefined) {

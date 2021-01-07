@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import CandidateFeedbackNew from '../component/CandidateFeedbackNew';
-import CandidateFeedback from '../component/CandidateFeedback';
 import { CandidateFeedbackActions } from '../modules/CandidateFeedbackActions';
 
 const mapDispatchToProps = (dispatch) => {

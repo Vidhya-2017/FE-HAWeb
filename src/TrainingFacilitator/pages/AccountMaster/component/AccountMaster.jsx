@@ -68,7 +68,7 @@ class AccountMaster extends React.Component {
         const filteredItems = this.state.accountMasterListVal.filter((item) => item.id !== id);
         const reqObj = {
             id: id,
-            updated_by: 1
+            updated_by: this.props.userDetails.user_id
         }
 
         this.props.deleteAccountMasterList(reqObj).then(response => {

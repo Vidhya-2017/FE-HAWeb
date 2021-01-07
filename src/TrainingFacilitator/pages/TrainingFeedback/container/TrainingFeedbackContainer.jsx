@@ -6,13 +6,16 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getTrainingList: TrainingFeedbackAction.getTrainingList,
         getCandidateFeedbackList:TrainingFeedbackAction.getCandidateFeedbackList,
-        getCandidateList:TrainingFeedbackAction.getCandidateList
-
+        getCandidateList:TrainingFeedbackAction.getCandidateList,
+        trainingRecomendations:TrainingFeedbackAction.trainingRecomendations,
+        getPostAssessmentList:TrainingFeedbackAction.getPostAssessmentList,
+        getPreAssessmentList:TrainingFeedbackAction.getPreAssessmentList,
     };
 };
 
 const mapStateToProps = state => (
     {
+        userDetails: state.loginReducer.userDetails
     }
 );
 

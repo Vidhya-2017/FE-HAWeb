@@ -103,7 +103,6 @@ class Home extends Component {
 
   showFilter = (e) => {
     const { cols } = this.state;
-    console.log('----e---', cols);
     let filterOptions = [...cols];
     if(e.target.checked) {
       filterOptions = filterOptions.map(item => {

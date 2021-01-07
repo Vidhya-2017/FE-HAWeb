@@ -135,7 +135,7 @@ export class TpSchedule extends Component {
       interview_schedule_dt: tp1InterviewDate,
       interview_status: 1,
       interview_comment: "TP1 Scheduled",
-      created_by: 1
+      created_by: this.props.userDetails.user_id
     }
     // this.props.tp1scheduleUpdate(tp1ScheduleDetails);
     this.props.updatTp1ScheduleDetails(tp1ScheduleDetails).then((res) => {
@@ -164,7 +164,7 @@ export class TpSchedule extends Component {
       interview_schedule_dt: tp2InterviewDate,
       interview_status: 5,
       interview_comment: "TP2 Scheduled",
-      created_by: 1
+      created_by: this.props.userDetails.user_id
     }
     //this.props.tp2scheduleUpdate(tp2ScheduleDetails);
     this.props.updatTp2ScheduleDetails(tp2ScheduleDetails).then((res) => {

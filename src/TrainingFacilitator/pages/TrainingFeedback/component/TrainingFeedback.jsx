@@ -2,24 +2,15 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import {
+  Table, TableBody, Tooltip, FormControl, Toolbar, Typography, Paper,
+  Checkbox, IconButton, TableCell, TablePagination, TableRow, TableSortLabel,
+  TableHead, Grid, Button, Dialog, DialogTitle, TextField, DialogActions, DialogContent
+} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import Textbox from '../../../components/UI_Component/Textbox/Textbox';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { withRouter } from 'react-router';
-import FormControl from '@material-ui/core/FormControl';
 import SelectOne from '../../../components/UI_Component/Select/SelectOne';
 import TableContainer from "@material-ui/core/TableContainer";
 import SnackBar from '../../../components/UI_Component/SnackBar/SnackBar';
@@ -56,7 +47,7 @@ const initialAssessmentRows = [
 ];
 const postAssessmentRows = [
   { id: 'first_name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'dryfice_rating', numeric: false, disablePadding: true, label: 'Dryfice' },
+  { id: 'dreyfus_rating', numeric: false, disablePadding: true, label: 'Dreyfus' },
   { id: 'remarks', numeric: false, disablePadding: true, label: 'Comments' },
   { id: 'isCertified', numeric: false, disablePadding: true, label: 'Can be Certified' },
 ]
@@ -188,9 +179,17 @@ let EnhancedTableToolbar = props => {
   const { numSelected, classes, selectedData, userData } = props;
 
   const bulkEdit = () => {
+    let pathName = '';
+    if (props.assessmentLevel === 'Interim') {
+      pathName = '/trainingcandidateFeedback';
+    } else if (props.assessmentLevel === 'Pre-Assessment') {
+      pathName = '/preAssessmentFeedback';
+    } else if (props.assessmentLevel === 'Post-Assessment') {
+      pathName = '/postAssessmentFeedback';
+    }
     let userdata = userData.filter(user => selectedData.includes(user.id))
     props.history.push({
-      pathname: '/trainingcandidateFeedback',
+      pathname: pathName,
       state: { data: userdata }
     })
   }
@@ -320,6 +319,9 @@ class TrainingFeedback extends React.Component {
     snackvariant: '',
     updated_by: '',
     snackmsg: '',
+    comments: '',
+    subject: '',
+    showRecommendationModal: false
   };
   componentDidMount() {
     this.props.getTrainingList().then((response) => {
@@ -362,7 +364,6 @@ class TrainingFeedback extends React.Component {
   };
 
   handleSelectAllClick = event => {
-    console.log(event.target.checked);
     if (event.target.checked) {
       const { data } = this.state;
       // const feedbackFalse = data.filter(item=> item.feedback_given === false);
@@ -378,7 +379,6 @@ class TrainingFeedback extends React.Component {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -408,6 +408,15 @@ class TrainingFeedback extends React.Component {
 
 
   handleAssessmentChange = (e) => {
+    if (e.target.value === "Interim") {
+      this.getCandidateInterimFB();
+    } else if (e.target.value === "Pre-Assessment") {
+      this.getCandidatePreAssessmtFB();
+    } else if (e.target.value === "Post-Assessment") {
+      this.getCandidatePostAssessmtFB();
+    } else if (e.target.value === "Initial Assessment") {
+      this.getCandidateInterimFB();
+    }
     this.setState({
       selectedAssessment: e.target,
       selected: [],
@@ -416,52 +425,26 @@ class TrainingFeedback extends React.Component {
     })
   }
 
-  handleDrTypeChange = (e) => {
-    this.setState({
-      selectedDrType: e.target,
-    })
-  }
-
-  handleWeekChange = (e) => {
-    this.setState({
-      selectedWeek: e.target,
-    })
-  }
-
-  handleTrainingChange = (e) => {
+  getCandidatePostAssessmtFB = () => {
     const reqObj = {
-      training_id: e.target.value,
-      user_id: 1,
+      trainingId: this.state.training_id,
+      createdBy: this.props.userDetails.user_id,
     }
-
-    this.props.getCandidateList(reqObj).then((response) => {
-
+    this.props.getPostAssessmentList(reqObj).then((response) => {
       if (response && response.errCode === 200) {
-        const nonfeedback_levels = { "training_id": e.target.value, "attendance": 0, "sme_session_interaction": 0, "theory": 0, "hands_on": 0, "hands_on_performance": 0, "assessment": '0', "assessment_schedule_compliance": 0, "overall": 0, "sme_interaction": 0, "sme_name": response.sme.sme_name, "remarks": '', "training_completed": 'Yes', "training_completed_date": '', "certification": 'Foundation', "final_assessment_score": 0, "percentage_complete": '0', "spoc": response.programManager.program_manager_name, "default_end_date": true, "actual_training_completed_date": response.sme.enddate, "feedback_given": false, "rowclicked": false }
-
-        const feedback_levels = { "default_end_date": false, "actual_training_completed_date": response.sme.enddate, "feedback_given": true, "rowclicked": false }
-
+        const nonfeedback_levels = { training_id: this.state.training_id, feedback_given: false, rowclicked: false, comment: '', can_be_certified: false, dryfice: '', spoc: response.programManager.program_manager_name, sme_name: response.sme.sme_name }
+        const feedback_levels = { feedback_given: true, sme_name: response.sme.sme_name, rowclicked: false, spoc: response.programManager.program_manager_name }
         const feedback_given_list = response.feedback_given_list.map(list1 => {
           return { ...list1, ...feedback_levels }
         })
-
         const feedback_notgiven_list = response.no_feedback_given_list.map(list => {
           return { ...list, ...nonfeedback_levels }
         })
-
-
-        const newdata = [...feedback_notgiven_list, ...feedback_given_list]
-        console.log(newdata);
-        const excelDataArray = newdata.map(list => {
-          return { "Training Name": e.target.label, "First Name": list.first_name, "Last Name": list.last_name, "SAP ID": list.sap_id, "Contact No": list.phone_number, "Email Id": list.email, "SME Name": list.sme_name, "SPOC": list.spoc, "Training Completed Date": list.training_completed_date, "Training Completed": list.training_completed, "Remarks": list.remarks, "SME Interaction": list.sme_interaction, "SME Session Interaction": list.sme_session_interaction, "Theory": list.theory, "Hands On": list.hands_on, "Hands On Performance": list.hands_on_performance, "Certification": list.certification, "Attendance": list.attendance, "Assessment %": list.assessment, "Assessment Schedule Compliance": list.assessment_schedule_compliance, "OverAll %": list.overall, "% Completed": list.percentage_complete }
-        })
+        const newdata = [...feedback_notgiven_list, ...feedback_given_list];
 
         this.setState({
           data: newdata,
-          excelData: excelDataArray,
           selected: [],
-          training_id: e.target.value,
-          selectedTraining: e.target,
           snackvariant: 'success',
           snackBarOpen: true,
           snackmsg: "Candidates Loaded Successfully"
@@ -472,23 +455,150 @@ class TrainingFeedback extends React.Component {
           selected: [],
           training_id: '',
           selectedTraining: null,
+          selectedAssessment: null,
           snackvariant: 'error',
           snackBarOpen: true,
           snackmsg: "No Candidates Found"
         })
       }
     });
-
   }
 
+  getCandidatePreAssessmtFB = () => {
+    const reqObj = {
+      trainingId: this.state.training_id,
+      createdBy: this.props.userDetails.user_id,
+    }
+    this.props.getPreAssessmentList(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        const nonfeedback_levels = { training_id: this.state.training_id, feedback_given: false, rowclicked: false, score: '', sme_name: response.sme.sme_name, final_conclusion: '', comment: '', spoc: response.programManager.program_manager_name }
+        const feedback_levels = { feedback_given: true, sme_name: response.sme.sme_name, rowclicked: false, spoc: response.programManager.program_manager_name }
+        const feedback_given_list = response.feedback_given_list.map(list1 => {
+          return { ...list1, ...feedback_levels }
+        })
+        const feedback_notgiven_list = response.no_feedback_given_list.map(list => {
+          return { ...list, ...nonfeedback_levels }
+        })
+        const newdata = [...feedback_notgiven_list, ...feedback_given_list];
+        this.setState({
+          data: newdata,
+          selected: [],
+          snackvariant: 'success',
+          snackBarOpen: true,
+          snackmsg: "Candidates Loaded Successfully"
+        })
+      } else {
+        this.setState({
+          data: [],
+          selected: [],
+          training_id: '',
+          selectedTraining: null,
+          selectedAssessment: null,
+          snackvariant: 'error',
+          snackBarOpen: true,
+          snackmsg: "No Candidates Found"
+        })
+      }
+    });
+  }
+  getCandidateInterimFB = () => {
+    const reqObj = {
+      training_id: this.state.training_id,
+      user_id: 1,
+    }
+    this.props.getCandidateList(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        const nonfeedback_levels = { "training_id": this.state.training_id, "attendance": 0, "sme_session_interaction": 0, "theory": 0, "hands_on": 0, "hands_on_performance": 0, "assessment": '0', "assessment_schedule_compliance": 0, "overall": 0, "sme_interaction": 0, "sme_name": response.sme.sme_name, "remarks": '', "training_completed": 'Yes', "training_completed_date": '', "certification": 'Foundation', "final_assessment_score": 0, "percentage_complete": '0', "spoc": response.programManager.program_manager_name, "default_end_date": true, "actual_training_completed_date": response.sme.enddate, "feedback_given": false, "rowclicked": false }
+        const feedback_levels = { "default_end_date": false, "actual_training_completed_date": response.sme.enddate, "feedback_given": true, "rowclicked": false }
+        const feedback_given_list = response.feedback_given_list.map(list1 => {
+          return { ...list1, ...feedback_levels }
+        })
+        const feedback_notgiven_list = response.no_feedback_given_list.map(list => {
+          return { ...list, ...nonfeedback_levels }
+        })
+        const newdata = [...feedback_notgiven_list, ...feedback_given_list];
+        const excelDataArray = newdata.map(list => {
+          return { "Training Name": this.state.selectedTraining.label, "First Name": list.first_name, "Last Name": list.last_name, "SAP ID": list.sap_id, "Contact No": list.phone_number, "Email Id": list.email, "SME Name": list.sme_name, "SPOC": list.spoc, "Training Completed Date": list.training_completed_date, "Training Completed": list.training_completed, "Remarks": list.remarks, "SME Interaction": list.sme_interaction, "SME Session Interaction": list.sme_session_interaction, "Theory": list.theory, "Hands On": list.hands_on, "Hands On Performance": list.hands_on_performance, "Certification": list.certification, "Attendance": list.attendance, "Assessment %": list.assessment, "Assessment Schedule Compliance": list.assessment_schedule_compliance, "OverAll %": list.overall, "% Completed": list.percentage_complete }
+        })
+        this.setState({
+          data: newdata,
+          excelData: excelDataArray,
+          selected: [],
+          snackvariant: 'success',
+          snackBarOpen: true,
+          snackmsg: "Candidates Loaded Successfully"
+        })
+      } else {
+        this.setState({
+          data: [],
+          selected: [],
+          training_id: '',
+          selectedTraining: null,
+          selectedAssessment: null,
+          snackvariant: 'error',
+          snackBarOpen: true,
+          snackmsg: "No Candidates Found"
+        })
+      }
+    });
+  }
+
+  handleDrTypeChange = (e) => {
+    this.setState({
+      selectedDrType: e.target,
+    })
+  }
+
+  handleWeekChange = (e) => {
+    this.setState({
+      selectedWeek: e.target.value,
+    })
+  }
+
+  handleTrainingChange = (e) => {
+    this.setState({
+      training_id: e.target.value,
+      selectedTraining: e.target,
+      selectedAssessment: null,
+      selectedDrType: null
+    })
+  }
+
+  showRecommendationModal = () => {
+    this.setState({ showRecommendationModal: true })
+  }
+
+  handleModalClose = () => {
+    this.setState({ showRecommendationModal: false, subject: '', comments: '' })
+  }
+
+  handleModalSubmit = () => {
+    const { comments, selectedTraining, selectedAssessment, subject } = this.state;
+    const reqObj = {
+      trainingId: selectedTraining.id,
+      subjectTxt: subject,
+      assessmentLevel: selectedAssessment.value,
+      recommentTxt: comments,
+      userId: 1
+    }
+    this.props.trainingRecomendations(reqObj).then((response) => {
+      if (response && response.errCode === 200) {
+        this.setState({
+          snackvariant: 'success',
+          snackBarOpen: true,
+          snackmsg: "Thanks for your recommendations."
+        })
+      }
+
+    })
+  }
   render() {
     const { classes } = this.props;
-    const { data, excelData, order, selectedWeek, selectedDrType, selectedAssessment, orderBy, selected, rowsPerPage, page, trainingListVal, selectedTraining, snackvariant, snackBarOpen, snackmsg } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const { data, excelData, order, selectedWeek, selectedDrType, selectedAssessment,
+      comments, subject, showRecommendationModal, orderBy, selected, rowsPerPage, page, trainingListVal, selectedTraining, snackvariant, snackBarOpen, snackmsg } = this.state;
 
     return (
       <div className="TrainingFeedback_container">
-
         <Paper className={classes.paperRoot} elevation={3}>
           <Typography variant="h4" className="text-center" gutterBottom>
             Candidate Feedback
@@ -507,7 +617,7 @@ class TrainingFeedback extends React.Component {
             </FormControl>
             {selectedTraining &&
               <FormControl variant="outlined" className={classes.formControl}>
-                <label>Assessment Type</label>
+                <label>Assessment Level</label>
                 <SelectOne
                   value={selectedAssessment ? selectedAssessment : null}
                   id="training"
@@ -533,23 +643,26 @@ class TrainingFeedback extends React.Component {
             }
             {selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
               <FormControl variant="outlined" className={classes.formControl}>
-                <label>Weeks</label>
-                <SelectOne
-                  value={selectedWeek ? selectedWeek : null}
+                <label>Day/Week/Date</label>
+                <Textbox
+                  value={selectedWeek ? selectedWeek : ''}
                   id="training"
                   name="training"
-                  placeholder='Select Week'
+                  placeholder='Day / Week / Date'
                   options={weekList}
                   onChange={this.handleWeekChange}
                 />
               </FormControl>
             }
-            {excelData !== '' && selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
-              <div style={{ display: 'flex', height: 50, marginTop: 30, justifyContent: 'flex-end', padding: '10px 0' }}>
-                <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
-              </div>
-            }
           </Grid>
+          <div style={{ display: 'flex', height: 50, justifyContent: 'flex-end', padding: '10px 0' }}>
+            {excelData !== '' && selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
+              <ExportCSV csvData={excelData} fileName={"Candiate Feedback List"} />
+            }
+            {selectedTraining && selectedAssessment &&
+              <Button onClick={this.showRecommendationModal} variant="contained" size="small" color="primary">Recommendation</Button>
+            }
+          </div>
           {selectedAssessment && selectedAssessment.value === 'Initial Assessment' &&
             <TableContainer component={Paper}>
               {/* <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} /> */}
@@ -598,7 +711,7 @@ class TrainingFeedback extends React.Component {
           }
           {selectedAssessment && selectedAssessment.value === 'Post-Assessment' &&
             <TableContainer component={Paper}>
-              <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+              <EnhancedTableToolbar numSelected={selected.length} assessmentLevel={selectedAssessment.value} selectedData={selected} userData={data} history={this.props.history} />
               <div className={classes.tableWrapper}>
                 <Table className={classes.table}>
                   <EnhancedTableHead
@@ -633,9 +746,9 @@ class TrainingFeedback extends React.Component {
                             <TableCell style={{ padding: 8 }} component="th" scope="row" padding="none" className={classes.stickyColumnCellName}>
                               {n.first_name}
                             </TableCell>
-                            <TableCell style={{ padding: 8 }}>{n.dryfice_rating ? n.dryfice_rating : '---'}</TableCell>
-                            <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
-                            <TableCell style={{ padding: 8 }}>{n.isCertified ? n.isCertified : '---'}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.dryfice_arr && n.dryfice_arr.value ? n.dryfice_arr.value : '---'}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.comment}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.can_be_certified ? n.can_be_certified : '---'}</TableCell>
                           </TableRow>
                         );
                       })}
@@ -648,7 +761,7 @@ class TrainingFeedback extends React.Component {
           {selectedAssessment && selectedAssessment.value === 'Pre-Assessment' &&
 
             <TableContainer component={Paper}>
-              <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+              <EnhancedTableToolbar numSelected={selected.length} assessmentLevel={selectedAssessment.value} selectedData={selected} userData={data} history={this.props.history} />
               <div className={classes.tableWrapper}>
                 <Table className={classes.table}>
                   <EnhancedTableHead
@@ -685,7 +798,7 @@ class TrainingFeedback extends React.Component {
                             </TableCell>
                             <TableCell style={{ padding: 8 }}>{n.score ? n.score : 0}</TableCell>
                             <TableCell style={{ padding: 8 }}>{n.final_conclusion ? n.final_conclusion : 0}</TableCell>
-                            <TableCell style={{ padding: 8 }}>{n.remarks}</TableCell>
+                            <TableCell style={{ padding: 8 }}>{n.comment}</TableCell>
                           </TableRow>
                         );
                       })}
@@ -695,7 +808,7 @@ class TrainingFeedback extends React.Component {
             </TableContainer>
           }
           {selectedWeek && selectedDrType && selectedAssessment && selectedAssessment.value === 'Interim' && <TableContainer component={Paper}>
-            <EnhancedTableToolbar numSelected={selected.length} selectedData={selected} userData={data} history={this.props.history} />
+            <EnhancedTableToolbar numSelected={selected.length} assessmentLevel={selectedAssessment.value} selectedData={selected} userData={data} history={this.props.history} />
             <div className={classes.tableWrapper}>
               <Table className={classes.table} aria-labelledby="tableTitle">
                 <EnhancedTableHead
@@ -772,6 +885,50 @@ class TrainingFeedback extends React.Component {
           {snackBarOpen &&
             <SnackBar onCloseSnackBar={this.onCloseSnackBar} snackBarOpen={snackBarOpen} snackmsg={snackmsg} snackvariant={snackvariant} />}
         </Paper>
+
+        <Dialog
+          disableBackdropClick
+          maxWidth="xs"
+          fullWidth={true}
+          open={showRecommendationModal}
+          onClose={this.handleModalClose}
+        >
+          <DialogTitle >Recommendation</DialogTitle>
+          <DialogContent >
+            <div style={{ display: 'flex' }}>
+              <Typography style={{ padding: '15px 40px 10px 0' }}>Subject:</Typography>
+              <TextField
+                autoFocus
+                variant="outlined"
+                margin="dense"
+                placeholder="Subject"
+                type="text"
+                value={subject}
+                onChange={(e) => this.setState({ subject: e.target.value })}
+              />
+            </div>
+            <div style={{ display: 'flex' }}>
+              <Typography style={{ padding: '15px 15px 10px 0' }}>Comments:</Typography>
+              <TextField
+                variant="outlined"
+                margin="dense"
+                placeholder="Comments"
+                type="text"
+                value={comments}
+                onChange={(e) => this.setState({ comments: e.target.value })}
+              />
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleModalClose} variant="contained" >
+              Cancel
+            </Button>
+            <Button onClick={this.handleModalSubmit} disabled={comments === '' || subject === ''} variant="contained" color="primary">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </div>
     );
   }

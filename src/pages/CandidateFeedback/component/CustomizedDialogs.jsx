@@ -67,7 +67,6 @@ export default function CustomizedDialogs(props) {
     props.handleCloseDialog(false);
   };
 
-  console.log('---props.feedbackList---', props.feedbackList);
 
   const getFinalStatus = () => {
     const finalStatus = props.feedbackList.find(list => list.sprintLevel === 'Final Assessment');

@@ -10,6 +10,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = state => (
     {
+        userDetails: state.loginReducer.userDetails
     }
 );
 

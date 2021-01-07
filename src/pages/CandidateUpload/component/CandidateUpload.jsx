@@ -63,7 +63,6 @@ class CandidateUpload extends Component {
 
   handleChange = selectedSheet => {
     const { file } = this.state;
-    console.log('-selectedSheet--', selectedSheet);
     this.setState({ selectedSheet: selectedSheet, data: [], cols: [] });
     if (selectedSheet) {
       const reader = new FileReader();

@@ -242,8 +242,8 @@ class SkillList extends React.Component {
     } else {
       const reqObj = {
         skill_name: newSkillName,
-        created_by: 1,
-        updated_by: 1,
+        created_by: this.props.userDetails.user_id,
+        updated_by: this.props.userDetails.user_id,
         created_date: date
       }
       this.props.addSkillList(reqObj).then(response => {
@@ -287,8 +287,8 @@ class SkillList extends React.Component {
     const reqObj = {
       skill_id: skillId,
       curriculum_name: newCurriculumName,
-      created_by: 1,
-      updated_by: 1,
+      created_by: this.props.userDetails.user_id,
+      updated_by: this.props.userDetails.user_id,
       created_date: date
     }
     this.props.addCurriculum(reqObj).then(response => {
@@ -372,7 +372,7 @@ class SkillList extends React.Component {
     const filteredItems = this.state.curriculumListVal.filter((item) => item.id !== id);
     const reqObj = {
       id: id,
-      updated_by: 1
+      updated_by: this.props.userDetails.user_id
     }
     this.props.delCurriculum(reqObj).then(response => {
       if (response && response.errCode === 200) {

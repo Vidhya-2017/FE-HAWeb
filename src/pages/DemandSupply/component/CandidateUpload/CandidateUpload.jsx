@@ -90,13 +90,13 @@ class CandidateUpload extends Component {
         recruiter: list.recruiter || "",
         primary_skill: list.primary_skill || "",
         secondary_skill: list.secondary_skill || "",
-        created_by: 1,
+        created_by: this.props.userDetails.user_id,
         feedback: [
           {
             interview_level: list.interview_level || "",
             status_name: list.status_name || "",
             interview_schedule_dt: list.interview_schedule_dt || "",
-            created_by: 1
+            created_by: this.props.userDetails.user_id
           }
         ]
       }
@@ -143,7 +143,6 @@ class CandidateUpload extends Component {
         });
       }
       const data = XLSX.utils.sheet_to_json(ws, { raw: false });
-      console.log(data);
       /* Object.keys(data[0]).forEach((key, index) => { */
       sheetData[0].forEach((key, index) => {
         if (key) {

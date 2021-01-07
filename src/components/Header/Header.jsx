@@ -49,7 +49,6 @@ const Header = (props) => {
     props.history.push('/');
   }
   const goHome = () => {
-    console.log('Go to', props)
     if (props.userDetails && props.userDetails.user_id) {
       props.history.push('/home')
     }

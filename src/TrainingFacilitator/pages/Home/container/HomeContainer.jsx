@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    // importDetails: state.HomeReducer
+    userDetails: state.loginReducer.userDetails
   }
 }
 
