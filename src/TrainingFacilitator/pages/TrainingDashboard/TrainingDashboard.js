@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Nav, Row } from 'react-bootstrap';
+import { Col, Nav, Row, Badge } from 'react-bootstrap';
 import Select from 'react-select';
 import SelectStyles from '../../../common/SelectStyles';
 import '../../../pages/Dashboard/scss/Dashboard.scss';
 import TrainingInfo from './components/TrainingInfo';
+import TrainingCandidates from './components/TrainingCandidates';
 import Batches from './components/Batches';
 import Curriculum from './components/Curriculum';
 import Feedback from './components/Feedback';
@@ -40,7 +41,7 @@ const TrainingDashboard = () => {
       <h3 className='pageTitle'>Trainings</h3>
       <section className='statusHandlerContainer'>
         <Row className="w-100 mb-3">
-          <Col sm={4}>
+          <Col sm={3}>
             <div className="sprintlabel">
               <label className='eventLabel'>Select Training:</label>
               <Select
@@ -54,7 +55,10 @@ const TrainingDashboard = () => {
               />
             </div>
           </Col>
-          <Col sm={8}>
+          <Col sm={4}>
+            <h2><Badge variant="success"><strong>Enrolled</strong>: {currentTraining.count}</Badge></h2>
+          </Col>
+          <Col className="mt-4" sm={12}>
             <Nav
               variant="pills"
               activeKey={current}
@@ -62,6 +66,9 @@ const TrainingDashboard = () => {
             >
               <Nav.Item>
                 <Nav.Link eventKey="info">Info</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="candidates">Candidates</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="batches">Batches</Nav.Link>
@@ -76,9 +83,14 @@ const TrainingDashboard = () => {
           </Col>
         </Row>
         {current === 'info' && <TrainingInfo {...currentTraining} />}
+<<<<<<< HEAD
         {current === 'batches' && <Batches {...currentTraining}/>}
+=======
+        {current === 'candidates' && <TrainingCandidates {...currentTraining} />}
+        {current === 'batches' && <Batches />}
+>>>>>>> @{-1}
         {current === 'curriculum' && <Curriculum {...currentTraining} />}
-        {current === 'feedback' && <Feedback />}
+        {current === 'feedback' && <Feedback {...currentTraining} />}
       </section>
     </div>
   )
