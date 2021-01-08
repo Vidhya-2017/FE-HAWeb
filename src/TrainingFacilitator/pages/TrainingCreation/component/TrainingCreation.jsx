@@ -48,6 +48,7 @@ const durationTypeList = [
 const trainingModeList = [
   { value: 'ILT', id: 'ILT', label: 'ILT' },
   { value: 'VILT', id: 'VILT', label: 'VILT' },
+  { value: 'Mentorship', id: 'Mentorship', label: 'Mentorship' },
   { value: 'E-Learning', id: 'E-Learning', label: 'E-Learning' },
   { value: 'SME Session', id: 'SME Session', label: 'SME Session' }
 ]
