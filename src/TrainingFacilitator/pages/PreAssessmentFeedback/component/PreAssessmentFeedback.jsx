@@ -173,14 +173,6 @@ class PreAssessmentFeedback extends React.Component {
     this.props.history.push('/candidateFeedbackList')
   }
 
-  handleChange = (e, list) => {
-    const { data } = this.state;
-    const findIndex = data.findIndex(user => list.id === user.id);
-    const updatedUserData = [...data];
-    updatedUserData[findIndex]['default_end_date'] = !updatedUserData[findIndex]['default_end_date']; updatedUserData[findIndex]['rowclicked'] = !updatedUserData[findIndex]['rowclicked'];
-    this.setState({ data: updatedUserData });
-  };
-
   render() {
     const { data, snackvariant, snackBarOpen, snackmsg } = this.state;
     const { classes } = this.props;
@@ -191,7 +183,7 @@ class PreAssessmentFeedback extends React.Component {
             Candidate Pre-Assessment Feedback
             </Typography>
           <Typography className="text-left" gutterBottom>
-            <b>SME Name:</b> {data.length > 0 ? data[0].sme_name : '-'} &emsp; &emsp;  <b>SPOC: </b> {data.length > 0 ? data[0].spoc : '-'}
+          <b>SME Name:</b> {data.length > 0 ? data[0].sme_name.join(', ') : '-'} &emsp; &emsp;  <b>SPOC: </b> {data.length > 0 ? data[0].spoc.join(', ') : '-'}
           </Typography>
 
           <TableContainer component={Paper}>

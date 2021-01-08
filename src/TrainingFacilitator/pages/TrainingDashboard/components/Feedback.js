@@ -7,8 +7,6 @@ const Feedback = props => {
   const [current, setCurrent] = useState('feedback');
   const [feedback, setFeedback] = useState([]);
 
-  console.log(props);
-
   const fetchFeedback = async () => {
     const { data } = await Axios.post('https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training/candidateListByTraining.php', {
       training_id: props.id,

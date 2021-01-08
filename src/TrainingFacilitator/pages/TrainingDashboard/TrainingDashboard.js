@@ -41,7 +41,7 @@ const TrainingDashboard = () => {
       <h3 className='pageTitle'>Trainings</h3>
       <section className='statusHandlerContainer'>
         <Row className="w-100 mb-3">
-          <Col sm={3}>
+          <Col md={4}>
             <div className="sprintlabel">
               <label className='eventLabel'>Select Training:</label>
               <Select
@@ -55,7 +55,7 @@ const TrainingDashboard = () => {
               />
             </div>
           </Col>
-          <Col sm={4}>
+          <Col md={4}>
             <h2><Badge variant="success"><strong>Enrolled</strong>: {currentTraining.count}</Badge></h2>
           </Col>
           <Col className="mt-4" sm={12}>
@@ -83,8 +83,8 @@ const TrainingDashboard = () => {
           </Col>
         </Row>
         {current === 'info' && <TrainingInfo {...currentTraining} />}
+        {current === 'batches' && <Batches {...currentTraining}/>}
         {current === 'candidates' && <TrainingCandidates {...currentTraining} />}
-        {current === 'batches' && <Batches />}
         {current === 'curriculum' && <Curriculum {...currentTraining} />}
         {current === 'feedback' && <Feedback {...currentTraining} />}
       </section>

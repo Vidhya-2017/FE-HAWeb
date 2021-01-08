@@ -144,7 +144,6 @@ class PostAssessmentFeedback extends React.Component {
         comment: list.comment
       }
     })
-
     let reqObj = {
       trainingId: realdata[0].training_id,
       candidates_postFB: candidates_postFB,
@@ -178,7 +177,7 @@ class PostAssessmentFeedback extends React.Component {
     const findIndex = data.findIndex(user => list.id === user.id);
     const updatedUserData = [...data];
     updatedUserData[findIndex]['can_be_certified'] = e.target.checked ? 'yes' : 'no'; 
-    updatedUserData[findIndex]['rowclicked'] = !updatedUserData[findIndex]['rowclicked'];
+    updatedUserData[findIndex]['rowclicked'] = true;
     this.setState({ data: updatedUserData });
   };
 
@@ -192,7 +191,7 @@ class PostAssessmentFeedback extends React.Component {
             Candidate Post Assessment Feedback
             </Typography>
           <Typography  className="text-left" gutterBottom>
-            <b>SME Name:</b> {data.length > 0 ? data[0].sme_name : '-'} &emsp; &emsp;  <b>SPOC: </b> {data.length > 0 ? data[0].spoc : '-'}
+            <b>SME Name:</b> {data.length > 0 ? data[0].sme_name.join(', ') : '-'} &emsp; &emsp;  <b>SPOC: </b> {data.length > 0 ? data[0].spoc.join(', ') : '-'}
           </Typography>
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
