@@ -37,6 +37,14 @@ const inputField = {
   valid: false,
 };
 
+const locationField = {
+  value: "",
+  validation: {
+    required: false,
+  },
+  valid: true,
+};
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -59,7 +67,7 @@ const trainingRegForm = {
   trainingType: { ...inputField },
   duration: { ...inputField },
   durationType: { ...inputField },
-  location: { ...inputField },
+  location: { ...locationField },
   lob: { ...inputField },
   account: { ...inputField },
   count: { ...inputField },
