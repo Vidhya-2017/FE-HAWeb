@@ -432,8 +432,10 @@ class TrainingFeedback extends React.Component {
     }
     this.props.getPostAssessmentList(reqObj).then((response) => {
       if (response && response.errCode === 200) {
-        const nonfeedback_levels = { training_id: this.state.training_id, feedback_given: false, rowclicked: false, comment: '', can_be_certified: false, dryfice: '', spoc: response.programManager.program_manager_name, sme_name: response.sme.sme_name }
-        const feedback_levels = { feedback_given: true, sme_name: response.sme.sme_name, rowclicked: false, spoc: response.programManager.program_manager_name }
+        const smeNames = response.sme.map(sme => sme.sme_name);
+        const programManagerNames = response.programManager.map(pm => pm.program_manager_name);
+        const nonfeedback_levels = { training_id: this.state.training_id, feedback_given: false, rowclicked: false, comment: '', can_be_certified: false, dryfice: '', sme_name: smeNames, spoc: programManagerNames }
+        const feedback_levels = { feedback_given: true, sme_name: smeNames, rowclicked: false, spoc: programManagerNames }
         const feedback_given_list = response.feedback_given_list.map(list1 => {
           return { ...list1, ...feedback_levels }
         })
@@ -471,8 +473,10 @@ class TrainingFeedback extends React.Component {
     }
     this.props.getPreAssessmentList(reqObj).then((response) => {
       if (response && response.errCode === 200) {
-        const nonfeedback_levels = { training_id: this.state.training_id, feedback_given: false, rowclicked: false, score: '', sme_name: response.sme.sme_name, final_conclusion: '', comment: '', spoc: response.programManager.program_manager_name }
-        const feedback_levels = { feedback_given: true, sme_name: response.sme.sme_name, rowclicked: false, spoc: response.programManager.program_manager_name }
+        const smeNames = response.sme.map(sme => sme.sme_name);
+        const programManagerNames = response.programManager.map(pm => pm.program_manager_name);
+        const nonfeedback_levels = { training_id: this.state.training_id, feedback_given: false, rowclicked: false, score: '', sme_name: smeNames, spoc: programManagerNames, final_conclusion: '', comment: '' }
+        const feedback_levels = { feedback_given: true, rowclicked: false, sme_name: smeNames, spoc: programManagerNames }
         const feedback_given_list = response.feedback_given_list.map(list1 => {
           return { ...list1, ...feedback_levels }
         })
@@ -630,7 +634,7 @@ class TrainingFeedback extends React.Component {
             }
             {selectedTraining && selectedAssessment && selectedAssessment.value === 'Interim' &&
               <FormControl variant="outlined" className={classes.formControl}>
-                <label>Duration Type</label>
+                <label>Assessment Frequency</label>
                 <SelectOne
                   value={selectedDrType ? selectedDrType : null}
                   id="durationType"

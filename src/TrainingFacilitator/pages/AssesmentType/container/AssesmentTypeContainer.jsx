@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return{
-    AssesmentTypeList: state.AssesmentTypeReducer
+    userDetails: state.loginReducer.userDetails
   }
 }
 
