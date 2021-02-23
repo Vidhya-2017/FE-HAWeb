@@ -4,13 +4,18 @@ import PropTypes from 'prop-types';
 import Axios from 'axios';
 
 const TrainingInfo = props => {
-  const [candidates, setCandidates] = useState([]);
-
+  const [candidates, setCandidates] = useState(null);
   const fetchCandidates = async () => {
-    const { data } = await Axios.post('https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training/BatchMapCandidateList.php', { training_id: props.training_type, batch_id: props.training_type });
+    const { data } = await Axios.post('https://apk.cnc.hclets.com/DiEvAEndpoints/dev/training/candidateListByTraining.php', { training_id: props.id, user_id: 1 },  {headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'text/plain'
+  }});
 
-    if (data?.status) {
-      setCandidates(data.batchCandidate);
+    if (data?.errCode === 200) {
+      const candidate_details = [...data.no_feedback_given_list, ...data.feedback_given_list];
+      setCandidates(candidate_details);
+    } else {
+      setCandidates([]);
     }
   }
 
@@ -26,7 +31,6 @@ const TrainingInfo = props => {
         <Table striped bordered>
           <thead>
             <tr>
-              <th>Batch</th>
               <th>SAP</th>
               <th>Name</th>
               <th>Email</th>
@@ -34,15 +38,15 @@ const TrainingInfo = props => {
             </tr>
           </thead>
           <tbody>
-            {candidates.map(c => (
+            {candidates && candidates.map(c => (
               <tr key={c.id}>
-                <td>{c.batch_id}</td>
                 <td>{c.sap_id}</td>
                 <td>{c.first_name} {c.last_name}</td>
                 <td>{c.email}</td>
                 <td>{c.phone_number}</td>
               </tr>
             ))}
+            {candidates && candidates.length === 0 && <tr >No data found.</tr>}
           </tbody>
         </Table>
       </Col>

@@ -1173,7 +1173,7 @@ class TrainingCreation extends React.Component {
                 fieldLabel="Planned Start Date"
                 value={formValues.plannedStDate.value}
                 name="plannedStDate"
-                minDate={new Date()}
+                // minDate="n/a"
                 disabled={isEditMode}
                 onChange={this.inputFieldChange}
               />

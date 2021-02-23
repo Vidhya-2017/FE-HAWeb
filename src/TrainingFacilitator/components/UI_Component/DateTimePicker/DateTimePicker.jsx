@@ -39,7 +39,7 @@ class DateTimePicker extends React.Component {
 						onChange={(e) => this.handleChange(e)}
 						value={this.state.value}
 						monthPlaceholder="mm"
-						minDate={this.props.minDate}
+						minDate={this.props.name === "plannedStDate" ? '' : this.props.minDate}
 						yearPlaceholder="yyyy"
 						dayPlaceholder="dd"
 						disabled={this.props.disabled}
