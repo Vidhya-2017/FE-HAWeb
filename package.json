@@ -41,7 +41,7 @@
     "redux-thunk": "^2.3.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "xlsx": "^0.16.0"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-scripts start",
